@@ -1,0 +1,4 @@
+#!/bin/sh
+
+TEXT="$(/usr/bin/lorem)"
+echo $TEXT | head -c -1 | xclip -i -selection clipboard

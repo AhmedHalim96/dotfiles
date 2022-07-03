@@ -1,0 +1,13 @@
+#!/bin/zsh
+source ~/.zshrc
+#echo "$@" >> ~/.local/share/nemo/nemo.log 
+if [ "$@" != "" ]; then
+  if [ -e "$1" ] || [ -e "$2" ]; then
+    setsid -f /usr/bin/nemo "$@" 2>/dev/null &
+  else
+    setsid -f /usr/bin/nemo "$(autojump $1)" 2>/dev/null &
+  fi
+else 
+  setsid -f /usr/bin/nemo 2>/dev/null &
+fi
+

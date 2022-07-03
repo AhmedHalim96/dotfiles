@@ -1,0 +1,5 @@
+#!/bin/sh
+
+firefox -P "Testing UI" -new-window "authn.edx.org/login" &
+firefox -P "Testing UI" -new-window "translate.google.com/" &
+marktext ~/Documents/Notes/Basic_Spanish_ll/&

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# An array of options to choose.
+# You can edit this list to add/remove config files.
+declare -A OPTIONS
+OPTIONS[vitapeutics]="$HOME/work/alphatech/vitapeutics"
+OPTIONS[orchida]="$HOME/work/alphatech/orchida"
+OPTIONS[makinats]="$HOME/work/alphatech/makinats"
+OPTIONS[portfolio]="$HOME/work/portfolio"
+
+# Clean options array making sure that the files exist
+declare -A CLEAN_OPTIONS
+for i in "${!OPTIONS[@]}"; do
+    [[ -e ${OPTIONS["${i}"]} ]] && CLEAN_OPTIONS["${i}"]=${OPTIONS["${i}"]}
+done
+
+# Piping the above array (cleaned) into dmenu.
+# We use "printf '%s\n'" to format the array one item to a line.
+CHOICE=$(printf '%s\n' "${!CLEAN_OPTIONS[@]}" | sort | dmenu -h 35 -l 8 -bw 2 -fn 14 -f -i -y 280 -x 640 -z 640 -p 'Open project:' "$@")
+
+
+# What to do when/if we choose a file to edit.
+if [ "$CHOICE" ]; then
+  CFG=$(printf '%s\n' "${CLEAN_OPTIONS["${CHOICE}"]}")
+  if [ -d "$CFG" ]; then
+		alacritty --class=NpmServer,NpmServer -e zsh -c "cd '$CFG' && codium . && BROWSER=brave-browser npm start"
+   else
+    exit 1;
+  fi
+
+# What to do if we just escape without choosing anything.
+else
+    echo "Program terminated." && exit 0
+fi
+

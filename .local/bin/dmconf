@@ -1,0 +1,53 @@
+#!/bin/bash
+
+DMEDITOR(){
+  alacritty --class nvim --command sh -c "sleep 0.1 && nvim ${1}" 
+}
+
+# An array of options to choose.
+# You can edit this list to add/remove config files.
+declare -A OPTIONS
+OPTIONS[alacritty]="$HOME/.config/alacritty/alacritty.yml"
+OPTIONS[awesome]="$HOME/.config/awesome"
+OPTIONS[dmconf]="$HOME/.local/bin/dmconf"
+OPTIONS[dwm]="$HOME/.local/dwm"
+OPTIONS[kitty]="$HOME/.config/kitty/kitty.conf"
+OPTIONS[ranger]="$HOME/.config/ranger/rc.conf"
+OPTIONS[picom]="$HOME/.config/picom.conf"
+OPTIONS[qtile]="$HOME/.config/qtile"
+OPTIONS[zsh_plugins]="$HOME/.config/zsh/zshplugins"
+OPTIONS[zsh_aliases]="$HOME/.config/zsh/aliasrc"
+OPTIONS[zshenv]="$HOME/.config/zsh/zshenv"
+OPTIONS[zshrc]="$HOME/.zshrc"
+OPTIONS[rofi]="$HOME/.config/rofi/config.rasi"
+OPTIONS[lf]="$HOME/.config/lf/lfrc"
+OPTIONS[neovim]="$HOME/.config/nvim/init.vim"
+OPTIONS[espanso]="$HOME/.config/espanso/default.yml"
+OPTIONS[wezterm]="$HOME/.config/wezterm/wezterm.lua"
+
+# Clean options array making sure that the files exist
+declare -A CLEAN_OPTIONS
+for i in "${!OPTIONS[@]}"; do
+    [[ -e ${OPTIONS["${i}"]} ]] && CLEAN_OPTIONS["${i}"]=${OPTIONS["${i}"]}
+done
+
+# Piping the above array (cleaned) into dmenu.
+# We use "printf '%s\n'" to format the array one item to a line.
+CHOICE=$(printf '%s\n' "${!CLEAN_OPTIONS[@]}" | sort | dmenu -h 35 -l 8 -bw 2 -fn 14 -f -i -y 280 -x 640 -z 640 -p 'Edit config:' "$@")
+
+
+# What to do when/if we choose a file to edit.
+if [ "$CHOICE" ]; then
+  CFG=$(printf '%s\n' "${CLEAN_OPTIONS["${CHOICE}"]}")
+  if [ -d "$CFG" ]; then
+    code "$CFG"
+  elif [ -f "$CFG" ]; then
+    DMEDITOR "$CFG"
+  else
+    exit 1;
+  fi
+
+# What to do if we just escape without choosing anything.
+else
+    echo "Program terminated." && exit 0
+fi

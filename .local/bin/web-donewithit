@@ -1,0 +1,26 @@
+#!/bin/zsh 
+
+declare -a OPTIONS=("server
+frontend
+backend")
+
+CHOICE=$(echo -e "${OPTIONS[@]}" | dmenu -l 3 -bw 2 -fn 14 -f -i -y 280 -x 640 -z 640 -h 35 -p 'DoneWithIt: ' )
+
+case "$CHOICE" in
+	'frontend')
+		alacritty -e zsh -c "cd ~/Projects/Done-with-it/done-with-it-frontend && code . && npm start"
+	;;
+
+	'server')
+	  alacritty -e zsh -c "sudo systemctl start mysql && cd ~/Projects/Done-with-it/done-with-it-backend && php artisan serve --host=192.168.1.111 --port=8000"
+  ;;
+  
+  'backend')
+	  code ~/Projects/Done-with-it/done-with-it-backend 
+  ;;
+
+	*)
+		exit 1
+  ;;
+
+esac

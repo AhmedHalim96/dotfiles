@@ -1,0 +1,3 @@
+#!/bin/sh
+
+~/.cargo/bin/xcolor | head -c -1 | xclip -i -selection clipboard

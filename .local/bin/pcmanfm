@@ -1,0 +1,12 @@
+#!/bin/zsh
+source ~/.zshrc
+if [ "$1" != "" ]; then
+  if [ -d "$1" ]; then
+    setsid -f /usr/bin/pcmanfm "$1" 2>/dev/null &
+  else
+    setsid -f /usr/bin/pcmanfm "$(autojump $1)" 2>/dev/null &
+  fi
+else 
+  setsid -f /usr/bin/pcmanfm 2>/dev/null &
+fi
+

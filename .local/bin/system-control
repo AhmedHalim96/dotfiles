@@ -1,0 +1,35 @@
+#!/bin/bash
+declare -a options=("Shutdown
+Reboot
+Suspend
+Lock
+Sign out")
+
+choice=$(echo -e "${options[@]}" | dmenu -l 6 -bw 2 -fn 14 -f -i -y 280 -x 640 -z 640 -h 35 -p 'System Control: ' )
+
+case "$choice" in
+	'Shutdown')
+		systemctl poweroff
+	;;
+
+	'Reboot')
+		systemctl reboot
+	;;
+
+	'Suspend')
+		cinnamon-screensaver-command  -l && systemctl suspend
+	;;
+
+	'Lock')
+		cinnamon-screensaver-command  -l
+	;;
+
+	'Sign out')
+		echo 'awesome.quit()' | awesome-client
+	;;
+
+	*)
+		exit 1
+	;;
+
+esac

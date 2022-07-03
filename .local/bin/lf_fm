@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+source ~/.zshrc 
+
+LF_CMD(){
+  alacritty --class lf,Lf --command lfrun $1 
+}
+
+if [ "$1" != "" ]; then
+  if [ -d "$1" ]; then
+    LF_CMD "$1" 
+  else
+    LF_CMD "$(autojump $1)" 
+  fi
+else 
+  LF_CMD
+fi
