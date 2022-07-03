@@ -1,0 +1,9 @@
+[submodule ".config/awesome"]
+	path = .config/awesome
+	url = https://github.com/AhmedHalim96/my-awesome-config
+[submodule ".config/zsh/zsh_plugins/fzf-tab"]
+	path = .config/zsh/zsh_plugins/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab.git
+[submodule ".config/zsh/zsh_plugins/zsh-vi-mode"]
+	path = .config/zsh/zsh_plugins/zsh-vi-mode
+	url = https://github.com/jeffreytse/zsh-vi-mode.git

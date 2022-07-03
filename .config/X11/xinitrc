@@ -1,0 +1,6 @@
+#!/bin/sh
+
+xrandr -s 1920x1080
+xrdb -load ~/.config/X11/Xresources
+exec awesome
+

@@ -1,0 +1,24 @@
+#compdef dmenu_run
+
+# zsh completions for 'dmenu_run'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+  '-b[dmenu appears at the bottom of the screen.]'
+  '-f[dmenu grabs the keyboard before reading stdin.  This is faster, but will lock up X un‐]'
+  '-i[dmenu matches menu items case insensitively.]'
+  '-l[dmenu lists items vertically, with the given number of lines.]'
+  '-m[dmenu is displayed on the monitor number supplied. Monitor numbers are  starting  from]'
+  '-p[defines the prompt to be displayed to the left of the input field.]'
+  '-fn[defines the font or font set used.]'
+  '-nb[defines the normal background color.  #RGB, #RRGGBB, and X color names are supported.]'
+  '-nf[defines the normal foreground color.]'
+  '-sb[defines the selected background color.]'
+  '-sf[defines the selected foreground color.]'
+  '-v[prints version information to stdout, then exits.]'
+  '-w[embed into windowid.]'
+  '*:filename:_files'
+)
+
+_arguments -s $arguments

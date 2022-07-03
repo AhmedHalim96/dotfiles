@@ -1,0 +1,2 @@
+--restrict-filenames
+--output '%(title).200s_%(id)s.%(ext)s'

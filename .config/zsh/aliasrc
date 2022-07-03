@@ -1,0 +1,217 @@
+#!/bin/zsh
+
+############################################################################
+### Aliases
+############################################################################
+
+# navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../..'
+alias .5='cd ../../../..'
+alias .6='cd ../../../../..'
+
+
+# Changing "ls" to "exa"
+#alias exa="/home/ahmed/.cargo/bin/exa"
+alias l='exa --icons --color=always --group-directories-first' # my preferred listing
+alias ls='exa --icons -l --color=always --group-directories-first' # my preferred listing
+alias la='exa --icons -a --color=always --group-directories-first'  # all files and dirs
+alias ll='exa --icons -al --color=always --group-directories-first'  # long format
+alias lt='exa --icons -aT --color=always --group-directories-first' # tree listing
+alias l.='exa -a | rg "^\."'
+
+
+# adding flags
+alias cp="cp -iv"                         # confirm before overwriting something and verbose
+alias mv="mv -iv"                         # confirm before overwriting something and verbose
+alias rm="rm -iv"                         # rm verbose
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+alias tree='tree -C'                      # Colorization always on
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias dolphin='dolphin -stylesheet /home/ahmed/.config/dolphin/style.qss'
+alias f="fdfind"
+alias fa="fdfind -uu"
+alias rg="rg -i"
+alias mkdir="mkdir -pv"                   # create parent directories
+
+# youtube-dl
+alias ytdl="noglob /usr/local/bin/youtube-dl -f best+best"
+alias ytdl-d="ytdl --output '/home/ahmed/Downloads/%(uploader)s%(title).200s_%(id)s.%(ext)s'"
+alias ytdl-aria="ytdl-d  --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M' --external-downloader aria2c"
+alias ytdl-p="ytdl --output '/media/ahmed/dios_mio/p/Downloads/%(title).200s_%(id)s.%(ext)s'"
+alias ytdl-mp3="ytdl-d --extract-audio --audio-format mp3"
+#alias yta-aac="youtube-dl --extract-audio --audio-format aac "
+#alias yta-best="youtube-dl --extract-audio --audio-format best "
+#alias yta-flac="youtube-dl --extract-audio --audio-format flac "
+#alias yta-m4a="youtube-dl --extract-audio --audio-format m4a "
+#alias yta-mp3="youtube-dl --extract-audio --audio-format mp3 "
+#alias yta-opus="youtube-dl --extract-audio --audio-format opus "
+#alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
+#alias yta-wav="youtube-dl --extract-audio --audio-format wav "
+#alias ytv-best="youtube-dl -f bestvideo+bestaudio "
+
+# gallery-dl
+alias gdl="noglob gallery-dl --config /home/ahmed/.config/gallery-dl/gallery-dl.conf --verbose -o downloader.http.headers.User-Agent=Wget/1.21.1"
+
+# mpv
+alias mpv="noglob mpv"
+alias mpv-360="mpv --ytdl-format='bestvideo[height<=?360]+bestaudio/best[height<=?360]'"
+alias mpv-480="mpv --ytdl-format='bestvideo[height<=?360]+bestaudio/best[height<=?480]'"
+alias mpv-720="mpv --ytdl-format='bestvideo[height<=?720]+bestaudio/best[height<=?720]'"
+alias mpv-a="mpv-360 --no-video" 
+
+# git aliases
+alias status="git status"
+alias add="git add"
+alias add.="git add ."
+alias commit="git commit -m"
+alias log="git log"
+alias pull="git pull"
+alias push="git push origin"
+alias clone="git clone"
+alias ginit="git init"
+alias checkout="git checkout"
+alias checkout-b="checkout -b"
+alias branch="git branch"
+alias branch-d="branch -d"
+alias stash="git stash"
+alias merge="git merge"
+alias countCommits="git log | grep "commit" | wc -l"
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# buku
+alias b="noglob buku"
+alias ba="b -a"
+alias bp="b -p"
+
+#Networking
+alias myip="curl ipinfo.io/ip"
+alias ports="netstat -tulanp"
+
+#replacing tools
+alias cat="bat"
+alias du="dust"
+alias ping="prettyping --nolegend"
+
+# Misc 
+alias c='clear'
+alias .files="GIT_DIR=~/dotfiles/ GIT_WORK_TREE=~ tig status"
+alias icat="kitty +kitten icat"
+alias kmn="viu ~/.local/share/dead.png"
+alias pa="php artisan"
+alias pa-serv="pa serve --host=192.168.1.111 --port=8000"
+alias rn="npx react-native"
+alias rna="npx react-native run-android"
+alias srt="python3 '/home/ahmed/.local/share/nemo/scripts/OpenSubtitlesDownload.py'"
+alias gget="python3 ~/git_repos/gallery_get/gallery_get.py" 
+alias rip="java -jar /mnt/Data/.NotPorn/ripme-1.7.93-jar-with-dependencies.jar -u"
+alias d="devour"
+alias ka="killall"
+alias jn="jupyter-notebook --notebook-dir ~/Projects/Jupyter"
+alias v="vim"
+alias b64="noglob base64 <<<"
+alias b64-d="noglob base64 -d <<<"
+alias h="history 0 | bat" 
+#alias motto="echo '\"\033[0;31mLaugh, \033[1;33mand the world laughs with you; \033[0;31mWeep, \033[1;33mand you weep alone.\033[1;37m\"'"
+alias wmclass="xprop WM_CLASS"
+alias wmname="xprop WM_NAME"
+alias sherlock="python3 $HOME/git_repos/sherlock/sherlock/sherlock.py"
+alias proton="STEAM_COMPAT_DATA_PATH=~/.proton/ /home/ahmed/.steam/root/compatibilitytools.d/Proton-6.10-GE-1/proton run"
+alias thumbs="vcsi -t -g 3x5 -w 5760"
+alias vw="nvim -c ':VimwikiIndex'"
+alias vd="nvim -c ':VimwikiDiaryNote'"
+alias pg="pgrep"
+alias pk="pkill"
+
+
+
+# Sudo Aliases
+alias tuxcut-i="sudo systemctl start tuxcutd"
+alias tuxcut-s="sudo systemctl stop tuxcutd"
+alias tor-restart="sudo systemctl restart tor"
+alias tor-stop="sudo systemctl stop tor"
+alias xammp+='sudo systemctl stop apache2 && sudo systemctl stop mysql && sudo /opt/lampp/manager-linux-x64.run'
+alias xammp='sudo /opt/lampp/manager-linux-x64.run'
+alias vhosts='vim /opt/lampp/etc/extra/httpd-vhosts.conf'
+alias sc="sudo systemctl"
+alias sci='sudo systemctl start'
+alias scr='sudo systemctl restart'
+alias scs='sudo systemctl stop'
+alias scst='systemctl status'
+alias lf-sudo="sudo ~/.local/bin/lf"
+alias system-update="apt update && apt upgrade -y && apt autoremove -y"
+
+# Global Functions
+alias -g https://nitter.actionsack='"https://twitter"'
+
+############################################################################
+### Functions
+############################################################################
+
+###
+open () {
+  setsid mimeopen $1 2> /dev/null
+}
+
+#nemo() {
+  #setsid nemo $1 > /dev/null 2> /dev/null &
+#}
+### ARCHIVE EXTRACTION
+# usage: ex <file>
+ex ()
+{
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1   ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *.deb)       ar x $1      ;;
+      *.tar.xz)    tar xf $1    ;;
+      *.tar.zst)   unzstd $1    ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+#phpstorm
+phpstorm(){
+  setsid  -f phpstorm $1 2>/dev/null &
+}
+
+idea(){
+  setsid  -f ~/.local/bin/idea $1 2>/dev/null &
+}
+
+make-script () {
+  echo "#!/bin/sh" > $1
+  chmod +x $1
+}
+
+tiktok-scraper (){
+  ~/.local/bin/tiktok-scraper user $1 -d  
+}
+
+mpd-play (){
+  mpc clear && mpc search filename "$1" | mpc add && mpc play
+}
+
+ytdl-c(){
+  URL="$(sselp)"
+  ytdl $URL
+}
+

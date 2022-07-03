@@ -1,0 +1,224 @@
+# vim: filetype=conf
+
+set shell bash 
+set cleaner ~/.config/lf/cleaner
+set shellopts '-eu'
+set ifs "\n"
+set preview true
+set previewer ~/.config/lf/preview
+set icons 
+set mouse true
+set ratios '1:2:2'
+set info 
+set scrolloff 10 # leave some space at the top and the bottom of the screen
+set info size
+set dircounts true
+set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+set scrolloff 10
+
+
+# define a custom 'open' command
+cmd open ${{
+    set -f
+    case $(file --mime-type $f -b) in
+        text/*|application/json|inode/x-empty) $EDITOR $fx;;
+        audio/*|video/*) setsid -f smplayer $fx > /dev/null 2> /dev/null &;;
+        *) for f in $fx; do setsid mimeopen "$f" > /dev/null 2> /dev/null & done;;
+    esac
+}}
+
+cmd rifle ${{
+    clear
+    set -f
+    rifle -l $f
+    read -p "Select runner: " runner
+    rifle -p $runner $f
+}}
+
+cmd on-cd &{{
+    autojump --add "$PWD"
+}}
+
+
+cmd bulk_rename ${{
+  /bin/sh -c "vimv $(echo -e "$fx" | xargs -i echo "\\'{}\\'" | xargs echo)"
+}}
+
+# define a custom 'rename' command without prompt for overwrite
+# cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
+# map r pkush :rename<space>
+
+# make sure trash folder exists
+# %mkdir -p ~/.trash
+
+# move current file or selected files to trash folder
+# (also see 'man mv' for backup/overwrite options)
+cmd trash %set -f; mv $fx ~/.trash
+
+# define a custom 'delete' command
+# cmd delete ${{
+#    set -f
+#    printf "$fx\n"
+#    printf "delete?[y/n]"
+#    read ans
+#    [ $ans = "y" ] && rm -rf $fx
+# }}
+
+# use '<delete>' key for either 'trash' or 'delete' command
+# map <delete> trash
+# map <delete> delete
+
+# extract the current file with the right command
+# (xkcd link: https://xkcd.com/1168/)
+cmd extract ${{
+    set -f
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
+        *.tar.gz|*.tgz) tar xzvf $f;;
+        *.tar.xz|*.txz) tar xJvf $f;;
+        *.zip) unzip $f;;
+        *.rar) unrar x $f;;
+        *.7z) 7z x $f;;
+    esac
+}}
+
+# compress current file or selected files with tar and gunzip
+cmd tar ${{
+    set -f
+    mkdir $1
+    cp -r $fx $1
+    tar czf $1.tar.gz $1
+    rm -rf $1
+}}
+
+# compress current file or selected files with zip
+cmd zip ${{
+    set -f
+    mkdir $1
+    cp -r $fx $1
+    zip -r $1.zip $1
+    rm -rf $1
+}}
+
+cmd aj %lf -remote "send $id cd '$(autojump $1)'"
+
+cmd fzf_jump ${{
+    res="$(fzf  | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ]; then
+        cmd="cd"
+    else 
+        cmd="select"                                                       
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd paste $cp-p --lf-paste $id
+
+
+cmd mkdir ${{
+  clear
+  printf "Directory Name: "
+  read ans
+  mkdir $ans
+}}
+
+cmd touch ${{
+  clear
+  printf "File Name: "
+  read ans
+  touch $ans
+}}
+
+cmd yank_path ${{
+  set -f
+  realpath $f | head -c -1 | xclip -in -selection clipboard  
+}}
+
+cmd yank_name ${{
+  set -f
+  basename $f | head -c -1 | xclip -in -selection clipboard  
+}}
+
+cmd yank_name_without_extension ${{
+  set -f
+  echo "$(basename "$f" | sed 's/\(.*\)\..*/\1/')" | head -c -1 | xclip -in -selection clipboard  
+}}
+
+cmd clear_all :unselect;clear  
+cmd select_all :unselect;invert
+
+# unmap some default
+map m 
+map y
+map d
+map p
+map w
+map c
+
+# mouse
+map <m-1> 
+map <m-2>
+map <m-3>
+map <m-up> up
+map <m-down> down
+
+
+# Bindings
+#
+# Enter a shell
+map S $zsh 
+
+# execute current file (must be executable)
+map x $$f
+map X !$f
+
+# dedicated keys for file opener actions
+map o rifle
+
+map <backspace2> set hidden!
+map <enter> open
+map <a-j> push :aj<space>
+map <a-f> :fzf_jump
+map <delete> delete
+map pp paste
+map md mkdir
+map mf touch
+map dd cut
+map dD delete
+map yy copy
+map yp yank_path
+map yn yank_name
+map y. yank_name_without_extension
+map E extract
+map +x $chmod +x $f && lf -remote "send $id reload"
+map -x $chmod -x $f && lf -remote "send $id reload"
+map T $setsid -f alacritty --working-directory=$PWD &
+map c clear_all
+map ta select_all
+map B $xwallpaper --zoom $f
+map R bulk_rename
+map O $mimeopen --ask $f
+map <gt> jump-next
+map <lt> jump-prev
+
+
+
+# Dragon 
+map Da $dragon -a -x $fx
+map Ds $dragon -a $fx
+map Di $dragon $fx
+map Dd $mvdragon
+map Dy $cpdragon
+map Dl $dlfile
+
+#Dirs
+map gtD cd /mnt/Data
+map gta cd /mnt/Data/Audio
+map gtm cd /mnt/Data/Movies
+map gttv cd /mnt/Data/TV
+map gtc. cd ~/.config
+map gtca cd ~/.config/alacritty
+map gtcr cd ~/.config/ranger
+map gtck cd ~/.config/kitty
+map gtbn cd ~/.local/bin
+map gttr cd ~/Downloads/torrents 

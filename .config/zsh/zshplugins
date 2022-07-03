@@ -1,0 +1,13 @@
+#!/bin/zsh
+source /etc/zsh_command_not_found  2>/dev/null
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/autojump.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/zsh-autosuggestions-0.7.0/zsh-autosuggestions.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/artisan.plugin.zsh  2>/dev/null
+source ~/.config/zsh/zsh_plugins/lf-autojump.plugin.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/ranger-autojump.plugin.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/you-should-use.plugin.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/artisan.plugin.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/fzf-tab/fzf-tab.plugin.zsh 2>/dev/null
+source ~/.config/zsh/zsh_plugins/taskwarrior.plugin.zsh 2>/dev/null
+#source ~/.config/zsh/zsh_plugins/zsh-completion-generator/zsh-completion-generator.plugin.zsh 2>/dev/null

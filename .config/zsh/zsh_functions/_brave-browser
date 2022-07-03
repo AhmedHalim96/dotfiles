@@ -1,0 +1,15 @@
+#compdef brave-browser
+
+_arguments \
+         '*:file:_files' \
+		'--user-data-dir[Specifies the directory that user data (your "profile") is kept in.]' \
+		'--app[Runs URL in "app mode": with no browser toolbars.]' \
+		'--incognito[Open in incognito mode.]' \
+		'--new-window[If PATH or URL is given, open it in a new window.]' \
+		'--proxy-server[Specify the HTTP/SOCKS4/SOCKS5 proxy server to use for requests.]' \
+		'--no-proxy-server[Disables the proxy server.]' \
+		'--proxy-auto-detect[Autodetect proxy configuration.]' \
+		'--proxy-pac-url[Specify proxy autoconfiguration URL.]' \
+		'--password-store[Set the password store to use.]' \
+		'--version[Show version information.]' \
+		'--display[See the GTK documentation for more: <http://library. gnome.]'
