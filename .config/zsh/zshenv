@@ -3,10 +3,11 @@
 
 # Android
 export ANDROID_HOME=/mnt/Data/Programs/Android/Sdk
-
+export DENO_INSTALL="/home/ahmed/.deno"
 # Path
 path=(
   "$ANDROID_HOME/emulator"
+  "$DENO_INSTALL/bin" 
   "$ANDROID_HOME/tools"
   "$ANDROID_HOME/tools/bin"
   "$ANDROID_HOME/platform-tools"
