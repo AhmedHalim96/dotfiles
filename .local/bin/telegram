@@ -1,0 +1,3 @@
+#!/bin/sh
+
+~/Programs/Telegram_linux/Telegram -workdir /home/ahmed/.local/share/TelegramDesktop/ -- %u
