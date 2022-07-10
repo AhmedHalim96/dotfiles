@@ -1,0 +1,1 @@
+/home/ahmed/.config/zsh/.zshrc
