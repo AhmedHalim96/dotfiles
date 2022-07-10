@@ -1,0 +1,17 @@
+[user]
+	name = Ahmed Halim
+	email = ahmedhalim96@protonmail.com
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+	bc = trustExitCode
+[merge]
+	tool = bc
+[mergetool]
+	bc = trustExitCode
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[alias]
+	d = difftool
