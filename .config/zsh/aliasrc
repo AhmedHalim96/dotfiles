@@ -40,7 +40,7 @@ alias rg="rg -i"
 alias mkdir="mkdir -pv"                   # create parent directories
 
 # youtube-dl
-alias ytdl="noglob /usr/local/bin/youtube-dl"
+alias ytdl="noglob /usr/local/bin/yt-dlp"
 alias ytdl-d="ytdl --output '/home/ahmed/Downloads/%(uploader)s%(title).200s_%(id)s.%(ext)s'"
 alias ytdl-aria="ytdl-d  --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M' --external-downloader aria2c"
 alias ytdl-p="ytdl --output '/media/ahmed/dios_mio/p/Downloads/%(title).200s_%(id)s.%(ext)s'"
