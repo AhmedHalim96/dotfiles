@@ -40,3 +40,6 @@ disabled = true
 
 [lua]
 disabled = true
+
+[c]
+disabled = true
