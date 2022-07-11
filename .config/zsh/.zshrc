@@ -95,7 +95,3 @@ eval "$(starship init zsh)"
 #prompt spaceship
 
 fpath=($fpath "/home/ahmed/.zfunctions")
-
-# Set Spaceship ZSH as a prompt
-autoload -U promptinit; promptinit
-prompt spaceship
