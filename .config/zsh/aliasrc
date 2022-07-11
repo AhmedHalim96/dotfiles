@@ -82,7 +82,7 @@ alias branch-d="branch -d"
 alias stash="git stash"
 alias merge="git merge"
 alias countCommits="git log | grep "commit" | wc -l"
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # buku
 alias b="noglob buku"
