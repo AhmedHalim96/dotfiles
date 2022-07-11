@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/usr/bin/numlockx on
+setxkbmap -layout 'us,ara' -option 'grp:alt_shift_toggle' #change keyboard layout
+setxkbmap -option terminate:ctrl_alt_bksp, #restart Xorg
+setxkbmap -option 'caps:swapescape' #switching caps with escape
+xset r rate 500  50 #Speeding up the keyboard
+
