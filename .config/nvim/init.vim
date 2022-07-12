@@ -50,7 +50,6 @@ call plug#begin()
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'aserebryakov/vim-todo-lists'
   Plug 'vimwiki/vimwiki'
-  Plug 'tools-life/taskwiki'
   Plug 'godlygeek/tabular'
   Plug 'plasticboy/vim-markdown'
   Plug 'preservim/vim-lexical'
