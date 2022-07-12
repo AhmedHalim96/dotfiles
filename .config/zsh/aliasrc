@@ -144,7 +144,9 @@ alias scr='sudo systemctl restart'
 alias scs='sudo systemctl stop'
 alias scst='systemctl status'
 alias lf-sudo="sudo ~/.local/bin/lf"
+alias apt="sudo apt"
 alias system-update="apt update && apt upgrade -y && apt autoremove -y"
+
 
 # Global Functions
 alias -g https://nitter.actionsack='"https://twitter"'
