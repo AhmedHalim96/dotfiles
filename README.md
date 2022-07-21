@@ -1,2 +1,2 @@
 # dotfiles
-This a repo for my system dot files
+This a repo for my system dotfiles
