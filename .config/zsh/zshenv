@@ -1,8 +1,16 @@
 #Enviroment Variables
 #!/bin/zsh
 
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_STATE_HOME=$HOME/.local/state
+export XDG_CACHE_HOME=$HOME/.cache
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
+export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+
+
 # Android
 export ANDROID_HOME=/mnt/Data/Programs/Android/Sdk
+export ANDROID_SDK_ROOT=/mnt/Data/Programs/Android/Sdk
 export DENO_INSTALL="/home/ahmed/.deno"
 # Path
 path=(
@@ -11,14 +19,14 @@ path=(
   "$ANDROID_HOME/tools"
   "$ANDROID_HOME/tools/bin"
   "$ANDROID_HOME/platform-tools"
-  "/usr/lib/dart/bin"
-  "/mnt/Data/Programs/FlutterSDK/bin"
   "$HOME/.pub-cache/bin"
   "$HOME/go/bin"
+  "$HOME/flutter/bin"
   "$HOME/.config/composer/vendor/bin"
-  "$HOME/.cargo/bin"
+  "$CARGO_HOME/bin"
   "$HOME/scripts/bin"
   "$HOME/.local/bin" 
+  "$HOME/.nix-profile/bin" 
   "$path[@]"
 )
   
@@ -32,7 +40,9 @@ export TERMINAL="alacritty"
 #export MANPAGER="nvim -c 'set ft=man' -"
 
 #misc
-export LC_ALL=en_US.UTF-8 dmenu_run
+#export LC_ALL="en_US.UTF-8"
+#export LANG="en_US.UTF-8"
+#export LOCALE_ARCHIVE="/nix/store/h1kxm30h8y5dr1xkfr4w38g7fg2xw1zq-glibc-locales-2.35-163/lib/locale/locale-archive"
 export NO_AT_BRIDGE=1
 export XDG_CONFIG_HOME="$HOME/.config"
 export GTK_SILENT=1

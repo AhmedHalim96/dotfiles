@@ -42,7 +42,7 @@ alias mkdir="mkdir -pv"                   # create parent directories
 # youtube-dl
 alias ytdl="noglob /usr/local/bin/yt-dlp"
 alias ytdl-d="ytdl --output '/home/ahmed/Downloads/%(uploader)s%(title).200s_%(id)s.%(ext)s'"
-alias ytdl-aria="ytdl-d  --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M' --external-downloader aria2c"
+alias ytdl-aria="ytdl --external-downloader aria2c --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M'"
 alias ytdl-p="ytdl --output '/media/ahmed/dios_mio/p/Downloads/%(title).200s_%(id)s.%(ext)s'"
 alias ytdl-mp3="ytdl-d --extract-audio --audio-format mp3"
 #alias yta-aac="youtube-dl --extract-audio --audio-format aac "
@@ -113,7 +113,7 @@ alias rip="java -jar /mnt/Data/.NotPorn/ripme-1.7.93-jar-with-dependencies.jar -
 alias d="devour"
 alias ka="killall"
 alias jn="jupyter-notebook --notebook-dir ~/Projects/Jupyter"
-alias v="vim"
+alias v="nvim"
 alias b64="noglob base64 <<<"
 alias b64-d="noglob base64 -d <<<"
 alias h="history 0 | bat" 
@@ -144,8 +144,10 @@ alias scr='sudo systemctl restart'
 alias scs='sudo systemctl stop'
 alias scst='systemctl status'
 alias lf-sudo="sudo ~/.local/bin/lf"
+alias nala="sudo nala"
 alias apt="sudo apt"
-alias system-update="apt update && apt upgrade -y && apt autoremove -y"
+alias system-update="nala upgrade -y &&  nala autoremove -y"
+
 
 
 # Global Functions
@@ -204,8 +206,8 @@ make-script () {
   chmod +x $1
 }
 
-tiktok-scraper (){
-  ~/.local/bin/tiktok-scraper user $1 -d  
+tiktokdl (){
+  ~/.local/bin/tiktok-scraper user $1 -d --session sid_tt=$2
 }
 
 mpd-play (){
@@ -217,3 +219,8 @@ ytdl-c(){
   ytdl $URL
 }
 
+
+browser-test(){
+  cd ~/code/playwright
+  URL=$2 npm run test:$1
+}

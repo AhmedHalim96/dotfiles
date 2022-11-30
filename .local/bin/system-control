@@ -17,11 +17,11 @@ case "$choice" in
 	;;
 
 	'Suspend')
-		cinnamon-screensaver-command  -l && systemctl suspend
+		dm-tool lock && systemctl suspend
 	;;
 
 	'Lock')
-		cinnamon-screensaver-command  -l
+		dm-tool lock
 	;;
 
 	'Sign out')

@@ -1,9 +1,9 @@
 [
     {
-        "iconPath": "/home/ahmed/.config/albert/org.albert.extension.websearch/{7d16ec56-1576-44e3-b6bc-92b0dae6bb77}.",
+        "iconPath": "/home/ahmed/.config/albert/org.albert.extension.websearch/{619fb00a-f7e2-4042-b859-1f2f9ad8bfd3}.",
         "name": "StartPage",
         "trigger": "ss ",
-        "url": "https://www.startpage.com/row/search?q=%s"
+        "url": "https://www.startpage.com/do/search?q=%s&segment=startpage.brave"
     },
     {
         "iconPath": ":google",

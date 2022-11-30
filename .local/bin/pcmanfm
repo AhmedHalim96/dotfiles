@@ -1,5 +1,5 @@
 #!/bin/zsh
-source ~/.zshrc
+source ~/.config/zsh/.zshrc
 if [ "$1" != "" ]; then
   if [ -d "$1" ]; then
     setsid -f /usr/bin/pcmanfm "$1" 2>/dev/null &

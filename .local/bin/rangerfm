@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-source ~/.zshrc 
+source ~/.config/zsh/.zshrc 
 
 RANGER_CMD(){
   alacritty --class ranger,Ranger --command ranger $1 

@@ -22,7 +22,6 @@ cmd open ${{
     set -f
     case $(file --mime-type $f -b) in
         audio/*|video/*) setsid -f smplayer $fx > /dev/null 2> /dev/null &;;
-        image/*) nsxiv $fx;;
         text/*|application/json|inode/x-empty) $EDITOR $fx;;
         *) for f in $fx; do setsid mimeopen "$f" > /dev/null 2> /dev/null & done;;
     esac
