@@ -96,11 +96,31 @@ keys = [
         desc="Spawn a command using a prompt widget"),
 
     Key([mod], "b",
-        lazy.spawn("firefox"),
+        lazy.spawn("brave-browser"),
         desc="Open Default Browser"),
-    
+
+    Key([mod], "c",
+        lazy.spawn("copyq toggle"),
+        desc="Open copyq prompt"),
+
+    Key([mod], "tab",
+        lazy.spawn("rofi -show"),
+        desc="rofi window"),
+
+    Key([mod], "s",
+        lazy.spawn("smplayer"),
+        desc="Open smplayer"),
+
+    Key([mod], "e",
+        lazy.spawn("nautilus"),
+        desc="Open nautilus"),
+
+    Key([mod, 'shift'], "e",
+        lazy.spawn("lf_fm"),
+        desc="Open lf"),
+
     Key([mod], "comma",
-        lazy.spawn("code " + qtile_path),
+        lazy.spawn("codium " + qtile_path),
         desc="Open qtile config"),
 
     Key([mod, "shift"], "comma",
@@ -130,7 +150,7 @@ keys = [
 
 ]
 
-groups = [Group(i) for i in "123456"]
+groups = [Group(i) for i in "123456789"]
 
 for i in groups:
     keys.extend([

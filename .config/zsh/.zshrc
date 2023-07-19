@@ -22,7 +22,7 @@ setopt HIST_BEEP
 
 #zsh completion from man page
 #source $HOME/.zsh/zsh-completion-generator/zsh-completion-generator.plugin.zsh
-compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
+#compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
 
 # Basic auto/tab complete:
 zstyle ':completion:*' menu select
@@ -75,6 +75,7 @@ source ~/.config/zsh/zshenv
 source ~/.config/zsh/aliasrc
 source ~/.config/zsh/zshvi
 source ~/.config/zsh/zshplugins
+source "/home/ahmed/.local/share/cargo/env"
 
 # zoxide
 #eval "$(zoxide init zsh)"
@@ -103,3 +104,7 @@ eval "$(starship init zsh)"
 #prompt spaceship
 
 fpath=($fpath "/home/ahmed/.zfunctions")
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

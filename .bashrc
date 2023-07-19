@@ -171,3 +171,4 @@ ex ()
     echo "'$1' is not a valid file"
   fi
 }
+. "/home/ahmed/.local/share/cargo/env"

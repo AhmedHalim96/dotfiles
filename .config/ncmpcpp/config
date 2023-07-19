@@ -28,6 +28,11 @@ external_editor = nvim
 use_console_editor = yes
 #empty_tag_color = magenta
 
+## Alternative Interface ##
+user_interface = "alternative"
+#alternative_header_first_line_format = "$0$aqqu$/a {$6%a$9 - }{$3%t$9}|{$3%f$9} $0$atqq$/a$9"
+#alternative_header_second_line_format = "{{$4%b$9}{ [$8%y$9]}}|{$4%D$9}"
+
 #colors
 main_window_color = 51 
 progressbar_color = 60

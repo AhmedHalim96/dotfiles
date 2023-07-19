@@ -12,7 +12,6 @@ alias .4='cd ../../..'
 alias .5='cd ../../../..'
 alias .6='cd ../../../../..'
 
-
 # Changing "ls" to "exa"
 #alias exa="/home/ahmed/.cargo/bin/exa"
 alias l='exa --icons --color=always --group-directories-first' # my preferred listing
@@ -21,7 +20,6 @@ alias la='exa --icons -a --color=always --group-directories-first'  # all files 
 alias ll='exa --icons -al --color=always --group-directories-first'  # long format
 alias lt='exa --icons -aT --color=always --group-directories-first' # tree listing
 alias l.='exa -a | rg "^\."'
-
 
 # adding flags
 alias cp="cp -iv"                         # confirm before overwriting something and verbose
@@ -45,18 +43,10 @@ alias ytdl-d="ytdl --output '/home/ahmed/Downloads/%(uploader)s%(title).200s_%(i
 alias ytdl-aria="ytdl --external-downloader aria2c --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M'"
 alias ytdl-p="ytdl --output '/media/ahmed/dios_mio/p/Downloads/%(title).200s_%(id)s.%(ext)s'"
 alias ytdl-mp3="ytdl-d --extract-audio --audio-format mp3"
-#alias yta-aac="youtube-dl --extract-audio --audio-format aac "
-#alias yta-best="youtube-dl --extract-audio --audio-format best "
-#alias yta-flac="youtube-dl --extract-audio --audio-format flac "
-#alias yta-m4a="youtube-dl --extract-audio --audio-format m4a "
-#alias yta-mp3="youtube-dl --extract-audio --audio-format mp3 "
-#alias yta-opus="youtube-dl --extract-audio --audio-format opus "
-#alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
-#alias yta-wav="youtube-dl --extract-audio --audio-format wav "
-#alias ytv-best="youtube-dl -f bestvideo+bestaudio "
 
 # gallery-dl
-alias gdl="noglob gallery-dl --config /home/ahmed/.config/gallery-dl/gallery-dl.conf --verbose -o downloader.http.headers.User-Agent=Wget/1.21.1"
+alias gdl="noglob gallery-dl --config /home/ahmed/.config/gallery-dl/gallery-dl.conf --verbose"
+alias gdlw="noglob gallery-dl --config /home/ahmed/.config/gallery-dl/gallery-dl.conf --verbose -o downloader.http.headers.User-Agent=Wget/1.21.1"
 
 # mpv
 alias mpv="noglob mpv"
@@ -98,6 +88,12 @@ alias cat="bat"
 alias du="dust"
 alias ping="prettyping --nolegend"
 
+# npm
+alias npmd="npm run dev"
+alias npmb="npm run build"
+alias npmbs="npm run build && npm run start"
+alias npms="npm run start"
+
 # Misc 
 alias c='clear'
 alias .files="GIT_DIR=~/dotfiles/ GIT_WORK_TREE=~ tig status"
@@ -124,11 +120,11 @@ alias sherlock="python3 $HOME/git_repos/sherlock/sherlock/sherlock.py"
 alias proton="STEAM_COMPAT_DATA_PATH=~/.proton/ /home/ahmed/.steam/root/compatibilitytools.d/Proton-6.10-GE-1/proton run"
 alias thumbs="vcsi -t -g 3x5 -w 5760"
 alias vw="nvim -c ':VimwikiIndex'"
-alias vd="nvim -c ':VimwikiDiaryNote'"
+alias vd="nvim -c ':VimwikiMakeDiaryNote'"
+alias vdi="nvim -c ':Diary'"
 alias pg="pgrep"
 alias pk="pkill"
-
-
+alias scu="systemctl --user"
 
 # Sudo Aliases
 alias tuxcut-i="sudo systemctl start tuxcutd"
@@ -224,3 +220,20 @@ browser-test(){
   cd ~/code/playwright
   URL=$2 npm run test:$1
 }
+
+removeAudio(){
+  filename="$1"
+  extension="${filename##*.}"
+  name_only="${filename%.*}"
+  echo $name._noAudio.$extension
+  #ffmpeg -i $filename -an -c copy "$name._noAudio.$extension" 
+}
+
+_ytdl-part (){
+
+ ytdl "$1" --downloader ffmpeg --downloader-args "ffmpeg_i:-ss $2 -to $3" 
+
+
+}
+
+alias ytdl-part='noglob _ytdl-part'

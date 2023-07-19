@@ -52,8 +52,8 @@ export FZF_DEFAULT_COMMAND='fdfind --type file --follow  --exclude .git,node_mod
 export FZF_DEFAULT_OPTS="--ansi"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export GENCOMPL_FPATH=$HOME/.zsh/completions
-export GTK_THEME=Sweet-Dark
-export GTK_ICON_THEME=Papirus-Dark
+export GTK_THEME=Pop-dark
+export GTK_ICON_THEME=Pop-dark
 #export all_proxy="socks5://127.0.0.1:9050" #Proxy
 #export _JAVA_AWT_WM_NONREPARENTING=1
 #export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'

@@ -1,6 +1,6 @@
 #! /bin/bash 
 picom-i&
-remap&
+kb-startup-script&
 numlockx on&
 xwallpaper --zoom  wall.jpg&
 # mintinstall-update-flatpak &
@@ -8,7 +8,7 @@ xwallpaper --zoom  wall.jpg&
 nm-applet --indicator&
 pnmixer&
 polkit&
-blueberry-tray&
+blueman-tray&
 xfce4-power-manager&
 albert&
 touchpad-indicator &

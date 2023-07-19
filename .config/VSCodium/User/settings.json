@@ -239,5 +239,6 @@
 	},
 	"workbench.colorTheme": "Pop Dark",
 	"workbench.iconTheme": "material-icon-theme",
-	"window.zoomLevel": 1
+	"window.zoomLevel": 1,
+	"typescript.updateImportsOnFileMove.enabled": "always"
 }

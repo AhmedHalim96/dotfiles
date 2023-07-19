@@ -112,7 +112,7 @@ cmd fzf_jump ${{
     lf -remote "send $id $cmd \"$res\""
 }}
 
-cmd paste $cp-p --lf-paste $id
+#cmd paste $cp-p --lf-paste $id
 
 
 cmd mkdir ${{
@@ -175,7 +175,7 @@ map X !$f
 # dedicated keys for file opener actions
 map o rifle
 
-map <backspace2> set hidden!
+map . set hidden!
 map <enter> open
 map <a-j> push :aj<space>
 map <a-f> :fzf_jump

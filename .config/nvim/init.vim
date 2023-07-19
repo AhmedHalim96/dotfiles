@@ -26,7 +26,8 @@ set ignorecase
 set smartcase
 set cursorline
 set linebreak
-highlight CursorLine guibg=#2e323d guifg=fg
+set textwidth=80 
+highlight CursorLine guibg=#383838 guifg=fg
 :au FocusLost * silent! wa
 set cursorline
 let mapleader = "\\"
@@ -56,6 +57,7 @@ call plug#begin()
   Plug 'ptzz/lf.vim'
   Plug 'voldikss/vim-floaterm'
   Plug 'tpope/vim-surround'
+  Plug 'mattn/calendar-vim'
 call plug#end()
 
 " Colorizer
@@ -137,3 +139,12 @@ nnoremap zs :w\|bd<cr>
 nnoremap zc :bd<cr>
 nnoremap zn :bn<cr>
 nnoremap zp :bp<cr>
+
+" commands
+"
+command! Diary VimwikiDiaryIndex
+augroup vimwikigroup
+    autocmd!
+    " automatically update links on read diary
+    autocmd BufRead,BufNewFile diary.wiki VimwikiDiaryGenerateLinks
+augroup end

@@ -1,9 +1,8 @@
 {
 	"settings": {
-		"autoLaunch": false,
+		"autoLaunch": true,
 		"breaksEnabled": true,
 		"notificationType": "POPUP",
-		"notificationClick": "DO_NOTHING",
 		"breakFrequency": "1899-12-30T22:19:51.000Z",
 		"breakLength": "1899-12-30T21:59:51.000Z",
 		"postponeLength": "1899-12-30T21:59:51.000Z",
@@ -24,11 +23,15 @@
 		"gongEnabled": true,
 		"breakTitle": "Time for a break!",
 		"breakMessage": "Rest your eyes. Stretch your legs. Breathe. Relax.",
-		"backgroundColor": "#c50ed2",
-		"textColor": "#f2f2f2",
+		"backgroundColor": "#fbb86c",
+		"backdropColor": "#001914",
+		"textColor": "#363636",
+		"showBackdrop": true,
+		"backdropOpacity": 0.7,
 		"endBreakEnabled": true,
 		"skipBreakEnabled": false,
-		"postponeBreakEnabled": true
+		"postponeBreakEnabled": false,
+		"notificationClick": "DO_NOTHING"
 	},
 	"appInitialized": true
 }
