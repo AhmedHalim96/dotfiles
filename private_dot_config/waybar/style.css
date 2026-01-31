@@ -1,0 +1,275 @@
+/* import default styles */
+@import url("/etc/xdg/waybar/style.css");
+
+/* Font configuration */
+* {
+  font-family:
+    "FiraCode Nerd Font", "Noto Sans Arabic", "Noto Sans Mono",
+    "Font Awesome 6 Free", "Font Awesome 6 Brands", monospace;
+  font-size: 13px;
+}
+
+window#waybar {
+  border-radius: 12px;
+  /*margin: 5px;*/
+  background-color: transparent;
+  color: #c3c7d1;
+  border: 0;
+}
+
+/* pill shape */
+.modules-center > * > *,
+.modules-left > * > *,
+.modules-right > * > * {
+  padding: 0 5px;
+  background-color: rgba(22, 25, 37, 1);
+  border-radius: 12px;
+  margin-left: 4px;
+}
+
+#workspaces {
+  border-bottom: 2px solid #c50ed2;
+}
+
+#workspaces button {
+  border-radius: 50%;
+  color: #c3c7d1;
+}
+
+#workspaces button:hover {
+  background-color: rgba(23, 26, 38, 1);
+  box-shadow: none;
+}
+
+#workspaces button.visible,
+#taskbar button.active {
+  color: #c50ed2;
+}
+
+#workspaces button:not(.empty) {
+  font-weight: 500;
+}
+
+#workspaces button.visible {
+  font-weight: 600;
+}
+
+#workspaces button:not(.visible).empty {
+  /* Your insensitive_fg_color (#6d707b) for empty/dimmed icons */
+  color: #6d707b;
+}
+
+/* modules */
+
+.modules-center {
+  margin: 0 10px;
+}
+#cpu,
+#memory,
+#backlight,
+#network,
+#keyboard-state,
+#clock,
+#tray,
+#language,
+#window,
+#submap,
+#custom-vnstat,
+#custom-weather,
+#custom-power,
+#custom-notification,
+#battery,
+#pulseaudio {
+  background-color: rgba(22, 25, 37, 1);
+  border-bottom-width: 2px;
+  border-style: solid;
+  border-color: white;
+  color: white;
+  font-weight: 500;
+}
+
+#cpu:hover,
+#submap:hover,
+#keyboard-state:hover,
+#memory:hover,
+#battery:hover,
+#backlight:hover,
+#network:hover,
+#clock:hover,
+#tray:hover,
+#language:hover,
+#custom-weather:hover,
+#custom-vnstat:hover,
+#custom-power:hover,
+#custom-notification:hover,
+#pulseaudio:hover {
+  background-color: rgba(22, 25, 37, 1);
+}
+
+#language,
+#cpu {
+  color: rgba(0, 232, 197, 1);
+  border-color: rgba(0, 232, 197, 1);
+}
+
+#network {
+  color: rgba(254, 83, 187, 1);
+  border-color: rgba(254, 83, 187, 1);
+  font-weight: 500;
+}
+
+#backlight {
+  color: rgba(255, 130, 17, 1);
+  border-color: rgba(255, 130, 17, 1);
+}
+
+#memory {
+  color: rgba(255, 211, 0, 1);
+  border-color: rgba(255, 211, 0, 1);
+}
+
+#pulseaudio {
+  color: rgba(78, 240, 55, 1);
+  border-color: rgba(78, 240, 55, 1);
+}
+
+#pulseaudio.muted {
+  background-color: transparent;
+  border-color: rgba(245, 0, 87, 1);
+  color: rgba(245, 0, 87, 1);
+}
+
+#window {
+  color: #cccccc;
+  font-weight: 500;
+}
+
+window#waybar.empty #window {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+#clock {
+  border-color: #c348ce;
+}
+
+#keyboard-state {
+  padding: 5px 10px;
+}
+
+#keyboard-state label.locked {
+  color: #e6133e;
+}
+
+#custom-capslock,
+#submap {
+  background: #e6133e; /* Strawberry Red */
+  color: white;
+  padding: 0 15px;
+  margin: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(230, 19, 62, 0.6);
+  border-bottom: 2px solid #ffffff;
+}
+
+/* Hide the background/border when it's unlocked */
+#custom-capslock.unlocked {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+#custom-vnstat {
+  color: #49cce7;
+  border-color: #49cce7;
+  padding: 0 10px;
+}
+
+#custom-weather.freezing {
+  color: #b4befe;
+  border-color: #b4befe;
+}
+
+#custom-weather.cold {
+  color: #89dceb; /* Sky Blue */
+  border-color: #89dceb;
+}
+
+#custom-weather.warm {
+  color: #a6e3a1; /* Vibrant Green */
+  border-color: #a6e3a1;
+}
+
+#custom-weather.hot {
+  color: #ffb957;
+  border-color: #ffb957;
+}
+
+#custom-weather.critical {
+  color: #f38ba8; /* Vibrant Red */
+  font-weight: bold;
+  border-color: #f38ba8;
+}
+
+#custom-power,
+#custom-notification {
+  font-size: 14px;
+  color: #585b70;
+  padding: 0 10px 0 8px;
+  transition: all 0.3s ease-in-out;
+  border-color: #585b70;
+}
+
+#custom-power:hover {
+  color: #e6133e;
+  border-color: #e6133e;
+}
+
+#custom-notification {
+  font-size: 16px;
+  padding: 0 12px 0 8px;
+}
+
+#custom-notification:hover,
+#custom-notification.notification {
+  color: #c50ed2;
+  border-color: #c50ed2;
+}
+
+#power-profiles-daemon {
+  padding: 0 16px 0 8px;
+  border-radius: 12px 0 0 12px;
+}
+
+#battery {
+  padding: 0 16px 0 5px;
+  border-color: #89dceb;
+  color: #89dceb; /* Sky Blue */
+  border-radius: 0 12px 12px 0;
+  margin: 0;
+}
+
+#battery.charging {
+  color: #a6e3a1; /* Vibrant Green */
+  border-color: #a6e3a1;
+}
+
+#battery.warning {
+  color: #ffa000; /* Orange at 30% */
+  border-color: #ffa000;
+}
+
+#battery.critical:not(.charging) {
+  color: #f38ba8; /* Red at 15% */
+  border-color: #f38ba8;
+  animation-name: blink; /* Optional: Make it blink */
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}

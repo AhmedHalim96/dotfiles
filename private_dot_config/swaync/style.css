@@ -1,0 +1,17 @@
+:root {
+  --cc-bg: rgba(22, 25, 37, 0.9); /* Your @bg-main with transparency */
+  --noti-border-color: rgba(197, 14, 210, 0.4); /* Your @magenta dimmed */
+  --noti-bg: 24, 27, 40; /* RGB format of your midnight color */ --noti-bg-alpha: 0.9; --noti-bg-hover: rgb(29, 33, 48); --noti-bg-focus: rgba(197, 14, 210, 0.2);
+  --noti-close-bg: rgba(230, 19, 62, 0.2); /* Your Strawberry Red dimmed */
+  --noti-close-bg-hover: rgb(230, 19, 62); /* Full Red on hover */
+  --text-color: #c3c7d1; /* Your @text-main */
+  --bg-selected: #c50ed2; /* Your @magenta */
+  --border-radius: 12px;
+}
+
+/* Fallback for GTK legacy calls */
+@define-color cc-bg rgba(22, 25, 37, 0.9);
+@define-color noti-bg rgba(24, 27, 40, 0.9);
+@define-color noti-border-color rgba(197, 14, 210, 0.4);
+@define-color text-color #C3C7D1;
+@define-color bg-selected #c50ed2;

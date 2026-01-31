@@ -1,0 +1,144 @@
+@define-color bg-selected #c50ed2;
+@define-color bg-main #161925;
+@define-color text-main #C3C7D1;
+@define-color magenta #c50ed2;
+@define-color error #e6133e;
+
+* {
+    font-family: "FiraCode Nerd Font";
+    font-weight: bold;
+}
+
+/* --- The Main Drawer (Control Center) --- */
+.control-center {
+    background: @bg-main;
+    border: 2px solid @magenta;
+    border-radius: 12px;
+    color: @text-main;
+    padding: 0;
+}
+
+/* This fixes the "incorrect background" inside the drawer list */
+.control-center-list {
+    background: transparent;
+}
+
+/* Space out notifications in the drawer */
+.control-center-list-member {
+    background: transparent;
+    margin: 5px;
+}
+
+/* --- Notification Styling (Pop-ups & Drawer) --- */
+.notification {
+    background: #181b28 !important;
+    border: 1px solid rgba(197, 14, 210, 0.3) !important;
+    border-radius: 8px !important;
+    margin: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+/* --- Fixed Hover State --- */
+/* Target the action area to fix the "hover color not correct" issue */
+.notification-default-action:hover {
+    background: rgba(197, 14, 210, 0.1) !important;
+    border-radius: 8px;
+}
+
+.notification:hover {
+    background: #1d2130 !important;
+    border-color: @magenta !important;
+    box-shadow: 0 0 8px rgba(197, 14, 210, 0.4);
+}
+
+/* --- Notification Content --- */
+.notification-content {
+    padding: 10px;
+    background: transparent;
+}
+
+.notification-content .summary {
+    color: @magenta;
+    font-size: 1.1rem;
+}
+
+.notification-content .body {
+    color: @text-main;
+}
+
+/* --- Close Button --- */
+.notification-close-button {
+    background: @error;
+    color: white;
+    border-radius: 99px;
+    margin: 6px;
+    padding: 2px;
+}
+
+.notification-close-button:hover {
+    background: #ff2b52;
+}
+
+/* --- Header & Widgets --- */
+.widget-title {
+    margin: 15px;
+}
+
+.widget-title > label {
+    font-size: 1.6rem;
+    color: @magenta;
+}
+
+.widget-title > button {
+    background: #1d2130;
+    border: 1px solid @magenta;
+    color: @text-main;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.widget-title > button:hover {
+    background: @magenta;
+    color: white;
+}
+
+/* --- DND Switch --- */
+.widget-dnd {
+    margin: 10px 20px;
+    font-size: 1.1rem;
+}
+
+.widget-dnd > switch {
+    background: #1d2130;
+    border: 1px solid @magenta;
+    border-radius: 20px;
+}
+
+.widget-dnd > switch slider {
+    background: @text-main;
+    border-radius: 20px;
+}
+
+.widget-dnd > switch:checked {
+    background: @magenta;
+}
+
+/* --- MPRIS (Music Player) --- */
+.widget-mpris {
+    background: #1d2130;
+    border: 1px solid rgba(197, 14, 210, 0.2);
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.widget-mpris-player {
+    padding: 5px;
+    margin: 5px;
+}
+
+.widget-mpris-title {
+    color: @magenta;
+    font-size: 1.1rem;
+}
