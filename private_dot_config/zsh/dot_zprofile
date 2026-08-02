@@ -1,0 +1,4 @@
+# Source your custom env file
+if [[ -f "$ZDOTDIR/env.zsh" ]]; then
+    source "$ZDOTDIR/env.zsh"
+fi

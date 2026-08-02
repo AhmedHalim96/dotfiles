@@ -1,0 +1,90 @@
+#compdef ncdu
+
+# ncdu (NCurses Disk Usage) Zsh completion
+# Based on ncdu(1) man page dated August 16, 2025
+
+local curcontext="$curcontext" state line ret=1
+typeset -A opt_args
+
+local -a columns styles kernfs shared_cols
+columns=(disk-usage name apparent-size itemcount mtime)
+styles=(hash half-block eighth-block)
+kernfs=(binfmt bpf cgroup cgroup2 debug devpts proc pstore security selinux sys trace)
+shared_cols=(off shared unique)
+
+_arguments -C \
+  '(-h --help)'{-h,--help}'[Print help message and quit]' \
+  '(-v -V --version)'{-v,-V,--version}'[Print version and quit]' \
+  '-f[Load the given file (use "-" for stdin)]:file:_files' \
+  '-o[Export directory tree in JSON format to file (use "-" for stdout)]:file:_files' \
+  '-O[Export directory tree in binary format to file (use "-" for stdout)]:file:_files' \
+  '(-e --extended --no-extended)'{-e,--extended}'[Enable extended information mode]' \
+  '(-e --extended --no-extended)--no-extended[Disable extended information mode]' \
+  '--ignore-config[Do not attempt to load any configuration files]' \
+  '(-x --one-file-system --cross-file-system)'{-x,--one-file-system}'[Do not cross filesystem boundaries]' \
+  '(-x --one-file-system --cross-file-system)--cross-file-system[Do cross filesystem boundaries]' \
+  '*--exclude[Exclude files matching pattern]:pattern' \
+  '(-X --exclude-from)'{-X,--exclude-from}'[Exclude files matching patterns in file]:file:_files' \
+  '(--include-caches --exclude-caches)--include-caches[Include directories containing CACHEDIR.TAG]' \
+  '(--include-caches --exclude-caches)--exclude-caches[Exclude directories containing CACHEDIR.TAG]' \
+  '(-L --follow-symlinks --no-follow-symlinks)'{-L,--follow-symlinks}'[Follow symlinks]' \
+  '(-L --follow-symlinks --no-follow-symlinks)--no-follow-symlinks[Do not follow symlinks]' \
+  '(--include-kernfs --exclude-kernfs)--include-kernfs[Include Linux pseudo filesystems]' \
+  '(--include-kernfs --exclude-kernfs)--exclude-kernfs[Exclude Linux pseudo filesystems]' \
+  '(-t --threads)'{-t,--threads}'[Number of threads to use]:threads' \
+  '(-c --compress --no-compress)'{-c,--compress}'[Enable Zstandard compression for JSON export]' \
+  '(-c --compress --no-compress)--no-compress[Disable Zstandard compression for JSON export]' \
+  '--compress-level[Set Zstandard compression level (1-19)]:level (1-19):' \
+  '--export-block-size[Set block size for binary export (4-16000 KiB)]:size (KiB)' \
+  '-0[No scanning feedback]' \
+  '-1[Write progress information but no full-screen UI]' \
+  '-2[Full-screen ncurses interface while scanning]' \
+  '(-q --slow-ui-updates --fast-ui-updates)'{-q,--slow-ui-updates}'[Update UI every 2 seconds]' \
+  '(-q --slow-ui-updates --fast-ui-updates)--fast-ui-updates[Update UI 10 times per second]' \
+  '(--enable-shell --disable-shell)--enable-shell[Enable shell spawning]' \
+  '(--enable-shell --disable-shell)--disable-shell[Disable shell spawning]' \
+  '(--enable-delete --disable-delete)--enable-delete[Enable file deletion]' \
+  '(--enable-delete --disable-delete)--disable-delete[Disable file deletion]' \
+  '(--enable-refresh --disable-refresh)--enable-refresh[Enable directory refreshing]' \
+  '(--enable-refresh --disable-refresh)--disable-refresh[Disable directory refreshing]' \
+  '*-r[Read-only mode (repeat for more restrictions)]' \
+  '(--si --no-si)--si[Use base 10 prefixes (kB, MB)]' \
+  '(--si --no-si)--no-si[Use base 2 prefixes (KiB, MiB)]' \
+  '(--disk-usage --apparent-size)--disk-usage[Display disk usage]' \
+  '(--disk-usage --apparent-size)--apparent-size[Display apparent sizes]' \
+  '(--show-hidden --hide-hidden)--show-hidden[Show hidden and excluded files]' \
+  '(--show-hidden --hide-hidden)--hide-hidden[Hide hidden and excluded files]' \
+  '(--show-itemcount --hide-itemcount)--show-itemcount[Show item counts column]' \
+  '(--show-itemcount --hide-itemcount)--hide-itemcount[Hide item counts column]' \
+  '(--show-mtime --hide-mtime)--show-mtime[Show modification time column]' \
+  '(--show-mtime --hide-mtime)--hide-mtime[Hide modification time column]' \
+  '(--show-graph --hide-graph)--show-graph[Show relative size bar]' \
+  '(--show-graph --hide-graph)--hide-graph[Hide relative size bar]' \
+  '(--show-percent --hide-percent)--show-percent[Show relative size percent]' \
+  '(--show-percent --hide-percent)--hide-percent[Hide relative size percent]' \
+  '--graph-style[Set drawing style for relative size bar]:style:((${styles}))' \
+  '--shared-column[Set shared size column mode]:mode:((${shared_cols}))' \
+  '--sort[Change default sort column]:column:->sort_columns' \
+  '(--enable-natsort --disable-natsort)--enable-natsort[Enable natural sort for filenames]' \
+  '(--enable-natsort --disable-natsort)--disable-natsort[Disable natural sort for filenames]' \
+  '(--group-directories-first --no-group-directories-first)--group-directories-first[Sort directories before files]' \
+  '(--group-directories-first --no-group-directories-first)--no-group-directories-first[Do not sort directories before files]' \
+  '(--confirm-quit --no-confirm-quit)--confirm-quit[Confirm before quitting]' \
+  '(--confirm-quit --no-confirm-quit)--no-confirm-quit[No confirmation before quitting]' \
+  '(--confirm-delete --no-confirm-delete)--confirm-delete[Confirm before deletion]' \
+  '(--confirm-delete --no-confirm-delete)--no-confirm-delete[No confirmation before deletion]' \
+  '--delete-command[Custom shell command for deletion]:command:_command_names -e' \
+  '--color[Set color scheme]:scheme:(off dark dark-bg)' \
+  '*:directory:_files -/' && ret=0
+
+case "$state" in
+    sort_columns)
+        local -a sort_opts
+        for col in $columns; do
+            sort_opts+=("$col" "${col}-asc" "${col}-desc")
+        done
+        _describe -t sort-columns 'sort column' sort_opts && ret=0
+        ;;
+esac
+
+return ret

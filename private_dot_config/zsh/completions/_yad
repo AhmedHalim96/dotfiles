@@ -1,0 +1,263 @@
+#compdef yad
+
+_arguments \
+         '*:file:_files' \
+		'--about[Display about dialog.]' \
+		'--app[Display application selection dialog.]' \
+		'--calendar[Display calendar dialog.]' \
+		'--color[Display color selection dialog.]' \
+		'--dnd[Display drag-and-drop box.]' \
+		'--entry[Display text entry dialog.]' \
+		'--icons[Display box with shortcut icons.]' \
+		'--file[Display file selection dialog.]' \
+		'--font[Display font selection dialog.]' \
+		'--form[Display form dialog.]' \
+		'--html[Display HTML dialog.]' \
+		'--list[Display list dialog.]' \
+		'--multi-progress[Display multi progress bars dialog.]' \
+		'--notebook[Display notebook dialog.]' \
+		'--notification[Display notification icon.]' \
+		'--print[Display print dialog.]' \
+		'--progress[Display progress indication dialog.]' \
+		'--text-info[Display text information dialog.]' \
+		'--scale[Display scale dialog. SS General options.]' \
+		'--title[Set the dialog title.]' \
+		'--window-icon[Set the window icon.]' \
+		'--width[Set the dialog window width.]' \
+		'--height[Set the dialog window height.]' \
+		'--posx[Set the X position of dialog window. NUMBER can be negative.]' \
+		'--posy[Set the Y position of dialog window. NUMBER can be negative.]' \
+		'--geometry[Use standard X Window geometry notation for placing dialog.]' \
+		'--timeout[Set the dialog timeout in seconds.]' \
+		'--timeout-indicator[Show timeout indicator in given position.]' \
+		'--kill-parent[Send SIGNAL to parent process. Default value of SIGNAL is a SIGTERM.]' \
+		'--print-xid[Output X Window ID of a yad'"'"'s window to the specified file or stderr.]' \
+		'--plug[Run dialog in plug mode for swallow as a notebook tab.]' \
+		'--tabnum[Set the tab number for plugged dialog. See NOTEBOOK section for more.]' \
+		'--text[Set the dialog text.]' \
+		'--text-width[Set the maximum dialog text width in characters.]' \
+		'--text-align[Set type of dialog text justification.]' \
+		'--image[Set the dialog image which appears on the left side of dialog.]' \
+		'--icon-theme[Use specified GTK icon theme instead of default.]' \
+		'--keep-icon-size[Don'"'"'t scale icons. This option affects icons outside icon theme.]' \
+		'--expander[Hide main widget with expander.]' \
+		'--button[Add the dialog button. May be used multiple times.]' \
+		'--no-buttons[Don'"'"'t show buttons.]' \
+		'--buttons-layout[Set buttons layout type.]' \
+		'--no-markup[Don'"'"'t use pango markup in dialog'"'"'s text.]' \
+		'--no-escape[Don'"'"'t close dialog if Escape was pressed.]' \
+		'--escape-ok[Escape acts like pressing OK button.]' \
+		'--always-print-result[Print result for any of the return codes.]' \
+		'--use-interp[All commands runs unter specified interpreter. Default is bash -c "%s".]' \
+		'--uri-handler[Use CMD as uri handler.]' \
+		'--f1-action[Set the command running when F1 was pressed.]' \
+		'--borders[Set dialog window borders.]' \
+		'--sticky[Make window visible on all desktops.]' \
+		'--fixed[Make window fixed width and height.]' \
+		'--center[Place window on center of screen.]' \
+		'--mouse[Place window under mouse position.]' \
+		'--on-top[Place window over other windows.]' \
+		'--undecorated[Make window undecorated (remove title and window borders).]' \
+		'--skip-taskbar[Don'"'"'t show window in taskbar and pager.]' \
+		'--maximized[Run dialog window maximized.]' \
+		'--fullscreen[Run dialog in fullscreen mode.]' \
+		'--splash[Open window with "splashscreen" window hints.]' \
+		'--no-focus[Dialog window never take focus.]' \
+		'--close-on-unfocus[Close the dialog window when it loose the focus.]' \
+		'--selectable-labels[If set, user can select dialog'"'"'s text and copy it to clipboard.]' \
+		'--image-path[Add specified path to the standard list of directories for looking for icons.]' \
+		'--rest[Read extra arguments from given file instead of command line.]' \
+		'--response[Set default exit code to NUMBER instead of 0.]' \
+		'--css[Read and parse additional GTK+ CSS styles from given data.]' \
+		'--gtkrc[Read and parse additional GTK+ CSS styles from given file.]' \
+		'--hscroll-policy[Set the policy type for horizontal scrollbars.]' \
+		'--vscroll-policy[Set the policy type for vertical scrollbars.]' \
+		'--enable-spell[Enable spell checking in textview widgets.]' \
+		'--spell-lang[Set spell checking language to LANGUAGE.]' \
+		'--bool-fmt[Set the output type of boolean values to TYPE.]' \
+		'--pname[Set programm name.]' \
+		'--pversion[Set programm version string.]' \
+		'--copyright[Set programm copyrightstring.]' \
+		'--comments[Set programm detailed description.]' \
+		'--license[Set programm license.]' \
+		'--authors[Set list of programm authors separated by comma.]' \
+		'--website[Set a link to programm website.]' \
+		'--website-label[Set a label for programm website link. SS Application selection options.]' \
+		'--enable-fallback[Show fallback applications.]' \
+		'--enable-other[Show other applications.]' \
+		'--enable-all[Show all available applications.]' \
+		'--extened[Shown extended information about choosen application.]' \
+		'--day[Set the calendar day.]' \
+		'--month[Set the calendar month.]' \
+		'--year[Set the calendar year.]' \
+		'--date-format[Set the format for the returned date. By default is '"'"'%x'"'"'.]' \
+		'--show-weeks[Show the week numbers at the left side of calendar.]' \
+		'--details[Read days description from FILENAME.]' \
+		'--init-color[Set initial color value.]' \
+		'--gtk-palette[Show system palette inside color dialog.]' \
+		'--alpha[Add opacity to output color string.]' \
+		'--palette[Show palette and set predefined colors from given filename.]' \
+		'--expand-palette[Expander for list of user-defined colors will be initially opened.]' \
+		'--mode[Set output color mode. Possible values are hex or rgb. Default is hex.]' \
+		'--tooltip[Use dialog text as a tooltip for Drag-and-Drop box.]' \
+		'--command[Run command when data received.]' \
+		'--exit-on-drop[Exit after NUMBER of drops was reached.]' \
+		'--entry-label[Set the entry label text.]' \
+		'--entry-text[Set the initial entry text or default item in combo-box.]' \
+		'--hide-text[Hide the entry text.]' \
+		'--completion[Use completion instead of combo-box.]' \
+		'--complete[Use specific type for extended completion.]' \
+		'--editable[Allow make changes to text in combo-box.]' \
+		'--numeric[Use spin button instead of text entry.]' \
+		'--float-precision[Set precision of floating point numbers.]' \
+		'--licon[Set an icon on a left side of entry.]' \
+		'--licon-action[Specify a command which will be run when the left icon clicked.]' \
+		'--ricon[Set an icon on a right side of entry.]' \
+		'--ricon-action[Specify a command which will be run when the right icon clicked.]' \
+		'--num-output[Output index of active element instead of text for combo-box entry.]' \
+		'--read-dir[Read . desktop files from specified directory.]' \
+		'--monitor[Watch for changes in directory and automatically update content of iconbox.]' \
+		'--generic[Use field GenericName instead of Name for shortcut label.]' \
+		'--sort-by-name[Use field Name instead of filename for sorting items.]' \
+		'--descend[Sort items in descending order.]' \
+		'--listen[Read data from stdin.]' \
+		'--item-width[Set items width.]' \
+		'--icon-size[Force using specified icon size. This option doesn'"'"'t work in compact mode.]' \
+		'--compact[Use compact mode. Icon and name of each item is placed in a single row.]' \
+		'--single-click[Activate items by single mouse click.]' \
+		'--term[Pattern for terminal.]' \
+		'--filename[Set the filename.]' \
+		'--multiple[Allow selection of multiple filenames in file selection dialog.]' \
+		'--directory[Activate directory-only selection.]' \
+		'--save[Activate save mode.]' \
+		'--separator[Specify separator character when returning multiple filenames.]' \
+		'--confirm-overwrite[Confirm file selection if filename already exists.]' \
+		'--quoted-output[Output values will be shell-style quoted. SS Font selection options.]' \
+		'--fontname[Set the initial font.]' \
+		'--preview[Set the preview text.]' \
+		'--separate-output[Separate output of selected font description.]' \
+		'--field[Add field to form.]' \
+		'--align[Set alignment of field labels. Possible types are left, center or right.]' \
+		'--columns[Set number of columns in form. Fields will be placed from top to bottom.]' \
+		'--focus-field[Set focused field.]' \
+		'--cycle-read[Cycled reading of stdin data. Sending FormFeed character clears the form.]' \
+		'--align-buttons[Align label on button fields according to --align settings.]' \
+		'--item-separator[Set separator character for combo-box or scale values. Default is '"'"'!'"'"'.]' \
+		'--scroll[Make form scrollable.]' \
+		'--changed-action[Run CMD when CHK or CB field values are changed.]' \
+		'--output-by-row[Output field values row by row if several columns is specified.]' \
+		'--uri[Open specified location. URI can be a filename or internet address.]' \
+		'--browser[Turn on browser mode.]' \
+		'--print-uri[Print clicked links to standard output.]' \
+		'--mime[Set mime type of data passed to standard input to MIME. Default is text/html.]' \
+		'--encodintg[Set encoding of data passed to standard input to ENCODING. Default is UTF-8.]' \
+		'--user-agent[Set user agent string. Default is YAD-Webkit (@VERSION@).]' \
+		'--user-style[Set path or uri to custom user styles.]' \
+		'--disable-search[Disable search bar.]' \
+		'--wk-prop[Set additional WebKit setting. This option may be used multiply times.]' \
+		'--column[Set the column header.]' \
+		'--tree[Enbale tree mode.]' \
+		'--checklist[Use check boxes for the first column.]' \
+		'--radiolist[Same as --checklist but with a radio toggle for the first column.]' \
+		'--editable-cols[Set the list of editable columns.]' \
+		'--no-headers[Do not show column headers.]' \
+		'--no-click[Disable sorting of column content by clicking on its header.]' \
+		'--no-rules-hint[Don'"'"'t draw even and odd rows by a different colors.]' \
+		'--grid-lines[Draw grid lines of type TYPE in list dialog.]' \
+		'--no-selection[Disable selection in list.]' \
+		'--print-all[Print all data from the list.]' \
+		'--print-column[Specify what column will be printed to standard output.]' \
+		'--hide-column[Hide a specific column.]' \
+		'--expand-column[Set the column expandable by default. 0 sets all columns expandable.]' \
+		'--search-column[Set the quick search column. 0 mean to disable searching.]' \
+		'--tooltip-column[Set the column with popup tooltips.]' \
+		'--sep-column[Set the row separator column.]' \
+		'--sep-value[Set the TEXT as a row separator value.]' \
+		'--limit[Set the number of rows in list dialog.]' \
+		'--wrap-width[Set the width of column before wrapping to NUMBER.]' \
+		'--wrap-cols[Set the list of wrapped columns.]' \
+		'--ellipsize[Set ellipsize mode for text columns. TYPE may be NONE, START, MIDDLE or END.]' \
+		'--ellipsize-cols[Set the list of ellipsized columns.]' \
+		'--dclick-action[Set the CMD as a double-click command.]' \
+		'--select-action[Set the CMD as a action when selection is changed.]' \
+		'--row-action[Set the CMD as a action when the row is added, modified or removed.]' \
+		'--tree-expanded[Expand all tree nodes at startup.]' \
+		'--regex-search[Use regular expressions in search for text fields.]' \
+		'--add-on-top[Add new records at the top of the list.]' \
+		'--tail[Autoscroll to the end of the list when a new row will be added.]' \
+		'--iec-format[Use IEC (base 1024) units with for size values.]' \
+		'--simple-tips[Don'"'"'t use markup in tooltips even if text has a valid markup.]' \
+		'--header-tips[Use header name as a fallback tooltip text.]' \
+		'--key[Set the key of the children.]' \
+		'--tab[Add tab with specified label to notebook.]' \
+		'--tab-pos[Set the tabs position. Value may be top, bottom, left, or right.]' \
+		'--tab-borders[Set the borders width around widget in tabs.]' \
+		'--active-tab[Set active tab.]' \
+		'--expand[Expand all tabs to full width of a dialog window.]' \
+		'--stack[Use stack mode (GtkStack instead of GtkNotebook).]' \
+		'--menu[Set initial menu for right-click.]' \
+		'--no-middle[Disable exit on middle click.]' \
+		'--hidden[Doesn'"'"'t show icon at startup.]' \
+		'--orient[Set orientation of panes inside dialog.]' \
+		'--splitter[Set the initial splitter position.]' \
+		'--focused[Set pane for initial focus. PANE must be 1 or 2. Default is 1.]' \
+		'--size[Set initial size of picture.]' \
+		'--inc[Set increment value for scaling image.]' \
+		'--type[Set source file type.]' \
+		'--headers[Add headers to the top of page with filename and page number.]' \
+		'--add-preview[Add Preview button to the print dialog.]' \
+		'--bar[Add progress bar. LABEL is a text label for progress bar.]' \
+		'--vertical[Set vertical orientation of progress bars.]' \
+		'--progress-text[Set the label of progress bar to TEXT.]' \
+		'--rtl[Set Right-To-Left progress bar direction.]' \
+		'--auto-close[Close dialog when 100% has been reached.]' \
+		'--auto-kill[Kill parent process if cancel button is pressed.]' \
+		'--pulsate[Pulsate progress bar. This option works only in single-bar mode.]' \
+		'--enable-log[Show log window.]' \
+		'--log-on-top[Place log window above progress bars.]' \
+		'--log-expanded[Start with expanded log window.]' \
+		'--log-height[Set the height of log window.]' \
+		'--wrap[Enable text wrapping.]' \
+		'--formatted[Enable Pango markup. This option doesn'"'"'t work with --editable option.]' \
+		'--justify[Set justification. TYPE may be left, right, center or fill. Default is left.]' \
+		'--margins[Set text margins to NUMBER.]' \
+		'--show-cursor[Show cursor in read-only mode.]' \
+		'--show-uri[Make links in text clickable. Links opens with xdg-open command.]' \
+		'--fore[Set default color for text.]' \
+		'--back[Set default color for background.]' \
+		'--uri-color[Set color for links. Default is blue.]' \
+		'--in-place[Save file on exit instead of print it content on stdout.]' \
+		'--file-op[Enable file operations.]' \
+		'--confirm-save[Confirm file saving if file content was changed.]' \
+		'--lang[Highlight syntax for specified LANGUAGE.]' \
+		'--theme[Set used theme to THEME.]' \
+		'--line-num[Show line numbers.]' \
+		'--line-hl[Highlight current line.]' \
+		'--line-marks[Enable line marks mode. There are two types of marks.]' \
+		'--mark1-color[Set background color for marks of first type to COLOR. Default is lightgreen.]' \
+		'--mark2-color[Set background color for marks of second type to COLOR. Default is pink.]' \
+		'--right-margin[Enable mark of right margin.]' \
+		'--brackets[Highlight matching brackets.]' \
+		'--indent[Enable autoindent. This option also sets TAB key as indent key.]' \
+		'--smart-he[Set behavior of HOME and END keys.]' \
+		'--smart-bs[Enable smart mode for BackSpace.]' \
+		'--tab-width[Set tabulation step.]' \
+		'--indent-width[Set indentation step.]' \
+		'--spaces[Insert spaces instead of tabulation.]' \
+		'--value[Set initial value.]' \
+		'--min-value[Set minimum value.]' \
+		'--max-value[Set maximum value.]' \
+		'--step[Set step size.]' \
+		'--enforce-step[Only allow values in step increments.]' \
+		'--page[Set paging size. By default page value is STEP*10.]' \
+		'--print-partial[Print partial values.]' \
+		'--hide-value[Hide value.]' \
+		'--invert[Invert scale direction.]' \
+		'--inc-buttons[Show buttons on edges of a scale for increasing or decreasing scale value.]' \
+		'--mark[Add a mark to scale. May be used multiple times.]' \
+		'--file-filter[Add a filename filter.]' \
+		'--mime-filter[Add a mime-type filter.]' \
+		'--image-filter[Add filter for images supported by gdk-pixbuf library.]' \
+		'--large-preview[Use large previews by default.]' \
+		{-'?',--help}'[Show summary of options.]' \
+		'--version[Show version of program.]'

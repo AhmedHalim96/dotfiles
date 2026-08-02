@@ -1,0 +1,14 @@
+#compdef gh-create
+
+_gh_create() {
+    local line
+
+    _arguments -C \
+        '-h[Show help information]' \
+        '--help[Show help information]' \
+        '--private[Make the repository private (default is public)]' \
+        '1: :_guard "^-*" "repository name"' \
+        && return 0
+}
+
+_gh_create "$@"

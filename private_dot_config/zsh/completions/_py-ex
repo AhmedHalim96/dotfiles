@@ -1,0 +1,54 @@
+#compdef py-ex
+
+_py_ex() {
+    local line
+    local -a commands
+    local -a files
+    local -a arguments
+
+    # Define the main subcommands
+    arguments=(
+        '--list'
+        '--save'
+        '--view'
+        '--run'
+        '--search'
+        '--clear'
+        '--help'
+        '--editor='
+    )
+
+    _arguments -C \
+        "1: :->cmds" \
+        "*: :->args"
+
+    case $state in
+        cmds)
+            _describe -t commands 'py-ex commands' commands
+            _describe -t arguments 'py-ex arguments' arguments
+            ;;
+        args)
+            case $line[1] in
+                --list)
+                    ;;
+                --save|--view|--run)
+                    # Gather files from both directories for tab completion
+                    # We strip the full path to just show the filenames
+                    files=($(ls ~/.cache/py-ex ~/.local/share/py-ex/scripts 2>/dev/null | grep '\.py$'))
+                    _values 'python scripts' $files
+                    ;;
+                --search)
+                    _message "type keyword to search"
+                    ;;
+                --clear)
+                    ;;
+                --help)
+                    ;;
+                --editor=)
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_py_ex "$@"

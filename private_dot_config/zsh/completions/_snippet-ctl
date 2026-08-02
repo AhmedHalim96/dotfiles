@@ -1,0 +1,71 @@
+#compdef snippet-ctl
+
+_snippet_ctl() {
+    local line
+    local -a subcmds
+    subcmds=(
+        'run:Execute a snippet'
+        'add:Create a new snippet'
+        'edit:Edit an existing snippet'
+        'remove:Delete a snippet'
+        'list:List and execute snippets via walker'
+        'edit-config:Edit snippet-ctl configuration'
+    )
+
+    _arguments -C \
+        "1: :->command" \
+        "*::arg:->args"
+
+    case $state in
+        command)
+            _describe -t commands 'snippet-ctl commands' subcmds
+            ;;
+        args)
+            case $line[1] in
+                add)
+                    _arguments \
+                        '(-j --json)'{-j,--json}'[Force JSON format]' \
+                        '(-t --txt)'{-t,--txt}'[Force TXT format]' \
+                        '(-E --editor)'{-E,--editor}'[Set editor]' \
+                        ':snippet id:_values "identifiers"'
+                    ;;
+                run)
+                    _arguments \
+                        ':snippet id:_snippet_names'
+                    ;;
+                edit)
+                    _arguments \
+                        '(-E --editor)'{-E,--editor}'[Set editor]' \
+                        ':snippet id:_snippet_names'
+                    ;;
+                remove)
+                    _arguments \
+                        ':snippet id:_snippet_names'
+                    ;;
+                list)
+                    # No arguments for list
+                    ;;
+
+                edit-config)
+                    _arguments \
+                        '(-E --editor)'{-E,--editor}'[Set editor]' 
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+# Helper function to list existing snippet names without extensions
+_snippet_names() {
+    local -a snippets
+    local snippet_dir="$HOME/.local/share/snippets"
+    
+    if [[ -d "$snippet_dir" ]]; then
+        # Fetch file names, remove extensions, and store in array
+        snippets=(${$(basename -s .json $snippet_dir/*.json 2>/dev/null)})
+        snippets+=(${$(basename -s .txt $snippet_dir/*.txt 2>/dev/null)})
+        _describe -t snippets 'existing snippets' snippets
+    fi
+}
+
+_snippet_ctl "$@"

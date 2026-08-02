@@ -1,0 +1,32 @@
+#compdef limine-entry-tool
+
+_limine_entry_tool() {
+    local line
+    local -a options
+
+    options=(
+        '--quiet[Suppress output messages]'
+        '--add[Add a kernel entry]:entry name: :initramfs:_files:vmlinuz:_files:suffix: :comment:--comment'
+        '--add-uki[Add a UKI kernel entry]:entry name: :uki file:_files -g "*.efi *.uki":comment:--comment'
+        '--add-efi[Add an EFI OS entry]:entry name: :efi binary:_files -g "*.efi":comment:--comment:priority:--priority:overwrite:--overwrite'
+        '--get-cmdline[Get command line for a kernel]:kernel name: '
+        '--remove[Remove a kernel directory]:kernel directory: '
+        '--remove-uki[Remove a UKI kernel file]:kernel file:_files -g "*.efi *.uki"'
+        '--remove-entry[Remove a specific kernel entry]:entry name: '
+        '--remove-all[Remove multiple kernels]:*kernels: '
+        '--remove-efi[Remove EFI boot entry by path]:path:_files -g "*.efi"'
+        '--remove-os[Remove OS entry by machine-ID or name]:ID or Name: '
+        '--scan[Scan available EFI entries]'
+        '--tree[Display the boot menu tree]:depth: '
+        '--version[Display version information]'
+        '--comment[Specify a comment for the entry]:text: '
+        '--priority[Specify boot priority]:number: '
+        '--overwrite[Overwrite existing entry]'
+    )
+
+    _arguments -s \
+        $options \
+        '*: :_files'
+}
+
+_limine_entry_tool "$@"

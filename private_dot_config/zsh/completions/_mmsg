@@ -1,0 +1,297 @@
+#compdef mmsg
+
+_mmsg() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments -C \
+        '(-h --help)'{-h,--help}'[Show help message]' \
+        '1: :->command' \
+        '*:: :->args'
+
+    case $state in
+        command)
+            local -a subcommands
+            subcommands=(
+                'get:One-shot queries'
+                'watch:Persistent streams'
+                'dispatch:Call a compositor function'
+                'help:Show help message'
+            )
+            _describe -t commands 'mmsg command' subcommands
+            ;;
+
+        args)
+            case $line[1] in
+                get)
+                    _mmsg_get
+                    ;;
+                watch)
+                    _mmsg_watch
+                    ;;
+                dispatch)
+                    _mmsg_dispatch
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_mmsg_get() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->get_cmd' \
+        '*:: :->get_args'
+
+    case $state in
+        get_cmd)
+            local -a get_cmds
+            get_cmds=(
+                'version:Show compositor version'
+                'cursorpos:Show pointer position + monitor'
+                'keymode:Show current keymode'
+                'keyboardlayout:Show current keyboard layout'
+                'last_open_surface:Show last open surface'
+                'monitor:Show monitor details'
+                'focusing-client:Show focused client details'
+                'client:Show client details by ID'
+                'tag:Show tag details (1-based index)'
+                'all-clients:List all clients'
+                'all-monitors:List all monitors'
+                'all-tags:List all tags (all monitors)'
+                'tags:List tags for a monitor'
+            )
+            _describe -t get_commands 'get command' get_cmds
+            ;;
+
+        get_args)
+            case $line[1] in
+                monitor|tags|last_open_surface)
+                    _message 'monitor name'
+                    ;;
+                client)
+                    _message 'client ID'
+                    ;;
+                tag)
+                    _arguments \
+                        '1:monitor name:' \
+                        '2:tag index (1-based):'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_mmsg_watch() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->watch_cmd' \
+        '*:: :->watch_args'
+
+    case $state in
+        watch_cmd)
+            local -a watch_cmds
+            watch_cmds=(
+                'monitor:Stream monitor changes'
+                'focusing-client:Stream focused client changes'
+                'client:Stream client changes'
+                'tags:Stream tag changes for a monitor'
+                'all-monitors:Stream all monitors changes'
+                'all-tags:Stream all tags changes'
+                'all-clients:Stream all clients changes'
+                'keymode:Stream keymode changes'
+                'keyboardlayout:Stream keyboard layout changes'
+                'last_open_surface:Stream last open surface changes'
+            )
+            _describe -t watch_commands 'watch command' watch_cmds
+            ;;
+
+        watch_args)
+            case $line[1] in
+                monitor|tags|last_open_surface)
+                    _message 'monitor name'
+                    ;;
+                client)
+                    _message 'client ID'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_mmsg_dispatch() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->dispatch_cmd' \
+        '*:: :->dispatch_args'
+
+    case $state in
+        dispatch_cmd)
+            local -a dispatch_cmds
+            dispatch_cmds=(
+                'killclient:Close the focused window'
+                'togglefloating:Toggle floating state'
+                'toggle_all_floating:Toggle all visible clients floating state'
+                'togglefullscreen:Toggle fullscreen'
+                'togglefakefullscreen:Toggle fake fullscreen'
+                'togglemaximizescreen:Maximize window'
+                'toggleglobal:Pin window to all tags'
+                'toggle_render_border:Toggle border rendering'
+                'centerwin:Center the floating window'
+                'minimized:Minimize window to scratchpad'
+                'restore_minimized:Restore minimized window to previous state'
+                'toggle_scratchpad:Toggle scratchpad'
+                'toggle_named_scratchpad:Toggle named scratchpad'
+                'focusid:Focus window by ID'
+                'focusdir:Focus window in direction'
+                'focus_window_or_workspace:Focus window in direction or switch workspace'
+                'focusstack:Cycle focus within the stack'
+                'focuslast:Focus previously active window'
+                'exchange_client:Swap window with neighbor in direction'
+                'exchange_stack_client:Exchange window position in stack'
+                'zoom:Swap focused window with Master'
+                'groupjoin:Join group by direction'
+                'groupfocus:Focus group member by direction'
+                'groupleave:Leave group'
+                'view:View tag(s)'
+                'viewtoleft:View previous tag'
+                'viewtoright:View next tag'
+                'viewtoleft_have_client:View left tag and focus client if present'
+                'viewtoright_have_client:View right tag and focus client if present'
+                'viewcrossmon:View specified tag(s) on specified monitor'
+                'tag:Move window to tag(s)'
+                'tagsilent:Move window to tag(s) without focusing'
+                'tagtoleft:Move window to left tag'
+                'tagtoright:Move window to right tag'
+                'tagcrossmon:Move window to tag(s) on specified monitor'
+                'toggletag:Toggle tag(s) on window'
+                'toggleview:Toggle view of tag(s)'
+                'comboview:View multiple tags simultaneously'
+                'focusmon:Focus monitor by direction or monitor spec'
+                'tagmon:Move window to monitor by direction or monitor spec'
+                'setlayout:Switch to layout'
+                'switch_layout:Cycle through available layouts'
+                'incnmaster:Increase/Decrease number of master windows'
+                'setmfact:Increase/Decrease master area size'
+                'set_proportion:Set scroller window proportion'
+                'switch_proportion_preset:Cycle proportion presets of scroller window'
+                'scroller_stack:Move window inside/outside scroller stack by direction'
+                'incgaps:Adjust gap size'
+                'togglegaps:Toggle gaps'
+                'dwindle_toggle_split_direction:Toggle split direction in dwindle layout'
+                'dwindle_split_horizontal:Set split window direction to horizontal in dwindle'
+                'dwindle_split_vertical:Set split window direction to vertical in dwindle'
+                'dwindle_toggle_current_split:Toggle split direction of current window in dwindle'
+                'spawn:Execute a command'
+                'spawn_shell:Execute shell command'
+                'spawn_on_empty:Open command on empty tag'
+                'reload_config:Hot-reload configuration'
+                'load_config_file:Load configuration from specified file'
+                'quit:Exit mangowm'
+                'toggleoverview:Toggle overview mode'
+                'togglejump:Toggle overview with jump mode'
+                'create_virtual_output:Create a headless monitor'
+                'destroy_all_virtual_output:Destroy all virtual monitors'
+                'toggleoverlay:Toggle overlay state for focused window'
+                'toggle_trackpad_enable:Toggle trackpad enable'
+                'setkeymode:Set keymode'
+                'switch_keyboard_layout:Switch keyboard layout'
+                'setoption:Set config option temporarily'
+                'sleep_monitor:Shutdown monitor power'
+                'wakeup_monitor:Turn on monitor power'
+                'sleep_toggle_monitor:Toggle monitor power'
+                'disable_monitor:Remove monitor'
+                'enable_monitor:Add monitor'
+                'toggle_monitor:Toggle monitor add/remove'
+            )
+            _describe -t dispatch_commands 'dispatch command' dispatch_cmds
+            ;;
+
+        dispatch_args)
+            case $line[1] in
+                focusdir|focus_window_or_workspace|exchange_client|groupjoin|scroller_stack)
+                    _values 'direction' left right up down
+                    ;;
+                focusstack|exchange_stack_client)
+                    _values 'direction' next prev
+                    ;;
+                groupfocus)
+                    _values 'direction' prev next
+                    ;;
+                focusmon)
+                    _alternative \
+                        'directions:direction:(left right up down)' \
+                        'monitors:monitor spec:_message "monitor spec"'
+                    ;;
+                tagmon)
+                    _message 'direction/monitor_spec[,keeptag (0/1)]'
+                    ;;
+                restore_minimized)
+                    _values 'restore option' '0:Restore to current tags' '1:Keep previous tags'
+                    ;;
+                viewtoleft|viewtoright|viewtoleft_have_client|viewtoright_have_client|tagtoleft|tagtoright)
+                    _values 'sync tag' '0:Do not sync' '1:Sync to all monitors'
+                    ;;
+                setlayout)
+                    _message 'layout name (e.g. scroller, tile)'
+                    ;;
+                load_config_file)
+                    _files
+                    ;;
+                killclient)
+                    _values 'option' 'force:Send SIGKILL'
+                    ;;
+                spawn|spawn_shell)
+                    _command_names -e
+                    ;;
+                spawn_on_empty)
+                    _message 'cmd, tagmask'
+                    ;;
+                toggle_named_scratchpad)
+                    _message 'appid,title,cmd'
+                    ;;
+                setkeymode)
+                    _message 'keymode'
+                    ;;
+                switch_keyboard_layout)
+                    _message 'layout index (0, 1, 2...)'
+                    ;;
+                setoption)
+                    _message 'key,value'
+                    ;;
+                sleep_monitor|wakeup_monitor|sleep_toggle_monitor|disable_monitor|enable_monitor|toggle_monitor)
+                    _message 'monitor spec'
+                    ;;
+                view|tag|tagsilent|toggletag|toggleview|comboview)
+                    _message 'tag mask (e.g. 3, 1|3|5, 0)'
+                    ;;
+                viewcrossmon|tagcrossmon)
+                    _message 'tag mask,monitor_spec'
+                    ;;
+                incnmaster)
+                    _message 'count (+1/-1)'
+                    ;;
+                setmfact)
+                    _message 'factor (e.g. +0.05 or -0.05)'
+                    ;;
+                set_proportion)
+                    _message 'proportion float (0.0 - 1.0)'
+                    ;;
+                incgaps)
+                    _message 'gap adjustment (+/-value)'
+                    ;;
+                focusid)
+                    _message 'client ID'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_mmsg "$@"

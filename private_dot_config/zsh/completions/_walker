@@ -1,0 +1,40 @@
+#compdef walker
+
+_walker() {
+    local -a args
+    
+    args=(
+        '(-? --help)'{-?--help}'[Show help options]'
+        '--help-all[Show all help options]'
+        '--help-gapplication[Show GApplication options]'
+        '--gapplication-service[Enter GApplication service mode]'
+        
+        '(-v --version)'{-v,--version}'[Show version]'
+        '(-n --nosearch)'{-n,--nosearch}'[Hide search input]'
+        '(-N --nohints)'{-N,--nohints}'[Hide keybind hints]'
+        '(-I --inputonly)'{-I,--inputonly}'[Only show input (dmenu only)]'
+        '(-x --password)'{-x,--password}'[Use as password input (sets dmenu automatically)]'
+        '(-X --selectsingle)'{-X,--selectsingle}'[Auto-select single entry]'
+        '(-i --index)'{-i,--index}'[Print selected index instead of value (dmenu only)]'
+        '(-m --provider)'{-m,--provider}'[Exclusive provider to query]:provider: '
+        '(-s --set)'{-s,--set}'[Provider set to use]:set: '
+        '(-p --placeholder)'{-p,--placeholder}'[Input placeholder]:text: '
+        '--height[Forced height (min 1)]:height: '
+        '--minheight[Min height for scrolled content (min 1)]:height: '
+        '--maxheight[Max height for scrolled content (min 1)]:height: '
+        '(-c --current)'{-c,--current}'[Mark current value (dmenu only)]:value: '
+        '--width[Forced width (min 1)]:width: '
+        '--minwidth[Min width for scrolled content (min 1)]:width: '
+        '--maxwidth[Max width for scrolled content (min 1)]:width: '
+        '(-t --theme)'{-t,--theme}'[Theme to use]:theme: '
+        '(-d --dmenu)'{-d,--dmenu}'[Use dmenu mode]'
+        '(-q --close)'{-q,--close}'[Close walker when open]'
+        '(-k --keepopen)'{-k,--keepopen}'[Keep open after selection (dmenu/service only)]'
+        '(-e --exit)'{-e,--exit}'[Exit after this dmenu call (dmenu/service only)]'
+        '(-H --hideqa)'{-H,--hideqa}'[Hide quick activation buttons]'
+    )
+
+    _arguments -s -S $args
+}
+
+_walker "$@"

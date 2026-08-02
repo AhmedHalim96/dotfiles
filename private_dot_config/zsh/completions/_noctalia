@@ -1,0 +1,273 @@
+#compdef noctalia
+
+_noctalia() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -s -S \
+        '(-h --help)'{-h,--help}'[Show help message]' \
+        '(-v --version)'{-v,--version}'[Show version information]' \
+        '(-d --daemon)'{-d,--daemon}'[Run in background]' \
+        '1: :->subcommand' \
+        '*:: :->args'
+
+    case $state in
+        subcommand)
+            local -a subcommands
+            subcommands=(
+                'msg:Send a command to the running instance'
+                'theme:Generate a color palette from an image'
+                'config:Validate config and support/replay helpers'
+                'plugins:Offline plugin author tools (lint)'
+            )
+            _describe -t subcommands 'noctalia subcommand' subcommands
+            ;;
+        args)
+            case $words[1] in
+                msg) _noctalia_msg ;;
+                theme) _files -g '*.png(*N) *.jpg(*N) *.jpeg(*N) *.webp(*N)' ;;
+                config) _noctalia_config ;;
+                plugins) _noctalia_plugins ;;
+            esac
+            ;;
+    esac
+}
+
+_noctalia_config() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -s -S \
+        '1: :->config_cmd' \
+        '*:: :->config_args'
+
+    case $state in
+        config_cmd)
+            local -a commands
+            commands=(
+                'validate:Check config validity'
+                'export:Print active config as TOML'
+                'settings-count:Count Settings UI controls'
+                'replay-report:Reconstruct config and state from a support report'
+            )
+            _describe -t commands 'config command' commands
+            ;;
+        config_args)
+            case $words[1] in
+                validate)
+                    _files
+                    ;;
+                export)
+                    local -a targets
+                    targets=('merged:Defaults to merged user config' 'full:Full config')
+                    _describe -t targets 'export target' targets
+                    ;;
+                replay-report)
+                    _arguments \
+                        '1:report file:_files -g "*.toml"' \
+                        '--target[Target directory]:directory:_files -/' \
+                        '--force[Overwrite target]' \
+                        '--flattened[Reconstruct single merged config.toml]'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_noctalia_plugins() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -s -S \
+        '1: :->plugins_cmd' \
+        '*:: :->plugins_args'
+
+    case $state in
+        plugins_cmd)
+            local -a commands
+            commands=(
+                'lint:Cross-check plugin settings against getConfig() calls'
+            )
+            _describe -t commands 'plugins command' commands
+            ;;
+        plugins_args)
+            case $words[1] in
+                lint)
+                    _files -/
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_noctalia_msg() {
+    local context state line
+    typeset -A opt_args
+
+    _arguments -s -S \
+        '1: :->msg_cmd' \
+        '*:: :->msg_args'
+
+    case $state in
+        msg_cmd)
+            local -a commands
+            commands=(
+                'bar-auto-hide-set:Set auto-hide state for a bar'
+                'bar-hide:Hide one or all bars and release layout gaps'
+                'bar-layer-set:Set one or all bar layers'
+                'bar-reserve-toggle:Toggle reserve space for one or all bars'
+                'bar-show:Show one or all bars'
+                'bar-toggle:Toggle visibility for one or all bars'
+                'bluetooth-disable:Disable Bluetooth'
+                'bluetooth-enable:Enable Bluetooth'
+                'bluetooth-status:Print Bluetooth state'
+                'bluetooth-toggle:Toggle Bluetooth'
+                'brightness-down:Decrease brightness'
+                'brightness-list-backlight-devices:List sysfs backlight device names'
+                'brightness-osd:Show brightness OSD without changing value'
+                'brightness-set:Set brightness'
+                'brightness-up:Increase brightness'
+                'caffeine-disable:Disable caffeine (idle inhibitor)'
+                'caffeine-enable:Enable caffeine (idle inhibitor)'
+                'caffeine-toggle:Toggle caffeine (idle inhibitor)'
+                'clipboard-clear:Clear clipboard history'
+                'clipboard-copy:Copy text to the clipboard'
+                'clipboard-text:Print most recent clipboard text'
+                'color-scheme-get:Print active color scheme'
+                'color-scheme-set:Set palette source and selection'
+                'config-reload:Reload the config file'
+                'desktop-widgets-edit:Open desktop widgets editor'
+                'desktop-widgets-exit:Close desktop widgets editor'
+                'desktop-widgets-hide:Hide desktop widgets (runtime)'
+                'desktop-widgets-show:Show desktop widgets (runtime)'
+                'desktop-widgets-toggle:Toggle desktop widgets visibility (runtime)'
+                'desktop-widgets-toggle-edit:Toggle desktop widgets edit mode'
+                'dock-hide:Hide the dock'
+                'dock-reload:Reload dock configuration'
+                'dock-show:Show the dock'
+                'dock-toggle:Toggle dock visibility'
+                'dpms-off:Turn monitors off'
+                'dpms-on:Turn monitors on'
+                'effects-profile-set:Set EasyEffects output or input profile'
+                'keyboard-backlight-down:Decrease keyboard backlight'
+                'keyboard-backlight-osd:Show keyboard backlight OSD'
+                'keyboard-backlight-set:Set keyboard backlight level'
+                'keyboard-backlight-toggle:Toggle keyboard backlight'
+                'keyboard-backlight-up:Increase keyboard backlight'
+                'keyboard-layout-cycle:Switch to next keyboard layout'
+                'lockscreen-widgets-edit:Open lockscreen widgets editor'
+                'lockscreen-widgets-exit:Close lockscreen widgets editor'
+                'lockscreen-widgets-toggle-edit:Toggle lockscreen widgets edit mode'
+                'log-level-set:Set console log level'
+                'log-level-status:Print current console log level'
+                'media:Control active media playback'
+                'mic-mute:Toggle microphone mute'
+                'mic-volume-down:Decrease microphone volume'
+                'mic-volume-osd:Show microphone volume OSD'
+                'mic-volume-set:Set microphone volume'
+                'mic-volume-up:Increase microphone volume'
+                'network-toggle:Toggle network connection'
+                'nightlight-disable:Disable night light schedule'
+                'nightlight-enable:Enable night light schedule'
+                'nightlight-force-toggle:Toggle forced night light mode'
+                'nightlight-toggle:Toggle night light schedule'
+                'notification-clear-active:Dismiss active notifications'
+                'notification-clear-history:Clear notification history'
+                'notification-dnd-set:Set notification Do Not Disturb state'
+                'notification-dnd-status:Print notification Do Not Disturb state'
+                'notification-dnd-toggle:Toggle notification Do Not Disturb state'
+                'notification-invoke-latest:Invoke default action of latest notification'
+                'notification-show:Show an internal Noctalia notification'
+                'osd-disable:Disable OSD popups'
+                'osd-enable:Enable OSD popups'
+                'osd-toggle:Toggle OSD popups'
+                'panel-close:Close active or named panel'
+                'panel-open:Open panel by id'
+                'panel-toggle:Toggle panel by id'
+                'plugin:Dispatch an event to a plugin entry'
+                'plugins:Manage plugins and sources'
+                'power-cycle:Step through UPower profiles'
+                'power-set:Set UPower power profile'
+                'screenshot-fullscreen:Capture screen screenshot'
+                'screenshot-region:Start region screenshot'
+                'session:Run built-in session action'
+                'settings-close:Close settings window'
+                'settings-open:Open settings window'
+                'settings-open-plugin:Open settings window at a plugin'
+                'settings-open-widget:Open settings window at a bar widget'
+                'settings-toggle:Toggle settings window'
+                'status:Print current state as JSON'
+                'taskbar-cycle:Step adjacent task/workspace group'
+                'templates-apply:Apply theme templates for current palette'
+                'theme-mode-get:Print current resolved theme mode'
+                'theme-mode-set:Set theme mode'
+                'theme-mode-toggle:Toggle theme mode between dark and light'
+                'volume-down:Decrease speaker volume'
+                'volume-mute:Toggle speaker mute'
+                'volume-osd:Show volume OSD'
+                'volume-set:Set speaker volume'
+                'volume-up:Increase speaker volume'
+                'wallpaper-get:Print default or output wallpaper path'
+                'wallpaper-next:Switch to next wallpaper'
+                'wallpaper-previous:Switch to previous wallpaper'
+                'wallpaper-random:Switch to random wallpaper'
+                'wallpaper-set:Set wallpaper for output'
+                'wifi-disable:Disable Wi-Fi'
+                'wifi-enable:Enable Wi-Fi'
+                'wifi-status:Print Wi-Fi state'
+                'wifi-toggle:Toggle Wi-Fi'
+                'window-switcher:Open/close window switcher overlay'
+                'workspace-alert-add:Add workspace alert'
+                'workspace-alert-add-window:Add workspace alert for a window'
+                'workspace-alert-clear:Clear workspace alert'
+                'workspace-alert-clear-all:Clear all workspace alerts'
+                'workspace-alert-status:Print workspace alerts'
+                'workspace-switch:Switch to adjacent workspace'
+            )
+            _describe -t commands 'msg command' commands
+            ;;
+        msg_args)
+            case $words[1] in
+                bar-auto-hide-set|notification-dnd-set)
+                    _values 'state' on off true false 1 0
+                    ;;
+                bar-layer-set)
+                    _values 'layer' top overlay
+                    ;;
+                effects-profile-set)
+                    if (( CURRENT == 2 )); then
+                        _values 'target' output input
+                    fi
+                    ;;
+                log-level-set)
+                    _values 'level' debug info warn error
+                    ;;
+                media)
+                    _values 'action' next previous toggle play pause stop next-player previous-player
+                    ;;
+                power-cycle|taskbar-cycle|workspace-switch)
+                    _values 'direction' next prev
+                    ;;
+                screenshot-fullscreen)
+                    _values 'mode' pick monitor all
+                    ;;
+                session)
+                    _values 'action' lock suspend lock-and-suspend logout reboot shutdown
+                    ;;
+                theme-mode-set)
+                    _values 'mode' dark light auto
+                    ;;
+                wallpaper-set)
+                    if (( CURRENT == 3 )); then
+                        _files -g '*.png(*N) *.jpg(*N) *.jpeg(*N) *.webp(*N)'
+                    fi
+                    ;;
+                window-switcher)
+                    _values 'action' close
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_noctalia "$@"

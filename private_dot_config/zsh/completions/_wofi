@@ -1,0 +1,50 @@
+#compdef wofi
+
+_wofi() {
+    local curcontext="$curcontext" state line ret=1
+    typeset -A opt_args
+
+    _arguments -C \
+        '(-h --help)'{-h,--help}'[print help message and exit]' \
+        '(-f --fork)'{-f,--fork}'[fork the menu so the terminal can be closed]' \
+        '(-c --conf)'{-c,--conf}'[specify config file]:config file:_files' \
+        '(-s --style)'{-s,--style}'[specify CSS stylesheet]:css file:_files -g "*.css"' \
+        '(-C --color)'{-C,--color}'[specify colors file]:color file:_files' \
+        '(-d --dmenu)'{-d,--dmenu}'[run in dmenu mode]' \
+        '(-S --show)'{-S,--show}'[specify mode to run in]:mode:(run drun dmenu window)' \
+        '(-W --width)'{-W,--width}'[specify menu width (px or %)]:width:' \
+        '(-H --height)'{-H,--height}'[specify menu height (px or %)]:height:' \
+        '(-p --prompt)'{-p,--prompt}'[set search box prompt]:prompt string:' \
+        '(-x --xoffset)'{-x,--xoffset}'[set x offset from location]:pixels:' \
+        '(-y --yoffset)'{-y,--yoffset}'[set y offset from location]:pixels:' \
+        '(-n --normal-window)'{-n,--normal-window}'[run in a normal window instead of layer-shell]' \
+        '(-I --allow-images)'{-I,--allow-images}'[allow image escape sequences]' \
+        '(-m --allow-markup)'{-m,--allow-markup}'[allow pango markup]' \
+        '(-k --cache-file)'{-k,--cache-file}'[specify cache file path]:cache file:_files' \
+        '(-t --term)'{-t,--term}'[specify terminal to use]:terminal:(kitty alacritty wezterm foot termite gnome-terminal weston-terminal)' \
+        '(-P --password)'{-P,--password}'[run in password mode]::password character:' \
+        '(-e --exec-search)'{-e,--exec-search}'[execute search content on enter, not first result]' \
+        '(-E --no-custom-entry)'{-E,--no-custom-entry}'[only submit entries, never search box content]' \
+        '(-b --hide-scroll)'{-b,--hide-scroll}'[hide scroll bars]' \
+        '(-M --matching)'{-M,--matching}'[specify matching mode]:matching mode:(contains strict-contains multi-contains fuzzy)' \
+        '(-i --insensitive)'{-i,--insensitive}'[enable case insensitive search]' \
+        '(-q --parse-search)'{-q,--parse-search}'[parse out image/pango from search]' \
+        '(-v --version)'{-v,--version}'[print version and exit]' \
+        '(-l --location)'{-l,--location}'[specify location]:location:(center top_left top top_right right bottom_right bottom bottom_left left)' \
+        '(-a --no-actions)'{-a,--no-actions}'[disable multiple actions]' \
+        '*-D[set a config option]:key=value:' \
+        '--define=[set a config option]:key=value:' \
+        '(-L --lines)'{-L,--lines}'[specify height in number of lines]:lines:' \
+        '(-w --columns)'{-w,--columns}'[specify number of columns]:columns:' \
+        '(-O --sort-order)'{-O,--sort-order}'[specify default sort order]:order:(default alphabetical)' \
+        '(-G --gtk-dark)'{-G,--gtk-dark}'[use dark variant of GTK theme]' \
+        '(-Q --search)'{-Q,--search}'[specify initial search string]:search string:' \
+        '(-o --monitor)'{-o,--monitor}'[set monitor to open on]:monitor:' \
+        '(-r --pre-display-cmd)'{-r,--pre-display-cmd}'[command to transform display entries]:command:_command_names' \
+        '(-j --hide-search)'{-j,--hide-search}'[hide the search bar]' \
+        '*: :_default' && ret=0
+
+    return ret
+}
+
+_wofi "$@"

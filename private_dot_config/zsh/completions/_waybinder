@@ -1,0 +1,362 @@
+#!/usr/bin/env zsh
+
+# waybinder
+#
+# text expansion tool to copy and paste using abbreviations
+#
+# <3 cscs <3
+
+# Version: 0.2
+# Release: January 11, 2025
+
+_waybinder_help() {
+    cat << EOF
+
+waybinder
+Syntax: waybinder [-F,-T,-S][-y,-w,-r,-d][-y.-w,-k][-z,-y,-q,-k,-d]
+
+Input Mode [-F,-T,-S]
+F     Full or regular mode inserts string as block
+T     Typing mode inserts by simulating each key press
+S     Slow typing mode simulates longer delays between keys
+
+Backend [-y,-w,-r,-d]
+y     Use ydotool
+w     Use wtype
+r     Use wlrctl*   *single-speed typing mode only
+d     Use dotool
+
+Clipboard [-y,-w,-k]
+y     Use wayclip
+w     Use wl-clipboard
+k     Use klipper
+
+Dialog [-z,-y,-q,-k,-d]
+z     Use zenity
+y     Use yad
+q     Use qarma
+k     Use kdialog
+d     Use dialog*  *terminal-only and unrecommended
+
+Example use (1): waybinder -Fywk
+Example use (2): waybinder -T -w -y -z
+
+EOF
+}
+
+# Store base directory path, expand complete path using HOME environment variable
+_waybinder_base_dir=$(realpath "${HOME}/.config/waybinder")
+
+# Find regular files in base_dir, pipe output to sed
+_waybinder_abbrvs=$(find "${_waybinder_base_dir}" -type f \( ! -iname ".*" \) | sort | sed "s?^${_waybinder_base_dir}/??g")
+
+# First option - backends and daemons
+while getopts "hTSF" opt; do
+    case ${opt} in
+        h)  # Helpy help help
+            _waybinder_help
+            exit ;;
+        T)  # Set Insert method to "Typing"
+            _waybinder_typing=1
+            break ;;
+        S)  # Set Insert method to "Slow Typing"
+            _waybinder_typing=2
+            break ;;
+        F)  # Set Insert method to "Full"
+            unset _waybinder_typing
+            break ;;
+        \?) # Error
+            _waybinder_help
+            exit 1 ;;
+    esac
+    shift "$((OPTIND-1))"
+done
+
+# Second option - backends and daemons
+while getopts "ywrd" opt; do
+    case ${opt} in
+        y)  # Use ydotool
+            if ! pgrep -f ydotoold &> /dev/null 2>&1; then
+                ydotoold -m > /dev/null 2>&1 &
+                _waybinder_daemonpid="$!"
+            fi
+            if [ "${_waybinder_typing}" == "1" ]; then
+                _waybinder_insert() {
+                    _waybinder_clip_paste | ydotool type -d 1 --file -
+                }
+            elif [ "${_waybinder_typing}" == "2" ]; then
+                _waybinder_insert() {
+                    _waybinder_clip_paste | ydotool type -d 15 --file -
+                }
+            else
+                _waybinder_insert() {
+                    ydotool key -d 1 42:1 110:1 110:0 42:0
+                }
+            fi
+            break ;;
+        w)  # Use wtype
+            if [ "${_waybinder_typing}" == "1" ]; then
+                _waybinder_insert() {
+                    _waybinder_clip_paste | wtype -d 1 -
+                }
+            elif [ "${_waybinder_typing}" == "2" ]; then
+                _waybinder_insert() {
+                    _waybinder_clip_paste | wtype -d 15 -
+                }
+            else
+                _waybinder_insert() {
+                    wtype -M Shift -P Insert -p Insert -m Shift
+                }
+            fi
+            break ;;
+        r)  # Use wlrctl
+            _waybinder_insert() {
+                wlrctl keyboard type "$(_waybinder_clip_paste)"
+            }
+            break ;;
+        d)  # Use dotool
+            if ! pgrep -f dotoold &> /dev/null 2>&1; then
+                dotoold > /dev/null 2>&1 &
+                _waybinder_daemonpid="$!"
+            fi
+            if [ "${_waybinder_typing}" == "1" ]; then
+                _waybinder_insert() {
+                    printf %s\\n 'keydelay 1' 'keyhold 1' 'typedelay 1' 'typehold 1' "type $(_waybinder_clip_paste)" | dotool
+                }
+            elif [ "${_waybinder_typing}" == "2" ]; then
+                _waybinder_insert() {
+                    printf %s\\n 'keydelay 15' 'keyhold 15' 'typedelay 15' 'typehold 15' "type $(_waybinder_clip_paste)" | dotool
+                }
+            else
+                _waybinder_insert() {
+                    printf %s\\n 'keydelay 1' 'keyhold 1' 'typedelay 1' 'typehold 1' 'key shift+k:110' | dotoolc
+                }
+            fi
+            break ;;
+        \?) # Error
+            _waybinder_help
+            exit 1 ;;
+    esac
+    shift "$((OPTIND-1))"
+done
+
+# Third option - clipboard
+while getopts "wyk" opt; do
+    case "${opt}" in
+        w)  # Use wl-clipboard
+            _waybinder_clip_paste() {
+                wl-paste -n
+            }
+            _waybinder_abbrvs_paste() {
+                _waybinder_abbrvs_expreg | wl-copy
+            }
+            _waybinder_abbrvs_paste_p() {
+                _waybinder_abbrvs_expreg | wl-copy -p
+            }
+            _waybinder_abbrvs_sh_paste() {
+                _waybinder_abbrvs_expsh | wl-copy
+            }
+            _waybinder_abbrvs_sh_paste_p() {
+                _waybinder_abbrvs_expsh | wl-copy -p
+            }
+            _waybinder_clip_copy_orig() {
+                echo -n "$_waybinder_clipboard" | wl-copy
+            }
+            break ;;
+        y)  # Use wayclip
+            _waybinder_clip_paste() {
+                waypaste
+            }
+            _waybinder_abbrvs_paste() {
+                _waybinder_abbrvs_expreg | waycopy
+            }
+            _waybinder_abbrvs_paste_p() {
+                _waybinder_abbrvs_expreg | waycopy -p
+            }
+            _waybinder_abbrvs_sh_paste() {
+                _waybinder_abbrvs_expsh | waycopy
+            }
+            _waybinder_abbrvs_sh_paste_p() {
+                _waybinder_abbrvs_expsh | waycopy -p
+            }
+            _waybinder_clip_copy_orig() {
+                echo -n "$_waybinder_clipboard" | waycopy
+            }
+            break ;;
+        k)  # Use klipper/dbus
+            _waybinder_clip_paste() {
+                qdbus6 org.kde.klipper /klipper getClipboardContents
+            }
+            _waybinder_abbrvs_paste() {
+                qdbus6 org.kde.klipper /klipper org.kde.klipper.klipper.setClipboardContents "$(_waybinder_abbrvs_expreg)"
+            }
+            _waybinder_abbrvs_paste_p() {
+                # There is no primary for klipper?
+                :
+            }
+            _waybinder_abbrvs_sh_paste() {
+                qdbus6 org.kde.klipper /klipper org.kde.klipper.klipper.setClipboardContents "$(_waybinder_abbrvs_expsh)"
+            }
+            _waybinder_abbrvs_sh_paste_p() {
+                # There is no primary for klipper?
+                :
+            }
+            _waybinder_clip_copy_orig() {
+                qdbus6 org.kde.klipper /klipper org.kde.klipper.klipper.setClipboardContents "$(echo -n "$_waybinder_clipboard")"
+            }
+            break ;;
+        \?) # Error
+            _waybinder_help
+            exit 1 ;;
+    esac
+    shift "$((OPTIND-1))"
+done
+
+# Fourth option - Dialog GUI
+while getopts "zyqkd" opt; do
+    case "${opt}" in
+        z)  # Use zenity
+            _waybinder_dia_main() {
+                # 'Echo'ing options instead of passing them directly to zenity allows names like '+1' or '-1'
+                echo "${_waybinder_abbrvs}" | tr ' ' '\n' | zenity --list --title=waybinder --text " Select or search by typing " --width="$_waybinder_geo_w" --height="$_waybinder_geo_h" --column="Sort"
+            }
+            _waybinder_dia_nodir() {
+                zenity --error --text="Abbreviation directory not found.\nIt has been created at\n${HOME}/.config/waybinder\nStart by adding text or script files.\n"
+            }
+            _waybinder_dia_abrverror() {
+                zenity --error --text="Abbreviation not found:\n${_waybinder_name}"
+            }
+            break ;;
+        y)  # Use yad
+            _waybinder_dia_main() {
+                # 'Echo'ing options instead of passing them directly to yad allows names like '+1' or '-1'
+                echo "${_waybinder_abbrvs}" | tr ' ' '\n' | yad --list --title=waybinder --search-column=1 --text " Select or search by typing " --geometry="$_waybinder_geo_w"x"$_waybinder_geo_h" --column=Sort:TEXT --separator=''
+            }
+            _waybinder_dia_nodir() {
+                yad --button="OK" --text="Abbreviation directory not found.\nIt has been created at\n${HOME}/.config/waybinder\nStart by adding text or script files.\n"
+            }
+            _waybinder_dia_abrverror() {
+                yad --button="OK" --text="Abbreviation not found:\n${_waybinder_name}"
+            }
+            break ;;
+        q)  # Use qarma
+            _waybinder_dia_main() {
+                # 'Echo'ing options instead of passing them directly to qarma allows names like '+1' or '-1'
+                echo "${_waybinder_abbrvs}" | tr ' ' '\n' | qarma --list --title=waybinder --text " Select or search by typing " --width="$_waybinder_geo_w" --height="$_waybinder_geo_h" --column="Sort"
+            }
+            _waybinder_dia_nodir() {
+                qarma --error --text="Abbreviation directory not found.<br>It has been created at<br>${HOME}/.config/waybinder<br>Start by adding text or script files.<br>"
+            }
+            _waybinder_dia_abrverror() {
+                qarma --error --text="Abbreviation not found:<br>${_waybinder_name}"
+            }
+            break ;;
+        k)  # Use kdialog
+            # kdialog requires 'tag item [tag item]' so we duplicate the entries with extra sed
+            _waybinder_abbrvs=$(find "${_waybinder_base_dir}" -type f \( ! -iname ".*" \) | sort | sed -e "s?^${_waybinder_base_dir}/??g" -e 's \(.*\) \1\ \1 ')
+            _waybinder_dia_main() {
+                # We wish we could quote the variable here but it breaks the parsing
+                kdialog --title "waybinder" --geometry "$_waybinder_geo_w"x"$_waybinder_geo_h" --menu "Select or search by typing" ${_waybinder_abbrvs}
+            }
+            _waybinder_dia_nodir() {
+                kdialog --sorry "Abbreviation directory not found.\nIt has been created at\n${HOME}/.config/waybinder\nStart by adding text or script files.\n"
+            }
+            _waybinder_dia_abrverror() {
+                kdialog --sorry "Abbreviation not found:\n${_waybinder_name}"
+            }
+            break ;;
+        d)  # Use dialog
+            # dialog requires 'tag item [tag item]' so we duplicate the entries with extra sed
+            _waybinder_abbrvs=$(find "${_waybinder_base_dir}" -type f \( ! -iname ".*" \) | sort | sed -e "s?^${_waybinder_base_dir}/??g" -e 's \(.*\) \1\ \1 ')
+            export _waybinder_abbrvs
+            # There is no unified way to check for default terminal so loop over a list of them
+            for terminal in "$TERMINAL" x-terminal-emulator konsole kitty foot gnome-terminal mate-terminal guake alacritty terminology wayst terminator xfce4-terminal urxvt rxvt termit Eterm aterm uxterm xterm roxterm termite lxterminal st qterminal lilyterm tilix terminix tilda hyper wezterm rio; do
+                if command -v "$terminal" > /dev/null 2>&1; then
+                    export TERMINAL="$terminal"
+                    break
+                fi
+            done
+            # Open a terminal and send the selection to tmp file
+            ${TERMINAL:-xterm} -e ${SHELL:-bash} -c 'dialog --title "waybinder" --notags --no-shadow --menu "Select or search by typing" 25 25 5 ${_waybinder_abbrvs} --output-fd 1 > /tmp/waybinder ; exit'
+            # Read tmp file contents to carry selection
+            _waybinder_dia_main() {
+                cat /tmp/waybinder
+            }
+            _waybinder_dia_nodir() {
+                dialog --no-shadow --msgbox "Abbreviation directory not found.\nIt has been created at\n${HOME}/.config/waybinder\nStart by adding text or script files.\n"
+            }
+            _waybinder_dia_abrverror() {
+                dialog --no-shadow --msgbox "Abbreviation not found:\n${_waybinder_name}"
+            }
+            break ;;
+        \?) # Error
+            _waybinder_help
+            exit 1 ;;
+    esac
+    shift "$((OPTIND-1))"
+done
+
+# Check for config dir
+if [ ! -d "${HOME}/.config/waybinder" ]; then
+    mkdir "${HOME}/.config/waybinder"
+    _waybinder_dia_nodir
+fi
+
+# Some math for the dialog geometry
+_waybinder_geo_w=$(( $(echo "$_waybinder_abbrvs" | wc -L) * 5 + 25 ))
+if [ $_waybinder_geo_w -lt 200 ]; then
+    _waybinder_geo_w=200
+elif [ $_waybinder_geo_w -gt 600 ]; then
+    _waybinder_geo_w=600
+fi
+_waybinder_geo_h=$(( $(echo "$_waybinder_abbrvs" | wc -l) * 30 + 50 ))
+if [ $_waybinder_geo_h -lt 200 ]; then
+    _waybinder_geo_h=200
+elif [ $_waybinder_geo_h -gt 600 ]; then
+    _waybinder_geo_h=600
+fi
+
+# The selection made by dialog
+_waybinder_name=$(_waybinder_dia_main)
+_waybinder_path="${_waybinder_base_dir}/${_waybinder_name}"
+
+_waybinder_abbrvs_expreg() {
+    echo -n "$(cat "$_waybinder_path")"
+}
+_waybinder_abbrvs_expsh() {
+    echo -n "$(eval "$(cat "$_waybinder_path")")"
+}
+
+if [ -f "${_waybinder_base_dir}/${_waybinder_name}" ]; then
+    if [ -e "$_waybinder_path" ]; then
+        # Preserve the current value of the clipboard
+        _waybinder_clipboard=$(_waybinder_clip_paste)
+        # Parse content of *.sh files, read regulars
+        if [ "${_waybinder_path: -3}" == ".sh" ]; then
+            # Put text in primary buffer for Shift+Insert pasting
+            _waybinder_abbrvs_sh_paste_p
+            # Put text in clipboard selection for apps like Firefox that insist on using the clipboard for all pasting
+            _waybinder_abbrvs_sh_paste
+        else
+            # Put text in primary buffer for Shift+Insert pasting
+            _waybinder_abbrvs_paste_p
+            # Put text in clipboard selection for apps like Firefox that insist on using the clipboard for all pasting
+            _waybinder_abbrvs_paste
+        fi
+        # Do the paste at cursor using Shift+Insert
+        sleep 0.001
+        _waybinder_insert
+        # Restore the original value of the clipboard
+        sleep 0.001
+        _waybinder_clip_copy_orig
+    else
+        _waybinder_dia_abrverror
+    fi
+fi
+
+# If we started it, kill the daemon
+if [ -v _waybinder_daemonpid ]; then
+    kill -15 "$_waybinder_daemonpid"
+fi
+
+exit 0

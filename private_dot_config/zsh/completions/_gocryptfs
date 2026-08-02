@@ -1,0 +1,78 @@
+#compdef gocryptfs
+
+_gocryptfs() {
+    local line
+    local -a common_opts
+
+    common_opts=(
+        '--acl[Enforce ACLs]'
+        '--aessiv[AES-SIV encryption]'
+        '--allow_other[Allow other users to access the filesystem]'
+        '--badname[Glob pattern invalid file names that should be shown]:glob pattern: '
+        '--config[Use specified config file]:config file:_files'
+        '--context[Set SELinux context]:context: '
+        '--cpuprofile[Write cpu profile to file]:file:_files'
+        '--ctlsock[Create control socket at path]:socket path:_files'
+        '--debug[Enable debug output]'
+        '--deterministic-names[Disable diriv file name randomisation]'
+        '--dev[Allow device files]'
+        '--exclude[Exclude relative path from reverse view]:path:_files'
+        '--exclude-from[File containing exclusion patterns]:file:_files'
+        '--exclude-wildcard[Exclude path with wildcards]:wildcard: '
+        '--exec[Allow executables]'
+        '--extpass[Use external program for password prompt]:program:_files'
+        '--fg[Stay in the foreground]'
+        '--fido2[Protect masterkey with FIDO2 token]:token id: '
+        '--fido2-assert-option[Options for fido2-assert]:options: '
+        '--force_owner[uid:gid pair to coerce ownership]:uid\:gid: '
+        '--fsck[Run a filesystem check on CIPHERDIR]'
+        '--fsname[Override the filesystem name]:name: '
+        '--fusedebug[Enable fuse library debug output]'
+        '--hh[Show long help text]'
+        '--hkdf[Use HKDF (default true)]'
+        '--idle[Auto-unmount after duration (e.g. 5m)]:duration: '
+        '--kernel_cache[Enable FUSE kernel_cache]'
+        '--ko[Pass additional options to kernel]:options: '
+        '--longnamemax[Hash encrypted names longer than this]:uint8: '
+        '--longnames[Store long names in extra files (default true)]'
+        '--masterkey[Mount with explicit master key]:key: '
+        '--memprofile[Write memory profile to file]:file:_files'
+        '--nodev[Deny device files]'
+        '--noexec[Deny executables]'
+        '--nofail[Ignored for fstab compatibility]'
+        '--nonempty[Allow mounting over non-empty directories]'
+        '--noprealloc[Disable preallocation]'
+        '--nosuid[Deny suid binaries]'
+        '--nosyslog[Do not redirect output to syslog]'
+        '--notifypid[Send USR1 to specific PID after mount]:pid:_pids'
+        '--one-file-system[Don’t cross filesystem boundaries]'
+        '--openssl[Use OpenSSL instead of Go crypto]:mode:(auto true false)'
+        '--passfile[Read password from file]:file:_files'
+        '--plaintextnames[Do not encrypt file names]'
+        '--quiet[Silence informational messages]'
+        '--raw64[Use unpadded base64 (default true)]'
+        '--reverse[Reverse mode]'
+        '--ro[Mount read-only]'
+        '--rw[Mount read-write]'
+        '--scryptn[scrypt cost parameter (10-28)]:n: '
+        '--serialize_reads[Try to serialize read operations]'
+        '--sharedstorage[Safety for concurrent access]'
+        '--speed[Run crypto speed test]'
+        '--suid[Allow suid binaries]'
+        '--trace[Write execution trace to file]:file:_files'
+        '--version[Print version]'
+        '--wpanic[Panic on warnings]'
+        '--xchacha[Use XChaCha20-Poly1305]'
+        '--zerokey[Use all-zero dummy master key]'
+    )
+
+    _arguments -S \
+        $common_opts \
+        '(-init -passwd -info)--init[Initialize encrypted directory]' \
+        '(-init -passwd -info)--passwd[Change password]' \
+        '(-init -passwd -info)--info[Display information about CIPHERDIR]' \
+        '1:CIPHERDIR:_files -/' \
+        '2:MOUNTPOINT:_files -/'
+}
+
+_gocryptfs "$@"

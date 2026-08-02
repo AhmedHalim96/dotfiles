@@ -1,0 +1,85 @@
+# 0. Shell OPTs
+fastfetch
+#
+#
+unsetopt completealiases
+unsetopt NOMATCH
+
+# Add custom completions to fpath
+fpath=(~/.config/zsh/completions $fpath)
+
+
+# Tweaks
+## Use fd to generate the list for path completion
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
+
+
+## Plugins  ##
+#
+# vi mode
+function zvm_after_lazy_keybindings() {
+  zvm_bindkey viins '^V' zvm_vi_edit_command_line
+  zvm_bindkey vicmd '^V' zvm_vi_edit_command_line
+
+}
+
+
+function zvm_config() {
+  ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+  #ZVM_VI_INSERT_ESCAPE_BINDKEY=jk  # Optional: use 'jk' to exit insert mode
+  ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+
+}
+
+# --- ANTIDOTE (Plugin Manager) ---
+source ~/.config/zsh/antidote/antidote.zsh
+# Static loading for speed - only bundles if plugins.txt changes
+antidote load ~/.config/zsh/plugins.txt
+
+# zstyle
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+zstyle ':fzf-tab:*' instant-prefix-query yes
+zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:*' fzf-flags $(echo $FZF_DEFAULT_OPTS)
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"
+# Set the cache to expire after 24 hours (so you see new packages eventually)
+zstyle ':completion:*:complete:dnf:*' expire 1
+
+# ---  ATUIN (Better History) ---
+# We initialize it before Starship for a cleaner prompt hook
+eval "$(atuin init zsh)"
+
+# ---  STARSHIP (Prompt) ---
+eval "$(starship init zsh)"
+
+# Initialize fnm
+eval "$(fnm env --use-on-cd --shell zsh)"
+
+# --- ZSH SETTINGS ---
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="$ZDOTDIR/.zsh_history"
+
+# zoxide
+eval "$(zoxide init zsh --cmd j)"
+
+# python env
+source ~/venv/bin/activate
+
+# --- ALIASES ---
+source ~/.config/zsh/alias.zsh
+
+# Basic completions
+autoload -Uz compinit && compinit
+
+# broot
+source /home/ahmed/.config/broot/launcher/bash/br

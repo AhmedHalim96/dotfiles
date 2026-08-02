@@ -1,0 +1,79 @@
+#compdef waydroid
+
+_waydroid() {
+    local curcontext="$curcontext" state line ret=1
+    typeset -A opt_args
+
+    _arguments -C \
+        '(-h --help)'{-h,--help}'[show help message]' \
+        '(-V --version)'{-V,--version}'[show version]' \
+        '(-l --log)'{-l,--log}'[path to log file]:log file:_files' \
+        '--details-to-stdout[print details to stdout]' \
+        '(-v --verbose)'{-v,--verbose}'[verbose output]' \
+        '(-q --quiet)'{-q,--quiet}'[quiet mode]' \
+        '1:action:->action' \
+        '*::arg:->args' && ret=0
+
+    case $state in
+        action)
+            local -a actions
+            actions=(
+                'status:Quick check for Waydroid'
+                'log:Follow the waydroid logfile'
+                'init:Set up configs and install images'
+                'upgrade:Upgrade images'
+                'session:Session controller'
+                'container:Container controller'
+                'app:Applications controller'
+                'prop:Android properties controller'
+                'show-full-ui:Show Android in a window'
+                'first-launch:Start and initialize if needed'
+                'shell:Run remote shell command'
+                'logcat:Show Android logcat'
+                'adb:Manage ADB connection'
+                'bugreport:Create a bugreport archive'
+            )
+            _describe -t actions 'waydroid action' actions && ret=0
+        ;;
+        args)
+            case $line[1] in
+                init)
+                    _arguments \
+                        '-f[force initialization]' \
+                        '-i[initialize from location]:location:_files -/' \
+                        '-s[system type]:type:(VANILLA FOSS GAPPS)' \
+                        '-r[rom type]:type:(lineage bliss)' && ret=0
+                ;;
+                app)
+                    _arguments '1:app action:(install list launch remove search)' \
+                               '2:args:->app_args' && ret=0
+                    if [[ $state == "app_args" ]]; then
+                        case $words[CURRENT-1] in
+                            install) _files -g "*.apk" ;;
+                            launch|remove) _message "package name (e.g. com.android.settings)" ;;
+                        esac
+                    fi
+                ;;
+                session)
+                    _arguments '1:session action:(start stop)' && ret=0
+                ;;
+                container)
+                    _arguments '1:container action:(start stop restart freeze unfreeze)' && ret=0
+                ;;
+                prop)
+                    _arguments '1:prop action:(get set)' \
+                               '2:property:->prop_key' \
+                               '3:value:->prop_val' && ret=0
+                ;;
+                log)
+                    _arguments \
+                        '(-n --lines)'{-n,--lines}'[number of lines]:lines:' \
+                        '(-c --clear)'{-c,--clear}'[clear the log]' && ret=0
+                ;;
+            esac
+        ;;
+    esac
+    return ret
+}
+
+_waydroid "$@"
