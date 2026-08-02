@@ -340,5 +340,3 @@ jj() {
 lf () {
  jj $@
 }
-
-alias test3="echo 'Hello from the terminal'"
