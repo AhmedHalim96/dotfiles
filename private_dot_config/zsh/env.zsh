@@ -17,6 +17,7 @@ export TERMINAL_FM="spf"
 export GITSTATUS_LOG_LEVEL=DEBUG
 export TERMINAL="kitty"
 export MANPAGER="nvim +Man!"
+export GTK_USE_PORTAL=1
 export ZVM_VI_EDITOR=nvim
 #export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 export HISTDB_FILE="$HOME/.cache/zshhistory"
