@@ -166,7 +166,7 @@
          :spacing 0
       (for client in {jq(mango_clients, "[.clients[] | select(.monitor == \"${mon_name}\" and .is_visible)]")}
         (button :class "client-item ${client.is_focused ? 'focused' : ''}"
-                :onclick "mmsg dispatch focusid,${client.id} && wl-copy \"${client}\""
+                :onclick "mmsg dispatch focusid,${client.id}"
                 :onmiddleclick "kill ${client.pid}"
                 :tooltip "${client.title}"
           (box :space-evenly false
