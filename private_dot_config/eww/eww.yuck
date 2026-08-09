@@ -1,0 +1,218 @@
+;; ============================================================
+;; POLLS
+;; ============================================================
+(defpoll network_data :interval "30s"
+  "./scripts/net_info.sh")
+
+(defpoll weather :interval "30m"
+  `./scripts/weather.sh`)
+
+(defpoll top_procs :interval "1s"
+  `./scripts/top_procs.sh`)
+
+
+
+;; ============================================================
+;; WIDGETS
+;; ============================================================
+(defwidget net_widget []
+  (box :class "net-box" :orientation "v" :space-evenly false
+    (label :class "net-title" :text " Network Usage")
+
+    (box :orientation "h" :class "stats-row" :space-evenly true
+      (box :orientation "v" :class "net-column"
+        (label :class "net-label" :text "Today")
+        (label :class "net-value" :text "${network_data.today}"))
+      (box :orientation "v" :class "net-column"
+        (label :class "net-label" :text "Month")
+        (label :class "net-value" :text "${network_data.month}")))
+  )
+)
+
+;; Power Menu Widget
+(defwidget powermenu_widget []
+  (box :class "powermenu" :orientation "h" :space-evenly true
+    (button :class "shutdown" :onclick "systemctl poweroff" "")
+    (button :class "reboot"   :onclick "systemctl reboot" "")
+    (button :class "suspend"  :onclick "systemctl suspend" "")
+    (button :class "logout"   :onclick "hyprctl dispatch exit" "")
+    (button :class "lock"     :onclick "hyprlock" "")
+    (button :class "close-btn" :onclick "eww close powermenu" "")))
+
+;; weather_widget
+(defwidget weather_widget []
+  (box :class "weather-card" :orientation "h" :space-evenly false
+    (label :class "weather-icon" :text {weather.icon})
+    (box :orientation "v" :valign "center" :halign "start"
+      (box :orientation "h" :space-evenly false
+        (label :class "weather-temp" :text "${weather.temp}°")
+        (label :class "weather-feels" :text "(${weather.feels}°)"))
+      (label :class "weather-desc" :text {weather.desc}))))
+
+
+;; top procs WIDGETS
+(defwidget proc_item [name cpu]
+  (box :class "proc-item" :orientation "h" :space-evenly true
+    (label :class "proc-name" :text name :halign "start" :width 80)
+    (label :class "proc-cpu" :text cpu :halign "end")))
+
+(defwidget processes_widget []
+  (box :class "proc-card" :orientation "v" :space-evenly false
+    (box :class "proc-title" :orientation "h" :space-evenly false :halign "center" :valign "center"
+    (label :class "proc-title-icon" :text "" :halign "center")
+    (label :class "proc-title-text" :text " Top Processes" :halign "start")
+    )
+    (box :orientation "v" :class "proc-list"
+      (for proc in top_procs
+        (proc_item :name {proc.name} :cpu {proc.cpu})))))
+
+
+;; ============================================================
+;; WINDOWS
+;; ============================================================
+(defwindow powermenu
+  :monitor 1
+  :stacking "fg"
+  :focusable true
+  :geometry (geometry :x "0%" :y "0%" :width "600px" :height "120px" :anchor "center")
+  (powermenu_widget))
+
+(defwindow weather
+  :monitor 0
+  :geometry (geometry :x "20px" :y "20px" :width "280px" :height "100px" :anchor "top left")
+  :stacking "bottom"
+  (weather_widget))
+
+(defwindow network
+  :monitor 0
+  :stacking "bottom"
+  :geometry (geometry :x "20px" :y "140px" :width "280px" :height "100px" :anchor "top left")
+  (net_widget))
+
+(defwindow top_procs
+  :monitor 0
+  :geometry (geometry :x "20px" :y "260px" :width "280px" :height "200px" :anchor "top left")
+  :stacking "bottom"
+  (processes_widget))
+
+
+;; ============================================================
+;; LYRICS
+;; ============================================================
+
+(deflisten music_lyrics "lyricsmpris --pipe")
+
+(defwindow lyrics_overlay
+  :monitor 1
+  :geometry (geometry :x "33%"
+                      :y "-30px"
+                      :width "30%"
+                      :height "20px"
+                      :anchor "top left")
+  :stacking "fg"
+  :exclusive false
+  :focusable false
+  :class "lyrics-overlay"
+  (lyrics_layout))
+
+(defwidget lyrics_layout []
+  (eventbox :onclick "playerctl play-pause"
+            :cursor "pointer"
+    (box :class "lyrics-box"
+      :visible {music_lyrics != ""}
+      (label :class "lyrics-text"
+             :text  "♪ ${music_lyrics} ♪"
+             :limit-width 100))))
+
+
+
+; ============================================================
+;; Mango Tag / Workspace Switcher Widget
+;; ============================================================
+
+(deflisten mango_tags
+  :initial '{"all_tags":[{"monitor":"","tags":[]},{"monitor":"","tags":[]}]}'
+  `mmsg watch all-tags`)
+
+(defwidget workspace_switcher [mon_name]
+  (eventbox :onscroll "[ {} = 'up' ] && mmsg dispatch viewtoright || mmsg dispatch viewtoleft"
+    (box :class "tags-box"
+         :space-evenly false
+         :spacing 0
+      (for tag in {jq(mango_tags, ".all_tags[] | select(.monitor == \"${mon_name}\").tags")}
+        (button :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
+                :onclick "mmsg dispatch view, ${tag.index}"
+                :onrightclick "mmsg dispatch toggleview, ${tag.index}"
+          (box :space-evenly false
+               :spacing 4
+            (label :class "tag-index"
+                   :text "${tag.index}")))))))
+
+;; ============================================================
+;; Mango WM Active Clients / Taskbar Widget
+;; ============================================================
+
+(deflisten mango_clients
+  :initial '{"clients":[]}'
+  `mmsg watch all-clients`)
+
+(defwidget active_clients [mon_name]
+  ;; Wrapping in scroll handles large amounts of open windows without breaking the bar layout
+  (scroll :hscroll true
+          :vscroll false
+          :hexpand true
+    (box :class "clients-box"
+         :space-evenly false
+         :spacing 0
+      (for client in {jq(mango_clients, "[.clients[] | select(.monitor == \"${mon_name}\" and .is_visible)]")}
+        (button :class "client-item ${client.is_focused ? 'focused' : ''}"
+                :onclick "mmsg dispatch focusid,${client.id} && wl-copy \"${client}\""
+                :onmiddleclick "kill ${client.pid}"
+                :tooltip "${client.title}"
+          (box :space-evenly false
+               :spacing 6
+            (image :class "client-icon"
+                   :icon "${client.appid}"
+                   :image-width 18
+                   :image-height 18)
+            (label :class "client-title"
+                   :text "${client.title}"
+                   :limit-width 20)))))))
+
+;; ============================================================
+;; Combined Responsive Bar Layout
+;; ============================================================
+
+(defwidget bar_layout [mon_name]
+  (box :class "bar-container"
+       :orientation "h"
+       :space-evenly false
+       :spacing 10
+    (workspace_switcher :mon_name mon_name)
+    (active_clients :mon_name mon_name)))
+
+;; Unified Window for Laptop Monitor (eDP-1)
+(defwindow bar_0
+    :monitor 0
+    :geometry (geometry :x "0%"
+                        :y "-30px"
+                        :width "66%"
+                        :height "30px"
+                        :anchor "top left")
+    :stacking "fg"
+    :exclusive false
+    :namespace "eww"
+    (bar_layout :mon_name "eDP-1"))
+
+;; Unified Window for HDMI Monitor (HDMI-A-1)
+(defwindow bar_1
+    :monitor 1
+    :geometry (geometry :x "0%"
+                        :y "-30px"
+                        :width "66%"
+                        :height "30px"
+                        :anchor "top left")
+    :stacking "fg"
+    :exclusive false
+    :namespace "eww"
+    (bar_layout :mon_name "HDMI-A-1"))
