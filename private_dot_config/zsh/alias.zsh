@@ -152,7 +152,7 @@ alias btr="bluetoothctl remove"
 # zellij
 alias zj="zellij"
 alias zjl="zellij ls"
-alias zjn="zellij new-session"
+alias zjn="zellij --session="
 alias zjattach="zellij attach"
 alias zja="zellij a"
 
