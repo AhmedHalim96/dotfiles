@@ -3,7 +3,7 @@
 # android
 export ANDROID_HOME="$HOME/Android/Sdk"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
-export NDK_HOME="$ANDROID_HOME/ndk/29.0.13846066"
+export NDK_HOME="$ANDROID_HOME/ndk/30.0.15729638"
 # SDK Tool Paths
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
 export PATH="$PATH:$ANDROID_HOME/platform-tools"
