@@ -1,145 +1,32 @@
 ;; ============================================================
-;; POLLS
-;; ============================================================
-(defpoll network_data :interval "30s"
-  "./scripts/net_info.sh")
-
-(defpoll weather :interval "30m"
-  `./scripts/weather.sh`)
-
-(defpoll top_procs :interval "1s"
-  `./scripts/top_procs.sh`)
-
-
-
-;; ============================================================
-;; WIDGETS
-;; ============================================================
-(defwidget net_widget []
-  (box :class "net-box" :orientation "v" :space-evenly false
-    (label :class "net-title" :text " Network Usage")
-
-    (box :orientation "h" :class "stats-row" :space-evenly true
-      (box :orientation "v" :class "net-column"
-        (label :class "net-label" :text "Today")
-        (label :class "net-value" :text "${network_data.today}"))
-      (box :orientation "v" :class "net-column"
-        (label :class "net-label" :text "Month")
-        (label :class "net-value" :text "${network_data.month}")))
-  )
-)
-
-;; Power Menu Widget
-(defwidget powermenu_widget []
-  (box :class "powermenu" :orientation "h" :space-evenly true
-    (button :class "shutdown" :onclick "systemctl poweroff" "")
-    (button :class "reboot"   :onclick "systemctl reboot" "")
-    (button :class "suspend"  :onclick "systemctl suspend" "")
-    (button :class "logout"   :onclick "hyprctl dispatch exit" "")
-    (button :class "lock"     :onclick "hyprlock" "")
-    (button :class "close-btn" :onclick "eww close powermenu" "")))
-
-;; weather_widget
-(defwidget weather_widget []
-  (box :class "weather-card" :orientation "h" :space-evenly false
-    (label :class "weather-icon" :text {weather.icon})
-    (box :orientation "v" :valign "center" :halign "start"
-      (box :orientation "h" :space-evenly false
-        (label :class "weather-temp" :text "${weather.temp}°")
-        (label :class "weather-feels" :text "(${weather.feels}°)"))
-      (label :class "weather-desc" :text {weather.desc}))))
-
-
-;; top procs WIDGETS
-(defwidget proc_item [name cpu]
-  (box :class "proc-item" :orientation "h" :space-evenly true
-    (label :class "proc-name" :text name :halign "start" :width 80)
-    (label :class "proc-cpu" :text cpu :halign "end")))
-
-(defwidget processes_widget []
-  (box :class "proc-card" :orientation "v" :space-evenly false
-    (box :class "proc-title" :orientation "h" :space-evenly false :halign "center" :valign "center"
-    (label :class "proc-title-icon" :text "" :halign "center")
-    (label :class "proc-title-text" :text " Top Processes" :halign "start")
-    )
-    (box :orientation "v" :class "proc-list"
-      (for proc in top_procs
-        (proc_item :name {proc.name} :cpu {proc.cpu})))))
-
-
-;; ============================================================
-;; WINDOWS
-;; ============================================================
-(defwindow powermenu
-  :monitor 1
-  :stacking "fg"
-  :focusable true
-  :geometry (geometry :x "0%" :y "0%" :width "600px" :height "120px" :anchor "center")
-  (powermenu_widget))
-
-(defwindow weather
-  :monitor 0
-  :geometry (geometry :x "20px" :y "20px" :width "280px" :height "100px" :anchor "top left")
-  :stacking "bottom"
-  (weather_widget))
-
-(defwindow network
-  :monitor 0
-  :stacking "bottom"
-  :geometry (geometry :x "20px" :y "140px" :width "280px" :height "100px" :anchor "top left")
-  (net_widget))
-
-(defwindow top_procs
-  :monitor 0
-  :geometry (geometry :x "20px" :y "260px" :width "280px" :height "200px" :anchor "top left")
-  :stacking "bottom"
-  (processes_widget))
-
-
-;; ============================================================
-;; LYRICS
+;; Dynamic Variables & Listeners
 ;; ============================================================
 
-(deflisten music_lyrics "lyricsmpris --pipe")
+(deflisten mango :initial '{"tags":{},"clients":{}}'
+  `scripts/get-mango.py`)
 
-(defwindow lyrics_overlay
-  :monitor 1
-  :geometry (geometry :x "33%"
-                      :y "-30px"
-                      :width "30%"
-                      :height "20px"
-                      :anchor "top left")
-  :stacking "fg"
-  :exclusive false
-  :focusable false
-  :class "lyrics-overlay"
-  (lyrics_layout))
+(deflisten clock :initial '{"time": "--:--", "day": "", "date": ""}'
+  `scripts/get-time.sh`)
 
-(defwidget lyrics_layout []
-  (eventbox :onclick "playerctl play-pause"
-            :cursor "pointer"
-    (box :class "lyrics-box"
-      :visible {music_lyrics != ""}
-      (label :class "lyrics-text"
-             :text  "♪ ${music_lyrics} ♪"
-             :limit-width 100))))
+(deflisten audio :initial '{"volume": 0, "is_muted": false, "active_sink": "Unknown", "sinks": []}'
+  `scripts/get-audio.sh`)
 
+(deflisten mpris :initial '{"status": "Stopped", "title": "Nothing Playing", "artist": "", "album": "", "artUrl": "", "player": ""}'
+  `scripts/get-mpris.py`)
 
+(deflisten network :initial '{"iface": "Disconnected", "icon": "󰤭 ", "down": "0 B/s", "up": "0 B/s"}'
+  `scripts/get-network.py`)
 
-; ============================================================
-;; Mango Tag / Workspace Switcher Widget
 ;; ============================================================
-
-(deflisten mango_tags
-  :initial '{"all_tags":[{"monitor":"","tags":[]},{"monitor":"","tags":[]}]}'
-  `mmsg watch all-tags`)
+;; Left Widgets (Workspaces & Active Clients)
+;; ============================================================
 
 (defwidget workspace_switcher [mon_name]
   (eventbox :onscroll "[ {} = 'up' ] && mmsg dispatch viewtoright || mmsg dispatch viewtoleft"
     (box :class "tags-box"
          :space-evenly false
          :spacing 0
-      (for tag in {jq(mango_tags, ".all_tags[] | select(.monitor == \"${mon_name}\").tags")}
+      (for tag in {mango.tags[mon_name] ?: []}
         (button :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
                 :onclick "mmsg dispatch view, ${tag.index}"
                 :onrightclick "mmsg dispatch toggleview, ${tag.index}"
@@ -148,23 +35,14 @@
             (label :class "tag-index"
                    :text "${tag.index}")))))))
 
-;; ============================================================
-;; Mango WM Active Clients / Taskbar Widget
-;; ============================================================
-
-(deflisten mango_clients
-  :initial '{"clients":[]}'
-  `mmsg watch all-clients`)
-
 (defwidget active_clients [mon_name]
-  ;; Wrapping in scroll handles large amounts of open windows without breaking the bar layout
   (scroll :hscroll true
           :vscroll false
           :hexpand true
     (box :class "clients-box"
          :space-evenly false
          :spacing 0
-      (for client in {jq(mango_clients, "[.clients[] | select(.monitor == \"${mon_name}\" and .is_visible)]")}
+      (for client in {mango.clients[mon_name] ?: []}
         (button :class "client-item ${client.is_focused ? 'focused' : ''}"
                 :onclick "mmsg dispatch focusid,${client.id}"
                 :onmiddleclick "kill ${client.pid}"
@@ -178,41 +56,259 @@
             (label :class "client-title"
                    :text "${client.title}"
                    :limit-width 20)))))))
+;; ============================================================
+;; Right Widgets (Tray, System Stats, Clock)
+;; ============================================================
+
+(defwidget network_widget []
+  (box :class "net-box"
+       :space-evenly false
+       :spacing 6
+       :tooltip "Interface: ${network.iface} | Down: ${network.down} | Up: ${network.up}"
+    (box :orientation "h" :spacing 6 :space-evenly false :valign "center"
+      (label :class "net-text down" :text "󰁅 ${network.down}" :halign "start")
+      (label :class "net-text up" :text "󰁝 ${network.up}" :halign "start"))))
+
+(defwidget sys_tray []
+  (box :class "tray-box"
+       :space-evenly false
+    (systray :class "tray-items"
+             :pack-direction "ltr"
+             :icon-size 16
+             :spacing 6
+             :prepend-new true)))
+
+(defwidget sys_stats [mon_id]
+  (box :class "stats-box"
+       :space-evenly false
+       :spacing 12
+    (box :class "stat-item" :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
+      (label :class "stat-icon cyan" :text "󰍛 ")
+      (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
+
+    (box :class "stat-item" :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
+      (label :class "stat-icon magenta" :text "󰻠 ")
+      (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
+
+    ;; Multi-Action Volume & Sink Indicator
+    (eventbox :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+              :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+              :onclick "eww open --toggle audio_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
+              :onmiddleclick "pavucontrol &"
+              :cursor "pointer"
+      (box :class "stat-item"
+           :tooltip "Volume: ${audio.volume}% | Device: ${audio.active_sink} | Left: Mute | Right: Devices | Mid: Pavucontrol"
+        (label :class "stat-icon ${audio.is_muted ? 'red' : 'cyan'}"
+               :text "${audio.is_muted ? '󰝟 ' : audio.volume > 70 ? '󰕾 ' : audio.volume > 30 ? '󰖀 ' : '󰕿 '}")
+        (label :class "stat-text" :text "${audio.is_muted ? 'Muted' : '${audio.volume}%'}")))
+
+    (box :class "stat-item"
+         :visible {EWW_BATTERY != ""}
+         :tooltip "Battery: ${EWW_BATTERY.BAT0.capacity}% (${EWW_BATTERY.BAT0.status})"
+      (label :class "stat-icon magenta"
+             :text "${EWW_BATTERY.BAT0.status == 'Charging' ? '󰂄 ' : '󰁹 '}")
+      (label :class "stat-text" :text "${EWW_BATTERY.BAT0.capacity}%"))))
+
+(defwidget clock [mon_id]
+  (eventbox :onclick "eww open --toggle calendar_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
+            :cursor "pointer"
+            (box :class "clock-box"
+                     :space-evenly false
+                     :spacing 6
+                     :tooltip "${clock.time} ${clock.date}"
+            (label :class "clock-icon" :text "󰥔 ")
+            (label :class "clock-time" :text "${clock.time} ${clock.day} ${clock.date}"))))
+
+(defwidget right_section [mon_id]
+  (box :class "right-box"
+       :space-evenly false
+       :halign "end"
+       :spacing 8
+
+    (network_widget)
+    (sys_stats :mon_id mon_id)
+    (sys_tray)
+    (clock :mon_id mon_id)))
+
 
 ;; ============================================================
-;; Combined Responsive Bar Layout
+;; Combined Bar Layout Container
 ;; ============================================================
 
-(defwidget bar_layout [mon_name]
-  (box :class "bar-container"
-       :orientation "h"
+(defwidget bar_layout [mon_name mon_id]
+  (centerbox :class "bar-container"
+             :orientation "h"
+    ;; Left Slot: Box expands to take full left space
+    (box :space-evenly false
+         :spacing 10
+         :hexpand true
+      (workspace_switcher :mon_name mon_name)
+      (active_clients :mon_name mon_name))
+
+    ;; Center Slot
+    (box)
+
+    ;; Right Slot
+    (right_section :mon_id mon_id)))
+
+;; ============================================================
+;; Popup Widgets
+;; ============================================================
+
+(defwidget calendar_widget []
+  (box :class "popup-card"
+    (calendar :class "custom-calendar"
+              :show-details true
+              :show-heading true
+              :show-day-names true)))
+
+(defwidget mpris_widget []
+  (box :class "mpris-card"
+       :orientation "v"
        :space-evenly false
        :spacing 10
-    (workspace_switcher :mon_name mon_name)
-    (active_clients :mon_name mon_name)))
+       :visible {mpris.status != "Stopped"}
+    (box :space-evenly false :spacing 12
+      ;; Album Art / Fallback Icon
+      (image :class "mpris-art-box"
+        :path "${mpris.artUrl}"
+        :image-width 64
+        :image-height 64
+        (label :class "mpris-art-icon"
+               :visible {mpris.artUrl == ""}
+               :text "󰎈"))
 
-;; Unified Window for Laptop Monitor (eDP-1)
+      ;; Track Details
+      (box :orientation "v" :space-evenly false :spacing 2 :valign "center"
+        (label :class "mpris-title" :text "${mpris.title}" :limit-width 22 :halign "start")
+        (label :class "mpris-artist" :text "${mpris.artist}" :limit-width 24 :halign "start")
+        (label :class "mpris-player" :text "${mpris.player}" :halign "start")))
+
+    ;; Track Playback Controls
+    (box :class "mpris-controls" :halign "center" :spacing 18
+      (eventbox :onclick "playerctl previous" :cursor "pointer"
+        (label :class "mpris-btn" :text "󰒮"))
+      (eventbox :onclick "playerctl play-pause" :cursor "pointer"
+        (label :class "mpris-btn play-pause"
+               :text "${mpris.status == 'Playing' ? '󰏤' : '󰐊'}"))
+      (eventbox :onclick "playerctl next" :cursor "pointer"
+        (label :class "mpris-btn" :text "󰒭")))))
+
+(defwidget sink_switcher_widget [mon_id]
+  (box :class "popup-card sink-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+    (label :class "popup-title" :text "Audio Output Devices" :halign "start")
+    (for sink in {audio.sinks}
+      (eventbox :class "sink-item ${sink.is_default ? 'active' : ''}"
+                :onclick "pactl set-default-sink '${sink.id}' && eww close audio_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box :class "sink-item-content" :space-evenly false :spacing 8
+          (label :class "sink-icon ${sink.is_default ? 'cyan' : ''}"
+                 :text "${sink.is_default ? '󰋋' : '󰓃'}")
+          (label :class "sink-name"
+                 :text "${sink.description}"
+                 :limit-width 26))))))
+
+(defwidget audio_popup_widget [mon_id]
+  (box :class "popup-card audio-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+
+    ;; MPRIS Media Player Section (Only renders when media is active/paused)
+    (mpris_widget)
+    (sink_switcher_widget :mon_id mon_id)))
+
+;; ============================================================
+;; Popup Window Definitions (Monitor Specific)
+;; ============================================================
+
+(defwindow calendar_popup_0
+  :monitor 0
+  :geometry (geometry :x "8px"
+                      :y "0px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (calendar_widget))
+
+
+(defwindow calendar_popup_1
+  :monitor 1
+  :geometry (geometry :x "8px"
+                      :y "0px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (calendar_widget))
+
+
+(defwindow audio_popup_0
+  :monitor 0
+  :geometry (geometry :x "90px"
+                      :y "0px"
+                      :width "240px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (audio_popup_widget :mon_id 0))
+
+(defwindow audio_popup_1
+  :monitor 1
+  :geometry (geometry :x "90px"
+                      :y "0px"
+                      :width "240px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (audio_popup_widget  :mon_id 1))
+
+(defwindow popup_closer_0
+  :monitor 0
+  :geometry (geometry :width "100%" :height "100%")
+  :stacking "fg"
+  :namespace "eww-popup-closer"
+  (eventbox :onclick "eww close audio_popup_0 calendar_popup_0 popup_closer_0"))
+
+(defwindow popup_closer_1
+  :monitor 1
+  :geometry (geometry :width "100%" :height "100%")
+  :stacking "fg"
+  :namespace "eww-popup-closer"
+  (eventbox :onclick "eww close audio_popup_1 calendar_popup_1 popup_closer_1"))
+
+;; ============================================================
+;; Main Bar Window Declarations
+;; ============================================================
+
+;; Laptop Monitor (eDP-1)
 (defwindow bar_0
     :monitor 0
     :geometry (geometry :x "0%"
-                        :y "-30px"
-                        :width "66%"
-                        :height "30px"
-                        :anchor "top left")
+                        :y "0%"
+                        :width "100%"
+                        :height "28px"
+                        :anchor "top center")
     :stacking "fg"
-    :exclusive false
+    :exclusive true
+    :focusable false
     :namespace "eww"
-    (bar_layout :mon_name "eDP-1"))
+    (bar_layout :mon_name "eDP-1" :mon_id 0))
 
-;; Unified Window for HDMI Monitor (HDMI-A-1)
+;; HDMI Monitor (HDMI-A-1)
 (defwindow bar_1
     :monitor 1
     :geometry (geometry :x "0%"
-                        :y "-30px"
-                        :width "66%"
-                        :height "30px"
-                        :anchor "top left")
+                        :y "0%"
+                        :width "100%"
+                        :height "28px"
+                        :anchor "top center")
     :stacking "fg"
-    :exclusive false
+    :exclusive true
+    :focusable false
     :namespace "eww"
-    (bar_layout :mon_name "HDMI-A-1"))
+    (bar_layout :mon_name "HDMI-A-1" :mon_id 1))
