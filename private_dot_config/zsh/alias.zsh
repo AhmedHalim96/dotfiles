@@ -342,3 +342,10 @@ jj() {
 lf () {
  jj $@
 }
+
+touchs () {
+  touch $@
+  vim $@
+  chmod +x $@
+  echo "File $@ created && executable"
+}
