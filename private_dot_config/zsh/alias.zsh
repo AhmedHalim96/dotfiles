@@ -345,7 +345,7 @@ lf () {
 
 touchs () {
   touch $@
-  vim $@
+  $EDITOR $@
   chmod +x $@
   echo "File $@ created && executable"
 }
