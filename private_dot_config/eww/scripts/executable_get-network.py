@@ -48,7 +48,7 @@ def main():
         last_rx, last_tx = read_bytes(iface)
 
     while True:
-        time.sleep(1)
+        time.sleep(2)
         curr_time = time.time()
         dt = curr_time - last_time
         last_time = curr_time
