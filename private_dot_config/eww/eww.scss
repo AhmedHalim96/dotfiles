@@ -22,6 +22,17 @@ $surface: #181b28;
 $surface-high: #1a1d2b;
 $surface-highest: #202436;
 
+$green: #a6e3a1;
+$yellow: #f9e2af;
+$red: #f38ba8;
+$orange: #fab387;
+$blue: #89b4fa;
+
+
+* {
+  font-family: "Ubuntomono nerd font";
+}
+
 /* ============================================================
    Window Base
    ============================================================ */
@@ -162,6 +173,7 @@ window {
 
     .stat-icon {
       font-weight: bold;
+      font-size: 16px;
 
       &.cyan {
         color: $secondary;
@@ -180,8 +192,7 @@ window {
 
 /* Clock Widget */
 .clock-box {
-  background-color: rgba($primary, 0.2);
-  border: 1px solid rgba($primary, 0.5);
+background-color: rgba($surface-lowest, 0.5);
   border-radius: 8px;
   padding: 2px 10px;
 
@@ -192,7 +203,7 @@ window {
 
   .clock-time {
     color: $primary-text;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 12px;
   }
 }
@@ -337,7 +348,7 @@ window {
         font-size: 20px;
         color: $primary;
 
-        &:hover {
+       &:hover {
           color: lighten(#c50ed2, 20%);
         }
       }
@@ -360,5 +371,178 @@ window {
       &.up {
         color: $primary; /* #c50ed2 */
       }
+    }
+  }
+
+  .lyrics-overlay {
+  }
+
+  .lyrics-box {
+	padding: 2px 4px;
+	border-radius: 12px;
+  }
+
+  .lyrics-text {
+	color: #009688;
+	font-weight: 400;
+	font-size: 16px;
+	font-family: "Sansita Swashed", "Ubuntu Nerd Font", "Noto Sans";
+
+  }
+
+  .tray-btn-box {
+    padding: 0 4px;
+
+    &:hover .stat-icon {
+      color: $primary;
+    }
+  }
+
+  /* Tray Popup Card */
+  .tray-popup-box {
+    padding: 10px 14px;
+    min-width: 130px;
+
+  }
+
+  .tray-icons {
+    padding: 4px 0;
+
+    image {
+      padding: 2px;
+      border-radius: 4px;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        background-color: rgba($fg, 0.1);
+      }
+    }
+  }
+
+
+  .notification-box {
+    padding: 0 4px;
+
+    .notification-icon {
+      font-size: 22px;
+      color: $fg;
+
+      /* DND active modes */
+      &.dnd-none,
+      &.dnd-notification,
+      &.dnd-inhibited-none,
+      &.dnd-inhibited-notification {
+        color: $primary;
+      }
+
+      /* Unread notification highlight */
+      &.notification {
+        color: $secondary;
+      }
+    }
+
+    .notification-count {
+      font-size: 10px;
+      font-weight: 700;
+      color: $secondary;
+      padding-left: 2px;
+    }
+  }
+
+  /* Base Battery Widget Container */
+  .battery-box {
+    padding: 4px 10px;
+    border-radius: 12px;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: darken($color: $surface-lowest, $amount: 10);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .bat-icon {
+      font-size: 15px;
+      color: $fg;
+    }
+
+    .bat-percentage {
+      font-size: 12px;
+      font-weight: 600;
+      color: $fg;
+    }
+
+    .profile-badge {
+      font-size: 11px;
+      margin-left: 2px;
+      color: $blue;
+    }
+
+    /* --------------------------------------------------------
+     * Battery State Modifiers
+     * -------------------------------------------------------- */
+
+    /* Charging state */
+    &.charging {
+      border-color: rgba($green, 0.4);
+
+      .bat-icon {
+        color: $green;
+      }
+    }
+
+    /* Warning state (<= 30%) */
+    &.low {
+      border-color: rgba($yellow, 0.4);
+
+      .bat-icon, .bat-percentage {
+        color: $yellow;
+      }
+    }
+
+    /* Critical state (<= 15%) */
+    &.critical {
+      background-color: rgba($red, 0.15);
+      border: 1px solid $red;
+      animation: pulse-critical 1.5s infinite;
+
+      .bat-icon, .bat-percentage {
+        color: $red;
+      }
+    }
+
+    /* --------------------------------------------------------
+     * Power Profile Badge Tints
+     * -------------------------------------------------------- */
+
+    &.profile-performance {
+      .profile-badge {
+        color: $orange;
+      }
+    }
+
+    &.profile-balanced {
+      .profile-badge {
+        color: $blue;
+      }
+    }
+
+    &.profile-power-saver {
+      .profile-badge {
+        color: $green;
+      }
+    }
+  }
+
+  /* Low Battery Alert Pulse Animation */
+  @keyframes pulse-critical {
+    0% {
+      box-shadow: 0 0 0 0 rgba($red, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba($red, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba($red, 0);
     }
   }
