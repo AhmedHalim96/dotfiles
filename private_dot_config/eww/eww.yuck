@@ -24,6 +24,12 @@
 (deflisten power_profile :initial '{"active": "balanced", "icon": "󰾅", "profiles": []}'
   `scripts/get-power-profile.py`)
 
+(deflisten kbd_layout :initial '{"full": "English (US)", "short": "US", "icon": "󰌌"}'
+  `scripts/get-keyboard.py`)
+
+(deflisten keymode :initial '{"name": "default", "label": "", "icon": "", "visible": false}'
+  `scripts/get-keymode.py`)
+
 ;; ============================================================
 ;; Left Widgets (Workspaces & Active Clients)
 ;; ============================================================
@@ -34,9 +40,10 @@
          :space-evenly false
          :spacing 0
       (for tag in {mango.tags[mon_name] ?: []}
-        (button :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
+        (eventbox :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
                 :onclick "mmsg dispatch view, ${tag.index}"
                 :onrightclick "mmsg dispatch toggleview, ${tag.index}"
+                :cursor "pointer"
           (box :space-evenly false
                :spacing 4
             (label :class "tag-index"
@@ -104,9 +111,28 @@
 ;; Right Widgets (Tray, System Stats, Clock)
 ;; ============================================================
 
+;; Keymode Widget (Hides automatically on 'default')
+(defwidget keymode_widget []
+  (box :class "keymode-box ${keymode.name}"
+       :space-evenly false
+       :spacing 6
+       :visible {keymode.visible}
+       :tooltip "Active Keymode: ${keymode.name}"
+    (label :class "keymode-icon" :text "${keymode.icon}")
+    (label :class "keymode-text" :text "${keymode.label}")))
+
+;; Keyboard Layout Widget
+(defwidget kbd_widget []
+  (eventbox :onclick "mmsg dispatch switchxkblayout next" :cursor "pointer"
+    (box :class "kbd-box"
+         :space-evenly false
+         :spacing 4
+         :tooltip "Layout: ${kbd_layout.full} (Click to switch)"
+      (label :class "stat-icon kbd-icon" :text "${kbd_layout.icon}")
+      (label :class "kbd-text" :text "${kbd_layout.short}"))))
 ;; Battery Widget
 (defwidget battery_widget [mon_id]
-  (eventbox :onclick "eww open --toggle power_popup_${mon_id}"
+  (eventbox :onclick "eww open-many --toggle power_popup_${mon_id} popup_closer_${mon_id}"
             :cursor "pointer"
     (box :class "battery-box ${EWW_BATTERY.BAT0.status == 'Charging' ? 'charging' : EWW_BATTERY.BAT0.capacity <= 15 ? 'critical' : EWW_BATTERY.BAT0.capacity <= 30 ? 'low' : ''} profile-${power_profile.active}"
          :space-evenly false
@@ -220,7 +246,9 @@
     (sys_stats :mon_id mon_id)
     (tray_button :mon_id mon_id)
     (clock :mon_id mon_id)
+    (kbd_widget)
     (notification_widget)))
+
 
 
 
@@ -243,6 +271,7 @@
     (box :space-evenly false
          :spacing 5
          :hexpand true
+      (keymode_widget)
       )
 
     ;; Right Slot
@@ -267,7 +296,7 @@
 
     (for profile in {power_profile.profiles}
       (eventbox :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
-                :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id}"
+                :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id} popup_closer_${mon_id}"
                 :cursor "pointer"
         (box :space-evenly false :spacing 12
           (label :class "profile-icon ${power_profile.active == profile.id ? 'active' : ''}"

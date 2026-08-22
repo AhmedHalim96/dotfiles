@@ -7,9 +7,11 @@ $primary-text: #fefefe;
 $primary-container: #4a0750;
 
 $secondary: #00e8c6;
+$secondary-container: rgba($secondary, .2);
 $info: #0096b1;
 $warning: #cc5500;
 $error: #e6133e;
+$error-container: rgba($error, .2);
 
 $background: #161925;
 $fg: #C3C7D1;
@@ -56,50 +58,60 @@ window {
    ============================================================ */
 .tags-box {
   border-radius: 12px;
-  padding: 4px 2px;
+  padding: 0px 2px;
 }
 
 .tag {
-  background-color: $surface-highest;
   color: $primary-text;
-  border-radius: 50%;
-  margin: 0 2px;
+  margin: 0 4px;
   padding: 0 2px;
   border: none;
   transition: all 200ms ease-in-out;
-  font-size: 12px;
+  border-bottom: 3px solid  $text-dim;
+
+  &:first-child {
+    border-radius:  8px 0 0 8px;
+  }
+
+  &:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+
+  &:only-child {
+    border-radius: 8px;
+  }
+
 
   /* Hover State */
   &:hover {
-    background-color: $secondary;
-    color: $background;
-    border-radius: 50%;
+    border-color: $info;
   }
 
   /* Occupied (has open windows) */
   &.occupied {
-    color: $primary-text;
-    background-color: $info;
+    color: $info;
+    border-color: $info;
   }
 
   /* Active Tag (Currently focused) */
   &.active {
-    background-color: $primary;
-    color: $primary-text;
-    padding: 0 8px;
-    border-radius: 12px;
+    color: $fg;
+    border-bottom: 3px solid $primary;
+
+    background-color: $primary-container
+
   }
 
   /* Urgent Tag (Window demanding attention) */
   &.urgent {
-    background-color: $error;
-    color: $primary-text;
+    color: $error ;
+    background-color: $error-container;
   }
 }
 
 .tag-index {
-  padding: 0 5px;
-  font-weight: 500;
+  padding: 0 10px;
+  font-weight: 600;
   font-size: 12px;
 }
 
@@ -114,7 +126,7 @@ window {
 }
 
 .client-item {
-  background-color: rgba($primary, 0.08);
+  background-color: transparent;
   border-radius: 8px;
   padding: 2px 10px;
   border: 1px solid transparent;
@@ -173,7 +185,7 @@ window {
 
     .stat-icon {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px ;
 
       &.cyan {
         color: $secondary;
@@ -456,20 +468,21 @@ background-color: rgba($surface-lowest, 0.5);
     background-color: transparent;
     transition: all 0.2s ease-in-out;
 
+
     &:hover {
       background-color: darken($color: $surface-lowest, $amount: 10);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
     .bat-icon {
-      font-size: 15px;
-      color: $fg;
+      font-size: 12px;
+      color: $green;
     }
 
     .bat-percentage {
       font-size: 12px;
       font-weight: 600;
-      color: $fg;
+      color: $green;
     }
 
     .profile-badge {
@@ -485,6 +498,7 @@ background-color: rgba($surface-lowest, 0.5);
     /* Charging state */
     &.charging {
       border-color: rgba($green, 0.4);
+      color: $green;
 
       .bat-icon {
         color: $green;
@@ -544,5 +558,100 @@ background-color: rgba($surface-lowest, 0.5);
     }
     100% {
       box-shadow: 0 0 0 0 rgba($red, 0);
+    }
+  }
+
+  /* Power Profile Badge in Bar */
+  .profile-badge-icon {
+    font-size: 11px;
+    color: $primary;
+    padding-left: 2px;
+  }
+
+  /* Power Popup Card */
+  .power-popup-box {
+    padding: 12px;
+    min-width: 200px;
+  }
+
+  .profile-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.4);
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.active {
+      background-color: rgba($primary, 0.2);
+      border: 1px solid $primary;
+    }
+  }
+
+  .profile-icon {
+    font-size: 16px;
+    color: $fg;
+    padding:  4px 8px;
+
+    &.active {
+      color: $primary;
+    }
+  }
+
+  .profile-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: $fg;
+  }
+
+  .kbd-box {
+    padding: 2px 6px;
+    background-color: $surface-high;
+    border-radius: 8px;
+
+    .kbd-icon {
+      font-size: 13px;
+      color: $primary;
+    }
+
+    .kbd-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+      min-width: 20px; /* Lock width so switching US <-> AR doesn't shift the bar */
+    }
+  }
+
+  .keymode-box {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background-color: rgba($primary, 0.25);
+    border: 1px solid $primary;
+
+    .keymode-icon {
+      font-size: 13px;
+      color: $primary;
+    }
+
+    .keymode-text {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: $primary-text;
+    }
+
+    /* Per-mode color overrides */
+    &.media {
+      background-color: rgba($secondary, 0.2);
+      border-color: $secondary;
+      .keymode-icon { color: $secondary; }
+    }
+
+    &.apps {
+      background-color: rgba($yellow, 0.2);
+      border-color: $yellow;
+      .keymode-icon { color: $yellow; }
     }
   }
