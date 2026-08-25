@@ -67,7 +67,7 @@
             (box :space-evenly false
                  :spacing 6
               (image :class "client-icon"
-                     :icon "${client.appid}"
+                     :path "${client.icon}"
                      :image-width 16
                      :image-height 16)
               (label :class "client-title"
