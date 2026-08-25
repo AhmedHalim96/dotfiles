@@ -193,6 +193,7 @@ alias pk="pkill"
 alias lyrics="lyricsmpris"
 alias gamerun="prime-run mangohud gamemoderun"
 alias pwdc="pwd | wl-copy"
+alias mkex="chmod +x"
 
 
 # systemctl
