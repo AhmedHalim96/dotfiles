@@ -17,7 +17,8 @@
 (deflisten network :initial '{"iface": "Disconnected", "icon": "󰤭 ", "down": "0 B/s", "up": "0 B/s"}'
   `scripts/get-network.py`)
 
-(deflisten music_lyrics "lyricsmpris --pipe")
+(deflisten lyrics :initial '{"text": "", "visible": false}'
+  `scripts/get-lyrics.py`)
 
 (deflisten swaync :initial '{"icon": "", "alt": "none", "count": 0, "tooltip": "0 Notifications"}'
   `scripts/get-swaync.py`)
@@ -38,13 +39,15 @@
   (eventbox :onscroll "[ {} = 'up' ] && mmsg dispatch viewtoright || mmsg dispatch viewtoleft"
     (box :class "tags-box"
          :space-evenly false
-         :spacing 0
+         :spacing 4
       (for tag in {mango.tags[mon_name] ?: []}
         (eventbox :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
                 :onclick "mmsg dispatch view, ${tag.index}"
                 :onrightclick "mmsg dispatch toggleview, ${tag.index}"
                 :cursor "pointer"
-          (box :space-evenly false
+
+          (box :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
+            :space-evenly false
                :spacing 4
             (label :class "tag-index"
                    :text "${tag.index}")))))))
@@ -65,51 +68,219 @@
                  :spacing 6
               (image :class "client-icon"
                      :icon "${client.appid}"
-                     :image-width 18
-                     :image-height 18)
+                     :image-width 16
+                     :image-height 16)
               (label :class "client-title"
                      :text "${client.title}"
                      :limit-width 20)))))))
+
 ;; ============================================================
 ;; Center Widgets (Network, Weather, Top Processes)
 ;; ============================================================
 
+;; Caps Lock Listener
+(deflisten caps_lock :initial '{"active": false, "icon": "󰘲", "text": "CAPS"}'
+  `scripts/get-capslock.py`)
+
+;; Caps Lock Indicator Widget (Only visible when ACTIVE)
+(defwidget capslock_widget []
+  (box :class "capslock-box"
+       :space-evenly false
+       :spacing 4
+       :visible {caps_lock.active}
+       :tooltip "Caps Lock Enabled"
+    (label :class "capslock-icon" :text "${caps_lock.icon}")
+    (label :class "capslock-text" :text "${caps_lock.text}")))
+
 ;; tray button
+(defvar tray_open false)
 (defwidget tray_button [mon_id]
   (eventbox :class "tray-btn-box"
-            :onclick "eww open-many --toggle tray_popup_${mon_id} popup_closer_${mon_id}"
+            :onclick "eww open-many --toggle tray_popup_${mon_id} popup_closer_${mon_id} && eww update tray_open=${!tray_open}"
             :cursor "pointer"
-    (box :class "stat-box" :space-evenly false :spacing 4
-      (label :class "stat-icon cyan" :text ""))))
+    (box  :class "tray-btn-box tray-btn-box-inner" :orientation "h" :space-evenly false :spacing 4
+        (box :class "stat-box" :space-evenly false :spacing 4
+          (label :class "stat-icon cyan" :text "${tray_open ? "󰄽" : ""}")))))
+
+;; Tray Popup Widget
+(defwidget tray_popup_widget []
+  (box :class "popup-card tray-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :width "10px"
+       :spacing 8
+       (box :class "tray-popup-box-inner" :orientation "v" :space-evenly false :spacing 8
+        (systray :class "tray-icons"
+                 :orientation "h"
+                 :space-evenly false
+                 :icon-size 16
+                 :spacing 5
+                 ))))
+(defwindow tray_popup_0
+
+  :monitor 0
+  :geometry (geometry :x "70px" :y "0px" :width "140px" :anchor "top right")
+  :stacking  "overlay"
+  (tray_popup_widget))
+
+(defwindow tray_popup_1
+  :monitor 1
+  :geometry (geometry :x "70px" :y "0px" :width "140px" :anchor "top right")
+
+  :stacking "overlay"
+  (tray_popup_widget))
 
 ;; LYRICS
-
-(defwindow lyrics_overlay
-  :monitor 1
-  :geometry (geometry :x "0%"
-                      :y "px"
-                      :width "30%"
-                      :height "20px"
-                      :anchor "top left")
-  :stacking "fg"
-  :exclusive false
-  :focusable false
-  :class "lyrics-overlay"
-  (lyrics_layout))
-
-(defwidget lyrics_layout []
+;; Lyrics HUD Widget
+(defwidget lyrics_widget []
   (eventbox :onclick "playerctl play-pause"
             :cursor "pointer"
     (box :class "lyrics-box"
-      :visible {music_lyrics != ""}
-      (label :class "lyrics-text"
-             :text  "♪ ${music_lyrics} ♪"
-             :limit-width 100))))
+       :space-evenly false
+       :spacing 14
+       :halign "center"
+       :visible {lyrics.visible}
+       (label :class "music-note left" :text "󰎈")
+       (label :class "lyrics-text" :text "${lyrics.text}")
+       (label :class "music-note right" :text "󰎈"))))
 
+;; Click-Through Overlay Window (Bottom Center)
+(defwindow lyrics_hud
+  :monitor 1
+  :geometry (geometry :x "0%" :y "-40px" :width "50%" :height "46px" :anchor "top center")
+  :stacking "overlay"
+  :focusable false
+  :passthrough true  ;; <--- Completely click-through
+  (lyrics_widget))
 
 ;; ============================================================
 ;; Right Widgets (Tray, System Stats, Clock)
 ;; ============================================================
+
+;; Bluetooth Listener
+(deflisten bt :initial '{"enabled":false,"connected":false,"icon":"󰂲","connected_name":"Disabled","connected_battery":"","devices":[]}'
+  `scripts/get-bluetooth.py`)
+
+(defwidget bt_toggle [mon_id]
+  (eventbox :onclick "eww open-many --toggle bt_popup_${mon_id} popup_closer_${mon_id}"
+            :onmiddleclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'}"
+            :cursor "pointer"
+            :tooltip "${bt.connected ? '${bt.connected_name}' : (bt.enabled ? 'On' : 'Off')}"
+
+    (box :class "bt-toggle ${bt.enabled ? (bt.connected ? 'connected' : 'active') : 'disabled'}"
+         :space-evenly false
+         :spacing 6
+      (label :class "bar-icon" :text "${bt.icon}" )
+      (label :class "bar-label" :limit-width 10 :text "${bt.connected ? bt.connected_name : (bt.enabled ? 'On' : 'Off')}"))))
+
+;; ------------------------------------------------------------
+;; Window Declarations
+;; ------------------------------------------------------------
+(defwindow bt_popup_0
+  :monitor "0"
+  :geometry (geometry :x "450px"
+                      :y "0px"
+                      :width "340px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (bt_popup_widget :mon_id "0"))
+
+(defwindow bt_popup_1
+  :monitor "1"
+  :geometry (geometry :x "450px"
+                      :y "0px"
+                      :width "340px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (bt_popup_widget :mon_id "1"))
+
+;; ------------------------------------------------------------
+;; Popup Widget Definition
+;; ------------------------------------------------------------
+(defwidget bt_popup_widget [mon_id]
+  (box :class "popup-card bt-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 12
+
+    ;; Header & Bluetooth Power Switch
+    (box :class "popup-header" :space-evenly false :spacing 8 :valign "center"
+      (label :class "header-icon ${bt.enabled ? 'active' : ''}" :text "${bt.icon}")
+      (box :class "popup-header" :orientation "v" :space-evenly false :hexpand true :halign "start"
+        (label :class "popup-title" :text "Bluetooth" :halign "start")
+        (label :class "popup-sub" :text "${bt.connected ? bt.connected_name : (bt.enabled ? 'Searching...' : 'Disabled')}" :halign "start"))
+      (eventbox :class "toggle-btn ${bt.enabled ? 'active' : ''}"
+                :onclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'}"
+                :cursor "pointer"
+        (label :class "toggle-btn-label ${bt.enabled ? 'active' : ''}" :text "${bt.enabled ? 'ON' : 'OFF'}")))
+
+    (box :class "popup-sep")
+
+    ;; Paired & Known Devices List
+    (box :orientation "v" :space-evenly false :spacing 6 :visible {bt.enabled}
+      (for dev in {bt.devices}
+        (eventbox :class "bt-item ${dev.connected ? 'connected' : ''}"
+                  :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
+                  :cursor "pointer"
+          (box :class "bt-item" :space-evenly false :spacing 10 :valign "center"
+            (label :class "dev-icon" :text "${dev.icon}")
+            (box :orientation "v" :space-evenly false :hexpand true :halign "start"
+              (label :class "dev-name" :text "${dev.name}" :halign "start")
+              (label :class "dev-mac" :text "${dev.mac}" :halign "start"))
+            (label :class "dev-battery" :text "${dev.battery}" :visible {dev.battery != ""})
+            (label :class "dev-status" :text "${dev.connected ? '󰄬' : '󰌷'}"))))
+
+      (box :class "empty-state" :visible {arraylength(bt.devices) == 0}
+        (label :text "No paired devices found")))
+
+    ;; Bluetooth Manager Command Link
+    (box :class "popup-footer" :halign "end"
+      (eventbox :class "action-btn"
+                :onclick "kitty --name float-term -e bluetoothctl &"
+                :cursor "pointer"
+        (label :text "Open Bluetoothctl")))))
+
+;; Static Available Layouts List
+(deflisten layout_list :initial '[]'
+  `scripts/get-layouts.py`)
+
+;; ------------------------------------------------------------
+;; Bar Layout Indicator Widget
+;; ------------------------------------------------------------
+(defwidget layout_indicator [mon_name mon_id]
+  (eventbox :onclick "eww open-many --toggle layout_popup_${mon_id} popup_closer_${mon_id}"
+            :cursor "pointer"
+    (box :class "layout-indicator-box"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Active Layout: ${mango.active_layout[mon_name] ?: 'T'}"
+      (label :class "layout-symbol"
+             :text "󰕰 ${mango.active_layout[mon_name] ?: 'T'}"))))
+
+;; ------------------------------------------------------------
+;; Layout Chooser Popup Widget
+;; ------------------------------------------------------------
+(defwidget layout_chooser_widget [mon_name mon_id]
+  (box :class "popup-card layout-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+    (label :class "popup-title" :text "Select Tag Layout" :halign "start")
+
+    (scroll :vscroll true :hscroll false :height 260
+      (box :orientation "v" :space-evenly false :spacing 4
+        (for layout in layout_list
+
+          (eventbox :onclick "mmsg dispatch setlayout,${layout.name} && eww close layout_popup_${mon_id} popup_closer_${mon_id}"
+                    :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+                    :cursor "pointer"
+            (box :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+                 :space-evenly false :spacing 12
+              (label :class "layout-item-icon" :text "${layout.icon}")
+              (label :class "layout-item-name" :text "${layout.name}" :hexpand true :halign "start")
+              (label :class "layout-item-sym" :text "${layout.symbol}"))))))))
 
 ;; Keymode Widget (Hides automatically on 'default')
 (defwidget keymode_widget []
@@ -121,6 +292,24 @@
     (label :class "keymode-icon" :text "${keymode.icon}")
     (label :class "keymode-text" :text "${keymode.label}")))
 
+;; Dynamic Brightness Listener
+(deflisten brightness :initial '{"pct": 100, "icon": "󰃠", "color": "#FFEA00"}'
+  `scripts/get-brightness.py`)
+
+;; Brightness Scroll Control Widget
+(defwidget brightness_widget []
+  (eventbox :onscroll "[ {} = 'up' ] && brightnessctl set 5%+ || brightnessctl set 5%-"
+            :cursor "pointer"
+    (box :class "stat-box brightness-box"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Brightness: ${brightness.pct}% (Scroll to adjust)"
+      (label :class "stat-icon"
+             :style "color: ${brightness.color};"
+             :text "${brightness.icon}")
+      (label :class "stat-text"
+             :text "${brightness.pct}%"))))
+
 ;; Keyboard Layout Widget
 (defwidget kbd_widget []
   (eventbox :onclick "mmsg dispatch switchxkblayout next" :cursor "pointer"
@@ -130,16 +319,17 @@
          :tooltip "Layout: ${kbd_layout.full} (Click to switch)"
       (label :class "stat-icon kbd-icon" :text "${kbd_layout.icon}")
       (label :class "kbd-text" :text "${kbd_layout.short}"))))
-;; Battery Widget
+
+;; Battery Bar Widget
 (defwidget battery_widget [mon_id]
   (eventbox :onclick "eww open-many --toggle power_popup_${mon_id} popup_closer_${mon_id}"
             :cursor "pointer"
-    (box :class "battery-box ${EWW_BATTERY.BAT0.status == 'Charging' ? 'charging' : EWW_BATTERY.BAT0.capacity <= 15 ? 'critical' : EWW_BATTERY.BAT0.capacity <= 30 ? 'low' : ''} profile-${power_profile.active}"
+    (box :class "battery-box ${EWW_BATTERY.BAT0.status == 'Charging' ? 'charging' : EWW_BATTERY.BAT0.capacity <= 15 ? 'critical' : EWW_BATTERY.BAT0.capacity <= 30 ? 'low' : ''}"
          :space-evenly false
-         :spacing 6
+         :spacing 4
          :tooltip "Battery: ${EWW_BATTERY.BAT0.capacity}% (${EWW_BATTERY.BAT0.status}) | Profile: ${power_profile.active}"
 
-      ;; Dynamic Battery Icon according to percentage & charging state
+      ;; Dynamic Battery Icon
       (label :class "bat-icon"
              :text "${EWW_BATTERY.BAT0.status == 'Charging' ? '󰂄' :
                     EWW_BATTERY.BAT0.capacity <= 15 ? '󰂎' :
@@ -151,14 +341,58 @@
       (label :class "bat-percentage"
              :text "${EWW_BATTERY.BAT0.capacity}%")
 
+      ;; Subtle separator dot
+
       ;; Profile Badge Indicator
-      (label :class "profile-badge"
-             :text "${power_profile.icon}"))));; SwayNC Notification Widget
+      (label :class "profile-badge ${power_profile.active}"
+             :text "${power_profile.icon}"))))
+
+;; Power Profile Switcher Popup Widget
+(defwidget power_popup_widget [mon_id]
+  (box :class "popup-card power-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 12
+    (box :class "popup-header" :space-evenly false :spacing 8
+      (label :class "header-icon" :text "󰓅")
+      (label :class "popup-title" :text "Power Profiles" :halign "start"))
+
+    (box :orientation "v" :space-evenly false :spacing 6
+      (for profile in {power_profile.profiles}
+        (eventbox :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
+                  :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id} popup_closer_${mon_id}"
+                  :cursor "pointer"
+          (box
+            :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
+            :space-evenly false :spacing 0 :valign "center"
+            (label :class "profile-icon" :text "${profile.icon}")
+            (label :class "profile-name" :text "${profile.name}" :hexpand true :halign "start")
+            (label :class "profile-check" :visible {power_profile.active == profile.id} :text "󰄬")))))));; Power Popup Widget
+(defwidget power_popup_widget [mon_id]
+  (box :class "popup-card power-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+    (label :class "popup-title" :text "Power Profiles" :halign "start")
+
+    (for profile in {power_profile.profiles}
+      (eventbox :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
+                :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "profile-item-box ${power_profile.active == profile.id ? 'active' : ''}  ${power_profile.active}"
+          :space-evenly false :spacing 12
+          (label :class "profile-icon ${power_profile.active == profile.id ? 'active' : ''}"
+                 :text "${profile.icon}")
+          (label :class "profile-name"
+                 :text "${profile.name}"))))))
+
 
 ;; SwayNC Notification Widget
 (defwidget notification_widget []
   (eventbox :onclick "swaync-client -t -sw"
             :onrightclick "swaync-client -d -sw"
+            :onmiddleclick "swaync-client --close-all"
             :cursor "pointer"
     (box :class "notification-box"
          :space-evenly false
@@ -169,6 +403,87 @@
       (label :class "notification-count"
              :visible {swaync.count > 0}
              :text "${swaync.count}"))))
+
+;; Wi-Fi Stream Listener
+(deflisten wifi :initial '{"enabled": true, "connected": false, "ssid": "Scanning...", "signal": 0, "icon": "󰤯", "ip": "N/A", "networks": []}'
+  `scripts/get-wifi.py`)
+
+;; ------------------------------------------------------------
+;; Wi-Fi Bar Widget
+;; ------------------------------------------------------------
+(defwidget wifi_widget [mon_id]
+  (eventbox :onclick "eww open-many --toggle wifi_popup_${mon_id} popup_closer_${mon_id}"
+            :onmiddleclick "nmcli radio wifi ${wifi.enabled ? 'off' : 'on'}"
+            :cursor "pointer"
+    (box :class "wifi-box ${wifi.connected ? 'connected' : wifi.enabled ? 'disconnected' : 'disabled'}"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Network: ${wifi.ssid} | IP: ${wifi.ip} | Signal: ${wifi.signal}%"
+      (label :class "wifi-icon" :text "${wifi.icon}")
+      (label :class "wifi-text" :text "${wifi.ssid}"))))
+
+;; ------------------------------------------------------------
+;; Wi-Fi Popup Switcher Widget
+;; ------------------------------------------------------------
+(defwidget wifi_popup_widget [mon_id]
+  (box :class "popup-card wifi-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 12
+    ;; Header with Radio Toggle Switch
+    (box :class "popup-header" :space-evenly false :spacing 8 :valign "center"
+      (label :class "header-icon" :text "${wifi.icon}")
+      (label :class "popup-title" :text "Wi-Fi Network" :hexpand true :halign "start")
+      (eventbox :class "toggle-btn ${wifi.enabled ? 'active' : ''}"
+                :onclick "nmcli radio wifi ${wifi.enabled ? 'off' : 'on'}"
+                :cursor "pointer"
+        (box :class "toggle-btn ${wifi.enabled ? 'active' : ''}"
+          (label :text "${wifi.enabled ? 'ON' : 'OFF'}"))))
+
+
+    ;; Connected Network Details
+    (box :class "wifi-details-card"
+         :orientation "v"
+         :space-evenly false
+         :spacing 4
+         :visible {wifi.connected}
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "SSID:")
+        (label :class "detail-value" :text "${wifi.ssid}"))
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "IP Address:")
+        (label :class "detail-value" :text "${wifi.ip}"))
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "Signal:")
+        (label :class "detail-value" :text "${wifi.signal}%")))
+
+    ;; Nearby Networks List
+    (box :orientation "v" :space-evenly false :spacing 6 :visible {wifi.enabled}
+      (label :class "section-title" :text "Nearby Networks" :halign "start")
+      (for net in {wifi.networks}
+        (eventbox :class "net-item ${net.active ? 'active' : ''}"
+                  :onclick "nmcli dev wifi connect \"${net.ssid}\" &"
+                  :cursor "pointer"
+          (box :class "net-item" :space-evenly false :spacing 10 :valign "center"
+            (label :class "net-icon" :text "${net.icon}")
+            (label :class "net-name" :text "${net.ssid}" :hexpand true :halign "start")
+            (label :class "net-sec" :text "${net.security == 'Open' ? '󰿆' : '󰌾'}")
+            (label :class "net-sig" :text "${net.signal}%")))))))
+
+;; ------------------------------------------------------------
+;; Wi-Fi Popup Windows (Per Monitor)
+;; ------------------------------------------------------------
+(defwindow wifi_popup_0
+  :monitor 0
+  :geometry (geometry :x "500px" :y "0px" :width "240px" :anchor "top right")
+  :stacking "overlay"
+  (wifi_popup_widget :mon_id 0))
+
+(defwindow wifi_popup_1
+  :monitor 1
+  :geometry (geometry :x "500px" :y "0px" :width "240px" :anchor "top right")
+  :stacking "overlay"
+  (wifi_popup_widget :mon_id 1))
 
 ;; Network Widget
 (defwidget network_widget []
@@ -188,11 +503,11 @@
 
 
 ;; Sys Stats Widget
-(defwidget sys_stats [mon_id]
+(defwidget sys_stats [mon_id mon_name]
   (box :class "stats-box"
        :space-evenly false
        :spacing 12
-    (box :class "stat-item" :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
+    (box :class "stat-item"  :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
       (label :class "stat-icon cyan" :text "󰍛 ")
       (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
 
@@ -201,7 +516,7 @@
       (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
 
     ;; Multi-Action Volume & Sink Indicator
-    (eventbox :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    (eventbox :class "stat-item" :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
               :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
               :onclick "eww open --toggle audio_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
               :onmiddleclick "pavucontrol &"
@@ -212,9 +527,13 @@
                :text "${audio.is_muted ? '󰝟 ' : audio.volume > 70 ? '󰕾 ' : audio.volume > 30 ? '󰖀 ' : '󰕿 '}")
         (label :class "stat-text" :text "${audio.is_muted ? 'Muted' : '${audio.volume}%'}")))
 
-    (battery_widget :mon_id mon_id)
 
-    ))
+
+    (box :visible {mon_name == 'HDMI-A-1'})
+    (box :orientation "horizontal" :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
+         (brightness_widget)
+         (battery_widget :mon_id mon_id :mon_name mon_name)
+    )))
 
 (defwidget clock [mon_id]
   (eventbox :onclick "eww open --toggle calendar_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
@@ -223,31 +542,104 @@
                      :space-evenly false
                      :spacing 6
                      :tooltip "${clock.time} ${clock.date}"
-            (label :class "clock-icon" :text "󰥔 ")
+            (label :class "clock-icon" :text "")
             (label :class "clock-time" :text "${clock.time} ${clock.day} ${clock.date}"))))
 
-(defwidget right_section [mon_id]
+;; Bar Trigger Button
+(defwidget power_menu_button [mon_id]
+  (eventbox :onclick "eww open-many --toggle power_menu_popup_${mon_id} popup_closer_${mon_id}"
+            :cursor "pointer"
+    (box :class "power-btn-box"
+         :space-evenly false
+      (label :class "power-btn-icon" :text "󰐥"))))
+
+;; Power Menu Popup Content
+(defwidget power_menu_popup_widget [mon_id]
+  (box :class "popup-card power-menu-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+    (label :class "popup-title" :text "Session Controls" :halign "start")
+
+    (box :orientation "v" :space-evenly false :spacing 6
+
+      ;; Lock Session
+      (eventbox :class "power-item"
+                :onclick "loginctl lock-session && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰌾")
+          (label :class "power-text" :text "Lock")))
+
+      ;; Log Out
+      (eventbox :class "power-item"
+                :onclick "mmsg dispatch quit && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰍃")
+          (label :class "power-text" :text "Log Out")))
+
+      ;; Suspend
+      (eventbox :class "power-item"
+                :onclick "systemctl suspend && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰤄")
+          (label :class "power-text" :text "Suspend")))
+
+      ;; Reboot
+      (eventbox :class "power-item reboot"
+                :onclick "systemctl reboot && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰑐")
+          (label :class "power-text" :text "Reboot")))
+
+      ;; Power Off
+      (eventbox :class "power-item shutdown"
+                :onclick "systemctl poweroff && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰐥")
+          (label :class "power-text" :text "Power Off"))))))
+
+
+(defwidget right_section [mon_id mon_name]
   (box :class "right-box"
        :space-evenly false
        :halign "end"
-       :spacing 8
-    (box :visible {mon_id == 0}
+       :spacing 4
+    (box :visible {mon_name == "eDP-1"}
      :space-evenly false
-     :spacing 8
+     :spacing 4
       )
 
-    (box :visible {mon_id == 1}
+    (box :visible {mon_name == "HDMI-A-1"}
      :space-evenly false
-     :spacing 8
-
+     :spacing 4
      (network_widget)
+     (wifi_widget :mon_id mon_id)
+     (bt_toggle :mon_id mon_id)
      )
 
-    (sys_stats :mon_id mon_id)
-    (tray_button :mon_id mon_id)
+    (sys_stats :mon_id mon_id :mon_name mon_name)
     (clock :mon_id mon_id)
+    (layout_indicator :mon_name mon_name :mon_id mon_id)
     (kbd_widget)
-    (notification_widget)))
+    (tray_button :mon_id mon_id)
+    (notification_widget)
+    (power_menu_button :mon_id mon_id)
+    ))
 
 
 
@@ -272,6 +664,7 @@
          :spacing 5
          :hexpand true
       (keymode_widget)
+      (capslock_widget)
       )
 
     ;; Right Slot
@@ -280,42 +673,13 @@
          :halign "end"
          :spacing 5
 
-    (right_section :mon_id mon_id))))
+    (right_section :mon_id mon_id :mon_name mon_name))))
 
 ;; ============================================================
 ;; Popup Widgets
 ;; ============================================================
 
-;; Power Popup Widget
-(defwidget power_popup_widget [mon_id]
-  (box :class "popup-card power-popup-box"
-       :orientation "v"
-       :space-evenly false
-       :spacing 10
-    (label :class "popup-title" :text "Power Profiles" :halign "start")
 
-    (for profile in {power_profile.profiles}
-      (eventbox :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
-                :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id} popup_closer_${mon_id}"
-                :cursor "pointer"
-        (box :space-evenly false :spacing 12
-          (label :class "profile-icon ${power_profile.active == profile.id ? 'active' : ''}"
-                 :text "${profile.icon}")
-          (label :class "profile-name"
-                 :text "${profile.name}"))))))
-
-;; Tray Popup Widget
-(defwidget tray_popup_widget []
-  (box :class "popup-card tray-popup-box"
-       :orientation "v"
-       :space-evenly false
-       :spacing 8
-    (systray :class "tray-icons"
-             :orientation "h"
-             :space-evenly false
-             :icon-size 16
-             :spacing 5
-             :pack-direction "left")))
 
 ;; Calendar Widget
 (defwidget calendar_widget []
@@ -391,6 +755,19 @@
 ;; Popup Window Definitions (Monitor Specific)
 ;; ============================================================
 
+
+(defwindow power_menu_popup_0
+  :monitor 0
+  :geometry (geometry :x "10px" :y "0px" :width "180px" :anchor "top right")
+  :stacking "overlay"
+  (power_menu_popup_widget :mon_id 0))
+
+(defwindow power_menu_popup_1
+  :monitor 1
+  :geometry (geometry :x "10px" :y "0px" :width "180px" :anchor "top right")
+  :stacking "overlay"
+  (power_menu_popup_widget :mon_id 1))
+
 (defwindow power_popup_0
   :monitor 0
   :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
@@ -404,17 +781,7 @@
   :stacking "overlay"
   (power_popup_widget :mon_id 1))
 
-(defwindow tray_popup_0
-  :monitor 0
-  :geometry (geometry :x "150px" :y "0px" :width "140px" :anchor "top right")
-  :stacking "overlay"
-  (tray_popup_widget))
 
-(defwindow tray_popup_1
-  :monitor 1
-  :geometry (geometry :x "150px" :y "0px" :width "140px" :anchor "top right")
-  :stacking "overlay"
-  (tray_popup_widget))
 
 (defwindow calendar_popup_0
   :monitor 0
@@ -458,19 +825,31 @@
   :namespace "eww-popup"
   (audio_popup_widget  :mon_id 1))
 
+(defwindow layout_popup_0
+  :monitor 0
+  :geometry (geometry :x "100px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+  (layout_chooser_widget :mon_name "eDP-1" :mon_id 0))
+
+(defwindow layout_popup_1
+  :monitor 1
+  :geometry (geometry :x "100px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+  (layout_chooser_widget :mon_name "HDMI-A-1" :mon_id 1))
+
 (defwindow popup_closer_0
   :monitor 0
   :geometry (geometry :width "100%" :height "100%")
   :stacking "fg"
   :namespace "eww-popup-closer"
-  (eventbox :onclick "eww close audio_popup_0 calendar_popup_0 popup_closer_0 tray_popup_0 power_popup_0"))
+  (eventbox :onclick "eww close audio_popup_0 calendar_popup_0 popup_closer_0 tray_popup_0 power_popup_0 layout_popup_0 power_menu_popup_0 wifi_popup_0 bt_popup_0"))
 
 (defwindow popup_closer_1
   :monitor 1
   :geometry (geometry :width "100%" :height "100%")
   :stacking "fg"
   :namespace "eww-popup-closer"
-  (eventbox :onclick "eww close audio_popup_1 calendar_popup_1 popup_closer_1 tray_popup_1 power_popup_1"))
+  (eventbox :onclick "eww close audio_popup_1 calendar_popup_1 popup_closer_1 tray_popup_1 power_popup_1 layout_popup_1 power_menu_popup_1 wifi_popup_1 bt_popup_1 "))
 
 ;; ============================================================
 ;; Main Bar Window Declarations

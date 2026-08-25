@@ -12,6 +12,7 @@ $info: #0096b1;
 $warning: #cc5500;
 $error: #e6133e;
 $error-container: rgba($error, .2);
+$warning-container: rgba($warning, .2);
 
 $background: #161925;
 $fg: #C3C7D1;
@@ -30,9 +31,11 @@ $red: #f38ba8;
 $orange: #fab387;
 $blue: #89b4fa;
 
+$bt-blue: #017cf0;
+
 
 * {
-  font-family: "Ubuntomono nerd font";
+  font-family:"Ubuntu Nerd Font", "Ubuntomono nerd font",  sans-serif;
 }
 
 /* ============================================================
@@ -46,11 +49,11 @@ window {
    Bar Container
    ============================================================ */
 .bar-container {
-  background-color: rgba($background, 0.85);
-  border: 2px solid rgba($fg, 0.08);
+  background-color: rgba($background, 0.8);
+  border: 2px solid rgba($secondary, 0.1);
   border-radius: 8px;
-  margin: 5px;
-  padding: 3px 6px;
+  margin: 5px 5px 0 5px;
+  padding: 2px;
 }
 
 /* ============================================================
@@ -58,59 +61,59 @@ window {
    ============================================================ */
 .tags-box {
   border-radius: 12px;
-  padding: 0px 2px;
+  padding: 0 2px;
 }
 
 .tag {
   color: $primary-text;
-  margin: 0 4px;
-  padding: 0 2px;
   border: none;
   transition: all 200ms ease-in-out;
-  border-bottom: 3px solid  $text-dim;
+  border: 4px double transparent;
+  border-radius: 8px;
+  padding: 0 7px;
 
-  &:first-child {
-    border-radius:  8px 0 0 8px;
-  }
+  // &:first-child {
+  //   border-radius:  8px 0 0 8px;
+  // }
 
-  &:last-child {
-    border-radius: 0 8px 8px 0;
-  }
+  // &:last-child {
+  //   border-radius: 0 8px 8px 0;
+  // }
 
-  &:only-child {
-    border-radius: 8px;
-  }
+
 
 
   /* Hover State */
-  &:hover {
-    border-color: $info;
-  }
+
 
   /* Occupied (has open windows) */
   &.occupied {
-    color: $info;
-    border-color: $info;
+    border-color: rgba($color:$text-dim, $alpha: .3);
   }
+
+  &:hover {
+      border-color: $info;
+    }
 
   /* Active Tag (Currently focused) */
   &.active {
     color: $fg;
-    border-bottom: 3px solid $primary;
+    border-color: $primary;
 
-    background-color: $primary-container
+     background-color: $primary-container
 
   }
 
+
   /* Urgent Tag (Window demanding attention) */
   &.urgent {
-    color: $error ;
+    color: $fg;
     background-color: $error-container;
+    border-color: $error;
   }
 }
 
 .tag-index {
-  padding: 0 10px;
   font-weight: 600;
   font-size: 12px;
 }
@@ -128,11 +131,12 @@ window {
 .client-item {
   background-color: transparent;
   border-radius: 8px;
-  padding: 2px 10px;
-  border: 1px solid transparent;
+  padding: 0px 10px;
+  border: 2px solid transparent;
   transition: all 0.2s ease-in-out;
   font-size: 13px;
   margin: 0 2px;
+
 
   &:hover {
     background-color: rgba($primary, 0.18);
@@ -141,7 +145,7 @@ window {
   /* Style for the active/focused window */
   &.focused {
     background-color: rgba($primary, 0.28);
-    border: 1px solid rgba($primary, 0.6);
+    border-color: rgba($primary, 0.6);
 
     .client-title {
       color: $primary-text;
@@ -164,10 +168,12 @@ window {
 }
 
 /* System Tray Container */
-.tray-box {
+.tray-box  {
   background-color: rgba($info, 0.25);
   border-radius: 8px;
   padding: 2px 8px;
+  .hidden {
+  }
 }
 
 .tray-items > * {
@@ -178,7 +184,7 @@ window {
 .stats-box {
   background-color: rgba($surface-lowest, 0.5);
   border-radius: 8px;
-  padding: 2px 10px;
+  padding: 2px 5px;
 
   .stat-item {
     font-size: 12px;
@@ -210,7 +216,6 @@ background-color: rgba($surface-lowest, 0.5);
 
   .clock-icon {
     color: $secondary;
-    font-size: 13px;
   }
 
   .clock-time {
@@ -386,39 +391,32 @@ background-color: rgba($surface-lowest, 0.5);
     }
   }
 
-  .lyrics-overlay {
-  }
 
-  .lyrics-box {
-	padding: 2px 4px;
-	border-radius: 12px;
-  }
 
-  .lyrics-text {
-	color: #009688;
-	font-weight: 400;
-	font-size: 16px;
-	font-family: "Sansita Swashed", "Ubuntu Nerd Font", "Noto Sans";
+  .tray-btn-box, .tray-btn-box-inner {
+    border-radius: 8px;
 
-  }
-
-  .tray-btn-box {
-    padding: 0 4px;
 
     &:hover .stat-icon {
       color: $primary;
     }
   }
 
+  .tray-btn-box-inner {
+    padding: 0 10px;
+    border: 8px;
+
+  }
+
   /* Tray Popup Card */
   .tray-popup-box {
     padding: 10px 14px;
     min-width: 130px;
-
   }
 
   .tray-icons {
     padding: 4px 0;
+
 
     image {
       padding: 2px;
@@ -433,10 +431,11 @@ background-color: rgba($surface-lowest, 0.5);
 
 
   .notification-box {
-    padding: 0 4px;
+     padding: 2px 5px;
+
 
     .notification-icon {
-      font-size: 22px;
+      font-size: 16px;
       color: $fg;
 
       /* DND active modes */
@@ -461,154 +460,171 @@ background-color: rgba($surface-lowest, 0.5);
     }
   }
 
-  /* Base Battery Widget Container */
+  /* ============================================================
+     Battery & Power Profile Module
+     ============================================================ */
+
+  /* Bar Pill Container */
   .battery-box {
-    padding: 4px 10px;
-    border-radius: 12px;
-    background-color: transparent;
-    transition: all 0.2s ease-in-out;
-
-
-    &:hover {
-      background-color: darken($color: $surface-lowest, $amount: 10);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .bat-icon {
-      font-size: 12px;
-      color: $green;
-    }
-
-    .bat-percentage {
-      font-size: 12px;
-      font-weight: 600;
-      color: $green;
-    }
-
-    .profile-badge {
-      font-size: 11px;
-      margin-left: 2px;
-      color: $blue;
-    }
-
-    /* --------------------------------------------------------
-     * Battery State Modifiers
-     * -------------------------------------------------------- */
-
-    /* Charging state */
-    &.charging {
-      border-color: rgba($green, 0.4);
-      color: $green;
-
-      .bat-icon {
-        color: $green;
-      }
-    }
-
-    /* Warning state (<= 30%) */
-    &.low {
-      border-color: rgba($yellow, 0.4);
-
-      .bat-icon, .bat-percentage {
-        color: $yellow;
-      }
-    }
-
-    /* Critical state (<= 15%) */
-    &.critical {
-      background-color: rgba($red, 0.15);
-      border: 1px solid $red;
-      animation: pulse-critical 1.5s infinite;
-
-      .bat-icon, .bat-percentage {
-        color: $red;
-      }
-    }
-
-    /* --------------------------------------------------------
-     * Power Profile Badge Tints
-     * -------------------------------------------------------- */
-
-    &.profile-performance {
-      .profile-badge {
-        color: $orange;
-      }
-    }
-
-    &.profile-balanced {
-      .profile-badge {
-        color: $blue;
-      }
-    }
-
-    &.profile-power-saver {
-      .profile-badge {
-        color: $green;
-      }
-    }
-  }
-
-  /* Low Battery Alert Pulse Animation */
-  @keyframes pulse-critical {
-    0% {
-      box-shadow: 0 0 0 0 rgba($red, 0.4);
-    }
-    70% {
-      box-shadow: 0 0 0 6px rgba($red, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba($red, 0);
-    }
-  }
-
-  /* Power Profile Badge in Bar */
-  .profile-badge-icon {
-    font-size: 11px;
-    color: $primary;
-    padding-left: 2px;
-  }
-
-  /* Power Popup Card */
-  .power-popup-box {
-    padding: 12px;
-    min-width: 200px;
-  }
-
-  .profile-item {
-    padding: 8px 12px;
+    padding: 3px 10px;
     border-radius: 8px;
-    background-color: rgba($surface-high, 0.4);
     transition: all 0.15s ease-in-out;
 
     &:hover {
-      background-color: rgba($surface-highest, 0.8);
+      background-color: rgba($surface-high, 0.6);
+      border-color: rgba($primary, 0.3);
     }
 
-    &.active {
-      background-color: rgba($primary, 0.2);
-      border: 1px solid $primary;
+    .bat-icon {
+      font-size: 13px;
+      color: $primary;
+      min-width: 14px;
+    }
+
+    .bat-percentage {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+    }
+
+    .bat-sep {
+      font-size: 8px;
+      color: rgba($fg, 0.3);
+    }
+
+    .profile-badge {
+      font-size: 12px;
+      min-width: 14px;
+
+      &.performance { color: $error; }
+      &.balanced    { color: $secondary; }
+      &.power-saver { color: $green; }
+
+    }
+
+    /* State Modifiers */
+    &.charging {
+      border-color: rgba($secondary, 0.4);
+      .bat-icon, .bat-percentage { color: $secondary; }
+    }
+
+    &.low {
+      border-color: rgba($warning, 0.4);
+      .bat-icon, .bat-percentage { color: $warning; }
+    }
+
+    &.critical {
+      background-color: rgba($error, 0.2);
+      border-color: $error;
+      animation: pulse-critical 1.5s infinite alternate;
+      .bat-icon, .bat-percentage { color: $error; }
     }
   }
 
-  .profile-icon {
-    font-size: 16px;
-    color: $fg;
-    padding:  4px 8px;
+  /* Critical Battery Warning Pulse */
+  @keyframes pulse-critical {
+    0%   { box-shadow: 0 0 0 0 rgba($error, 0.4); }
+    100% { box-shadow: 0 0 8px 2px rgba($error, 0.6); }
+  }
 
-    &.active {
+  /* ============================================================
+     Power Profile Card Popup
+     ============================================================ */
+
+  .power-popup-box {
+    padding: 14px;
+    min-width: 220px;
+    background-color: rgba($surface-lowest, 0.95);
+    border: 1px solid rgba($primary, 0.25);
+    border-radius: 14px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+
+    .popup-header {
+      margin-bottom: 4px;
+      .header-icon {
+        font-size: 15px;
+        color: $primary;
+      }
+      .popup-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: $fg;
+      }
+    }
+  }
+
+  .profile-item {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.15s ease-in-out;
+
+
+
+
+
+
+    background-color: $surface-high;
+    &:hover {
+     background-color: rgba($secondary, 0.1);
+    }
+
+    .profile-item-box {
+      padding: 8px 12px;
+      border-radius: 12px;
+      &.active {
+            .profile-icon,
+            .profile-name,
+            .profile-check {
+              font-weight: 700;
+            }
+            &.performance {
+              background-color: rgba($color: $error, $alpha: .18);
+              border-color: rgba($error, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $error;
+              }
+            }
+            &.balanced {
+              background-color: rgba($color: $secondary, $alpha: .1);
+              border-color: rgba($secondary, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $secondary;
+              }
+            }
+            &.power-saver {
+              background-color: rgba($color: $green, $alpha: .1);
+              border-color: rgba($green, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $green;
+              }
+            }
+          }
+    }
+    .profile-icon {
+      font-size: 15px;
+      color: rgba($fg, 0.7);
+    }
+
+    .profile-name {
+      font-size: 12px;
+      color: $fg;
+    }
+
+    .profile-check {
+      font-size: 12px;
       color: $primary;
     }
   }
 
-  .profile-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: $fg;
-  }
-
   .kbd-box {
+    background-color: rgba($surface-lowest, 0.5);
     padding: 2px 6px;
-    background-color: $surface-high;
     border-radius: 8px;
 
     .kbd-icon {
@@ -653,5 +669,480 @@ background-color: rgba($surface-lowest, 0.5);
       background-color: rgba($yellow, 0.2);
       border-color: $yellow;
       .keymode-icon { color: $yellow; }
+    }
+  }
+
+  /* Click-Through Floating Lyrics HUD */
+  .lyrics-box {
+    background-color: rgba($surface-lowest, 0.85);
+    border: 1px solid rgba($primary, 0.3);
+    border-radius: 24px;
+    padding: 8px 24px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    font-family: "Sansita Swashed", "Ubuntu Nerd Font", "Noto Sans";
+
+
+    .music-note {
+      font-size: 18px;
+      color: $primary;
+
+      &.left {
+        text-shadow: 0px 0px 8px rgba($primary, 0.6);
+      }
+      &.right {
+        text-shadow: 0px 0px 8px rgba($secondary, 0.6);
+        color: $secondary;
+      }
+    }
+
+    .lyrics-text {
+      font-family: "Sansita Swashed", "Ubuntu Nerd Font", "Noto Sans";
+      font-weight: 500;
+      font-size: 16px;
+      color: $secondary;
+      letter-spacing: 0.3px;
+
+    }
+  }
+
+  /* Bar Layout Badge */
+  .layout-indicator-box {
+    background-color: rgba($surface-lowest, 0.5);
+    border-radius: 8px;
+    padding: 2px 8px;
+
+    .layout-symbol {
+      font-size: 11px;
+      font-weight: 800;
+      color: $primary;
+      min-width: 24px;
+    }
+  }
+
+  /* Layout Chooser Popup */
+  .layout-popup-box {
+    padding: 12px;
+    min-width: 210px;
+  }
+
+  .layout-item {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.active {
+      background-color: rgba($primary, 0.2);
+      border: 1px solid $primary;
+
+      .layout-item-icon,
+      .layout-item-name,
+      .layout-item-sym {
+        color: $primary;
+        font-weight: 700;
+      }
+    }
+
+    .layout-item-icon {
+      font-size: 14px;
+      color: $fg;
+    }
+
+    .layout-item-name {
+      font-size: 12px;
+      color: $fg;
+    }
+
+    .layout-item-sym {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba($fg, 0.5);
+    }
+  }
+
+  .brightness-box {
+    border-radius: 8px;
+    padding: 0;
+    .stat-icon {
+      font-size: 14px;
+      transition: color 0.15s ease-in-out;
+    }
+
+    .stat-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+      min-width: 32px;
+    }
+  }
+
+  .capslock-box {
+    padding: 2px 7px;
+    border-radius: 6px;
+    background-color: rgba($error, 0.25);
+    border: 1px solid $error;
+
+    .capslock-icon {
+      font-size: 13px;
+      color: $error;
+    }
+
+    .capslock-text {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: $error;
+    }
+  }
+
+  /* Bar Button */
+  .power-btn-box {
+    padding: 2px 8px;
+    background-color: rgba($error, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba($error, 0.3);
+
+    &:hover {
+      background-color: rgba($error, 0.3);
+    }
+
+    .power-btn-icon {
+      font-size: 14px;
+      color: $error;
+    }
+  }
+
+  /* Power Menu Popup */
+  .power-menu-box {
+    padding: 12px;
+    min-width: 170px;
+  }
+
+  .power-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    .power-icon {
+      font-size: 15px;
+      color: $fg;
+    }
+
+    .power-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: $fg;
+    }
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.reboot:hover {
+      background-color: rgba($secondary, 0.25);
+      .power-icon, .power-text { color: $secondary; }
+    }
+
+    &.shutdown:hover {
+      background-color: rgba($error, 0.25);
+      .power-icon, .power-text { color: $error; }
+    }
+
+  }
+
+
+  /* Wi-Fi Bar Pill */
+  .wifi-box {
+    padding: 4px;
+    border-radius: 8px;
+    background-color: rgba($surface-lowest, 0.5);
+    border: 1px solid rgba($surface-highest, 0.4);
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-high, 0.6);
+      border-color: rgba($primary, 0.3);
+    }
+
+    .wifi-icon {
+      font-size: 13px;
+      color: $primary;
+      min-width: 16px;
+    }
+
+    .wifi-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+    }
+
+    &.connected {
+      background-color: rgba($primary, 0.12);
+      border: 1px solid rgba($primary, 0.35);
+
+    }
+
+    &.disconnected {
+      .wifi-icon, .wifi-text { color: rgba($fg, 0.5); }
+    }
+
+    &.disabled {
+      .wifi-icon, .wifi-text { color: $error; }
+    }
+  }
+
+  /* Wi-Fi Popup Card */
+  .wifi-popup-box {
+    padding: 14px;
+    min-width: 240px;
+    background-color: rgba($surface-lowest, 0.95);
+    border: 1px solid rgba($primary, 0.25);
+    border-radius: 14px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+
+    .popup-header {
+      .header-icon { font-size: 16px; color: $primary; }
+      .popup-title { font-size: 13px; font-weight: 700; color: $fg; }
+    }
+
+
+
+    .toggle-btn {
+      padding: 2px 10px;
+      border-radius: 12px;
+      background-color: rgba($surface-high, 0.6);
+      font-size: 10px;
+      font-weight: 800;
+      color: rgba($fg, 0.6);
+
+      &.active {
+        background-color: rgba($primary, 0.25);
+        border: 1px solid $primary;
+        color: $primary;
+      }
+    }
+
+    .wifi-details-card {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: rgba($surface-high, 0.25);
+      border: 1px solid rgba($primary, 0.15);
+
+      .detail-label { font-size: 11px; color: rgba($fg, 0.6); }
+      .detail-value { font-size: 11px; font-weight: 600; color: $fg; }
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba($fg, 0.5);
+      margin-top: 4px;
+    }
+  }
+
+  .net-item {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.active {
+      background-color: rgba($primary, 0.2);
+      border: 1px solid $primary;
+      .net-icon, .net-name, .net-sig { color: $primary; font-weight: 700; }
+    }
+
+    .net-icon { font-size: 13px; color: $fg; }
+    .net-name { font-size: 11px; color: $fg; }
+    .net-sec  { font-size: 11px; color: rgba($fg, 0.4); }
+    .net-sig  { font-size: 10px; font-weight: 700; color: rgba($fg, 0.6); }
+  }
+
+  // /* Top Bar Button Styling */
+  .bt-toggle {
+    padding: 4px;
+    border-radius: 8px;
+    background-color: rgba($surface-lowest, 0.5);
+    border: 1px solid rgba($surface-highest, 0.4);
+    transition: all 0.15s ease-in-out;
+
+
+    .bar-icon {
+      font-size: 14px;
+    }
+
+    .bar-label {
+      font-size: 12px;
+      font-weight: 600;
+
+    }
+
+    &.active {
+      color: $bt-blue;
+    }
+
+    &.connected {
+      background-color: rgba($bt-blue, 0.15);
+      border: 1px solid rgba($bt-blue, 0.4);
+      color: $bt-blue;
+
+      .bar-label {
+        font-weight: 700;
+      }
+    }
+
+    &.disabled {
+      color: $text-dim;
+    }
+
+    &:hover {
+      background-color: rgba($surface-high, 0.8);
+    }
+  }
+
+  /* Bluetooth Popup Window Container */
+  .bt-popup-box {
+    padding: 14px;
+      min-width: 240px;
+      background-color: rgba($surface-lowest, 0.95);
+      border: 1px solid rgba($bt-blue, 0.25);
+      border-radius: 14px;
+      box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+
+      .header-icon {
+        font-size: 40px;
+        color: $fg;
+        margin-right: 20px;
+      }
+
+      .popup-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: $fg;
+        margin-top: 10px;
+      }
+
+      .popup-sub {
+        font-size: 10px;
+        color: rgba($fg, 0.5);
+        font-weight: 500;
+      }
+      .toggle-btn {
+
+      }
+
+    .toggle-btn-label {
+
+      margin: 10px 0;
+      padding: 1px 10px;
+
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: rgba($fg, 0.6);
+      &.active {
+        background-color: rgba($bt-blue, 0.25);
+        border: 1px solid $bt-blue;
+        color: $bt-blue;
+      }
+
+    }
+    }
+
+
+
+  .popup-sub {
+    font-size: 10px;
+    color: rgba($fg, 0.5);
+    font-weight: 500;
+  }
+
+  /* Device List Styling */
+  .bt-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.2);
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background-color: rgba($surface-high, 0.6);
+    }
+
+    &.connected {
+      background-color: rgba($bt-blue, 0.12);
+      border: 1px solid rgba($bt-blue , 0.35);
+
+      .dev-name {
+        color: $bt-blue;
+        font-weight: 700;
+      }
+
+      .dev-icon, .dev-status {
+        color: $bt-blue;
+      }
+    }
+
+    .dev-icon {
+      font-size: 16px;
+      color: rgba($fg, 0.7);
+    }
+
+    .dev-name {
+      font-size: 12px;
+      color: $fg;
+      font-weight: 600;
+    }
+
+    .dev-mac {
+      font-size: 9px;
+      color: rgba($fg, 0.4);
+      font-family: monospace;
+    }
+
+    .dev-battery {
+      font-size: 10px;
+      font-weight: 700;
+      color: #a6e3a1; /* Success Green */
+      background-color: rgba(#a6e3a1, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .dev-status {
+      font-size: 12px;
+      color: rgba($fg, 0.3);
+    }
+  }
+
+  .empty-state {
+    padding: 12px;
+    color: rgba($fg, 0.4);
+    font-size: 11px;
+    font-style: italic;
+  }
+
+  .popup-footer {
+    margin-top: 4px;
+
+    .action-btn {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba($bt-blue, 0.8);
+      padding: 4px 8px;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: rgba($bt-blue, 0.1);
+        color: $bt-blue;
+      }
     }
   }

@@ -2,12 +2,11 @@
 import json
 import subprocess
 import threading
-import sys
 
-# Centralized state structure grouped by monitor name
 state = {
-    "tags": {},     # { "eDP-1": [...], "HDMI-A-1": [...] }
-    "clients": {}   # { "eDP-1": [...], "HDMI-A-1": [...] }
+    "tags": {},          # { "eDP-1": [...], "HDMI-A-1": [...] }
+    "active_layout": {}, # { "eDP-1": "T", "HDMI-A-1": "S" }
+    "clients": {}
 }
 lock = threading.Lock()
 
@@ -23,11 +22,24 @@ def watch_tags():
         try:
             data = json.loads(line)
             tags_by_mon = {}
+            layout_by_mon = {}
+
             for entry in data.get("all_tags", []):
                 mon = entry.get("monitor", "")
-                tags_by_mon[mon] = entry.get("tags", [])
+                tags = entry.get("tags", [])
+                tags_by_mon[mon] = tags
+
+                # Extract active tag's layout symbol for this monitor
+                active_sym = "T"
+                for tag in tags:
+                    if tag.get("is_active", False):
+                        active_sym = tag.get("layout", "T")
+                        break
+                layout_by_mon[mon] = active_sym
+
             with lock:
                 state["tags"] = tags_by_mon
+                state["active_layout"] = layout_by_mon
             emit()
         except Exception:
             pass
@@ -41,7 +53,6 @@ def watch_clients():
             data = json.loads(line)
             clients_by_mon = {}
             for client in data.get("clients", []):
-                # Pre-filter visible clients
                 if not client.get("is_visible", False):
                     continue
                 mon = client.get("monitor", "")
@@ -59,7 +70,6 @@ def main():
     t2 = threading.Thread(target=watch_clients, daemon=True)
     t1.start()
     t2.start()
-    
     t1.join()
     t2.join()
 

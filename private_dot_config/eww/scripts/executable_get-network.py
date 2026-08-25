@@ -6,62 +6,63 @@ def get_default_iface():
     """Finds the primary active network interface from kernel routing table."""
     try:
         with open("/proc/net/route", "r") as f:
-            for line in f.readlines()[1:]:
+            for line in f:
                 fields = line.strip().split()
-                # 00000000 destination and RTF_UP flag
-                if fields[1] == '00000000' and int(fields[3], 16) & 2:
+                if len(fields) >= 4 and fields[1] == '00000000' and (int(fields[3], 16) & 2):
                     return fields[0]
     except Exception:
         pass
     return None
 
 def read_bytes(iface):
-    """Reads cumulative RX and TX bytes for an interface."""
+    """Reads cumulative RX and TX bytes for an exact interface match."""
     if not iface:
         return 0, 0
     try:
         with open("/proc/net/dev", "r") as f:
-            for line in f.readlines()[2:]:
-                if iface in line:
-                    parts = line.split(":")
-                    if len(parts) > 1:
-                        stats = parts[1].split()
-                        return int(stats[0]), int(stats[8]) # rx_bytes, tx_bytes
+            for line in f:
+                line = line.strip()
+                if line.startswith(f"{iface}:"):
+                    parts = line.split(":", 1)
+                    stats = parts[1].split()
+                    return int(stats[0]), int(stats[8]) # rx_bytes, tx_bytes
     except Exception:
         pass
     return 0, 0
 
 def format_speed(speed_bytes):
     if speed_bytes < 1024:
-        return f"{str(int(speed_bytes))} B/s"
+        return f"{int(speed_bytes)} B/s"
     elif speed_bytes < 1024 * 1024:
         return f"{speed_bytes / 1024:.1f} KB/s"
     else:
         return f"{speed_bytes / (1024 * 1024):.1f} MB/s"
 
 def main():
-    last_rx, last_tx = 0, 0
-    last_time = time.time()
     iface = get_default_iface()
-
-    if iface:
-        last_rx, last_tx = read_bytes(iface)
+    last_rx, last_tx = read_bytes(iface)
+    last_time = time.time()
 
     while True:
-        time.sleep(2)
+        time.sleep(2)  # 1s interval provides more responsive speed updates
+
         curr_time = time.time()
-        dt = curr_time - last_time
+        dt = max(0.001, curr_time - last_time)
         last_time = curr_time
 
         curr_iface = get_default_iface()
-        curr_rx, curr_tx = read_bytes(curr_iface) if curr_iface else (0, 0)
+        curr_rx, curr_tx = read_bytes(curr_iface)
 
-        # Calculate speed if interface didn't change
+        # Reset counters if interface changed
         if curr_iface != iface or last_rx == 0:
-            rx_speed, tx_speed = 0, 0
+            rx_speed, tx_speed = 0.0, 0.0
         else:
-            rx_speed = max(0, (curr_rx - last_rx) / dt)
-            tx_speed = max(0, (curr_tx - last_tx) / dt)
+            # Handle potential counter rollover gracefully
+            rx_diff = curr_rx - last_rx if curr_rx >= last_rx else curr_rx
+            tx_diff = curr_tx - last_tx if curr_tx >= last_tx else curr_tx
+
+            rx_speed = rx_diff / dt
+            tx_speed = tx_diff / dt
 
         iface = curr_iface
         last_rx, last_tx = curr_rx, curr_tx
