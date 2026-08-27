@@ -9,7 +9,7 @@
   `scripts/get-time.sh`)
 
 (deflisten audio :initial '{"volume": 0, "is_muted": false, "active_sink": "Unknown", "sinks": []}'
-  `scripts/get-audio.sh`)
+  `scripts/get_audio.py`)
 
 (deflisten mpris :initial '{"status": "Stopped", "title": "Nothing Playing", "artist": "", "album": "", "artUrl": "", "player": ""}'
   `scripts/get-mpris.py`)
