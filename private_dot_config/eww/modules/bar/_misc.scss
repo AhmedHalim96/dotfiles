@@ -29,7 +29,7 @@
     }
 
     .stat-text {
-      color: $primary-text;
+      color: $fg;
       font-weight: 500;
     }
   }
@@ -52,13 +52,13 @@
    Calendar Widget
    ============================================================ */
 .custom-calendar {
-  color: $primary-text;
+  color: $fg;
   font-size: 13px;
 
   /* Active day selection */
   &:selected {
     background-color: $primary;
     border-radius: 6px;
-    color: $primary-text;
+    color: $fg;
   }
 }

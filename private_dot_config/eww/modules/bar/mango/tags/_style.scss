@@ -5,14 +5,15 @@
 }
 
 .tag {
-  color: $primary-text;
   border: none;
   transition: all 200ms ease-in-out;
   border: 4px double transparent;
   border-radius: 8px;
   padding: 0 7px;
+  color: $text-dim;
+
   &.occupied {
-    border-color: rgba($color:$text-dim, $alpha: .3);
+    color: $fg;
   }
 
   &:hover {
@@ -22,8 +23,7 @@
   &.active {
     color: $fg;
     border-color: $primary;
-
-     background-color: $primary-container
+    background-color: $primary-container
 
   }
 

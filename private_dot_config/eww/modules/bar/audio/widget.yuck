@@ -7,12 +7,13 @@
             :onclick "eww open --toggle audio_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
             :onmiddleclick "pavucontrol &"
             :cursor "pointer"
-            (box :class "stat-item"
+            (box :class "stat-item vol-box"
+                 :space-evenly false
+                 :spacing 0
                  :tooltip "Volume: ${audio.volume}% | Device: ${audio.active_sink} | Left: Mute | Right: Devices | Mid: Pavucontrol"
-                 (label :class "stat-icon ${audio.is_muted ? 'red' : 'cyan'}"
+                 (label :class "vol-icon stat-icon ${audio.is_muted ? 'red' : 'cyan'}"
                         :text "${audio.is_muted ? '󰝟 ' : audio.volume > 70 ? '󰕾 ' : audio.volume > 30 ? '󰖀 ' : '󰕿 '}")
-
-                 (label :class "stat-text" :text "${audio.is_muted ? 'Muted' : '${audio.volume}%'}"))))
+                 (label :class "vol-text stat-text" :text "${audio.is_muted ? 'Muted' : '${audio.volume}%'}"))))
 
 
 ;; Sink Switcher Widget

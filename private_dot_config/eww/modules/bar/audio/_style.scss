@@ -1,3 +1,14 @@
+.vol-box {
+
+  .vol-icon {
+    padding: 0;
+    margin: 0;
+  }
+
+  .vol-text {
+  }
+}
+
 /* ============================================================
    Audio Device Switcher Popup
    ============================================================ */
@@ -32,7 +43,7 @@
     border: 1px solid rgba($primary, 0.6);
 
     .sink-name {
-      color: $primary-text;
+      color: $fg;
       font-weight: bold;
     }
   }

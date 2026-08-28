@@ -1,30 +1,30 @@
 $primary: #c50ed2;
-$primary-text: #fefefe;
-$primary-container: #4a0750;
-
 $secondary: #00e8c6;
-$secondary-container: rgba($secondary, .2);
+$background: #161925;
+$fg: #C3C7D1;
+
+
+
+
 $info: #0096b1;
 $warning: #cc5500;
 $error: #e6133e;
-$error-container: rgba($error, .2);
-$warning-container: rgba($warning, .2);
-
-$background: #161925;
-$fg: #C3C7D1;
 $text-dim: #6d707b;
-$outline: #090a0f;
 
-$surface-lowest: #12141e;
-$surface-low: #161925;
-$surface: #181b28;
-$surface-high: #1a1d2b;
-$surface-highest: #202436;
+$surface-lowest: darken($background, 4%);
+$surface-low: darken($background, 2%);
+$surface: darken($background, 1%);
+$surface-high: darken($background, .5%);
+$surface-highest: darken($background, .25%);
 
 $green: #a6e3a1;
 $yellow: #f9e2af;
 $red: #f38ba8;
 $orange: #fab387;
 $blue: #89b4fa;
-
 $bt-blue: #017cf0;
+
+$secondary-container: rgba($secondary, .2);
+$primary-container: rgba($primary, .2);
+$error-container: rgba($error, .2);
+$warning-container: rgba($warning, .2);

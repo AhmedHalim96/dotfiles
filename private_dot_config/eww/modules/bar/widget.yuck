@@ -24,11 +24,11 @@
   (box :class "stats-box"
        :space-evenly false
        :spacing 8
-    (box :class "stat-item"  :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
+    (box :class "stat-item" :space-evenly false :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
       (label :class "stat-icon cyan" :text "󰍛 ")
       (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
 
-    (box :class "stat-item" :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
+    (box :class "stat-item" :space-evenly false :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
       (label :class "stat-icon magenta" :text " ")
       (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
     ;; Multi-Action Volume & Sink Indicator
