@@ -1,0 +1,17 @@
+.kbd-box {
+    background-color: rgba($surface-lowest, 0.5);
+    padding: 2px 6px;
+    border-radius: 8px;
+
+    .kbd-icon {
+      font-size: 13px;
+      color: $primary;
+    }
+
+    .kbd-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+      min-width: 20px; /* Lock width so switching US <-> AR doesn't shift the bar */
+    }
+  }

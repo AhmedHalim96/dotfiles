@@ -1,0 +1,18 @@
+.net-box {
+    background-color: rgba($surface-lowest, 0.5);
+    border-radius: 8px;
+    padding: 2px 8px;
+
+    .net-text {
+      font-size: 12px;
+      font-weight: 600;
+
+      &.down {
+        color: $secondary; /* #00e8c6 */
+      }
+
+      &.up {
+        color: $primary; /* #c50ed2 */
+      }
+    }
+  }

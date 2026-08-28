@@ -1,0 +1,110 @@
+/* Wi-Fi Bar Pill */
+  .wifi-box {
+    padding: 4px;
+    border-radius: 8px;
+    background-color: rgba($surface-lowest, 0.5);
+    border: 1px solid rgba($surface-highest, 0.4);
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-high, 0.6);
+      border-color: rgba($primary, 0.3);
+    }
+
+    .wifi-icon {
+      font-size: 13px;
+      color: $primary;
+      min-width: 16px;
+    }
+
+    .wifi-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+    }
+
+    &.connected {
+      background-color: rgba($primary, 0.12);
+      border: 1px solid rgba($primary, 0.35);
+
+    }
+
+    &.disconnected {
+      .wifi-icon, .wifi-text { color: rgba($fg, 0.5); }
+    }
+
+    &.disabled {
+      .wifi-icon, .wifi-text { color: $error; }
+    }
+  }
+
+  /* Wi-Fi Popup Card */
+  .wifi-popup-box {
+    padding: 14px;
+    min-width: 240px;
+    background-color: rgba($surface-lowest, 0.95);
+    border: 1px solid rgba($primary, 0.25);
+    border-radius: 14px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+
+    .popup-header {
+      .header-icon { font-size: 16px; color: $primary; }
+      .popup-title { font-size: 13px; font-weight: 700; color: $fg; }
+    }
+
+
+
+    .toggle-btn {
+      padding: 2px 10px;
+      border-radius: 12px;
+      background-color: rgba($surface-high, 0.6);
+      font-size: 10px;
+      font-weight: 800;
+      color: rgba($fg, 0.6);
+
+      &.active {
+        background-color: rgba($primary, 0.25);
+        border: 1px solid $primary;
+        color: $primary;
+      }
+    }
+
+    .wifi-details-card {
+      padding: 10px;
+      border-radius: 8px;
+      background-color: rgba($surface-high, 0.25);
+      border: 1px solid rgba($primary, 0.15);
+
+      .detail-label { font-size: 11px; color: rgba($fg, 0.6); }
+      .detail-value { font-size: 11px; font-weight: 600; color: $fg; }
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba($fg, 0.5);
+      margin-top: 4px;
+    }
+  }
+
+  .net-item {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.active {
+      background-color: rgba($primary, 0.2);
+      border: 1px solid $primary;
+      .net-icon, .net-name, .net-sig { color: $primary; font-weight: 700; }
+    }
+
+    .net-icon { font-size: 13px; color: $fg; }
+    .net-name { font-size: 11px; color: $fg; }
+    .net-sec  { font-size: 11px; color: rgba($fg, 0.4); }
+    .net-sig  { font-size: 10px; font-weight: 700; color: rgba($fg, 0.6); }
+  }

@@ -1,0 +1,17 @@
+;; mango tags module
+(defwidget workspace_switcher [mon_name]
+  (eventbox :onscroll "[ {} = 'up' ] && mmsg dispatch viewtoright || mmsg dispatch viewtoleft"
+    (box :class "tags-box"
+         :space-evenly false
+         :spacing 4
+      (for tag in {mango.tags[mon_name] ?: []}
+        (eventbox :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
+                :onclick "mmsg dispatch view, ${tag.index}"
+                :onrightclick "mmsg dispatch toggleview, ${tag.index}"
+                :cursor "pointer"
+
+          (box :class "tag ${tag.is_active ? 'active' : ''} ${tag.is_urgent ? 'urgent' : ''} ${tag.client_count > 0 ? 'occupied' : 'empty'}"
+            :space-evenly false
+               :spacing 4
+            (label :class "tag-index"
+                   :text "${tag.index}")))))))

@@ -1,0 +1,43 @@
+(deflisten clock :initial '{"time": "--:--", "day": "", "date": ""}'
+  `modules/bar/clock/get-time.sh`)
+
+(defwidget clock [mon_id]
+  (eventbox :onclick "eww open --toggle calendar_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
+            :cursor "pointer"
+            (box :class "clock-box"
+                     :space-evenly false
+                     :spacing 6
+                     :tooltip "${clock.time} ${clock.date}"
+            (label :class "clock-icon" :text "")
+            (label :class "clock-time" :text "${clock.time} ${clock.day} ${clock.date}"))))
+
+
+;; Calendar Widget
+(defwidget calendar_widget []
+  (box :class "popup-card"
+    (calendar :class "custom-calendar"
+              :show-details true
+              :show-heading true
+              :show-day-names true)))
+
+
+(defwindow calendar_popup_0
+  :monitor 0
+  :geometry (geometry :x "8px"
+                      :y "0px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (calendar_widget))
+
+
+(defwindow calendar_popup_1
+  :monitor 1
+  :geometry (geometry :x "8px"
+                      :y "0px"
+                      :width "260px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (calendar_widget))

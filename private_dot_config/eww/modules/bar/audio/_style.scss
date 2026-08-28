@@ -1,0 +1,59 @@
+/* ============================================================
+   Audio Device Switcher Popup
+   ============================================================ */
+.sink-popup-box {
+  padding: 10px 12px;
+}
+
+.popup-title {
+  color: $secondary;
+  font-weight: bold;
+  font-size: 11px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.sink-item {
+  background-color: rgba($fg, 0.05);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+
+  .sink-item-content {
+    padding: 6px 10px;
+  }
+
+  &:hover {
+    background-color: rgba($primary, 0.15);
+  }
+
+  &.active {
+    background-color: rgba($primary, 0.25);
+    border: 1px solid rgba($primary, 0.6);
+
+    .sink-name {
+      color: $primary-text;
+      font-weight: bold;
+    }
+  }
+
+  .sink-icon {
+    font-size: 14px;
+    color: $fg;
+
+    &.cyan {
+      color: $secondary;
+    }
+  }
+
+  .sink-name {
+    color: $fg;
+    font-size: 12px;
+  }
+  }
+
+  /* Audio Popup Box */
+  .audio-popup-box {
+    padding: 12px;
+    min-width: 250px;
+  }

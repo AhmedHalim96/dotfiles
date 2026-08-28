@@ -1,0 +1,17 @@
+(deflisten swaync :initial '{"icon": "", "alt": "none", "count": 0, "tooltip": "0 Notifications"}'
+  `modules/bar/swaync/get-swaync.py`)
+
+(defwidget notification_widget []
+  (eventbox :onclick "swaync-client -t -sw"
+            :onrightclick "swaync-client -d -sw"
+            :onmiddleclick "swaync-client --close-all"
+            :cursor "pointer"
+    (box :class "notification-box"
+         :space-evenly false
+         :spacing 4
+         :tooltip "${swaync.tooltip}"
+      (label :class "stat-icon notification-icon ${swaync.alt}"
+             :text "${swaync.icon}")
+      (label :class "notification-count"
+             :visible {swaync.count > 0}
+             :text "${swaync.count}"))))

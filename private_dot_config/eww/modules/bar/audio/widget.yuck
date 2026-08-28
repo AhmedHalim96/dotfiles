@@ -1,0 +1,63 @@
+(deflisten audio :initial '{"volume": 0, "is_muted": false, "active_sink": "Unknown", "sinks": []}'
+  `modules/bar/audio/get_audio.py`)
+
+(defwidget audio_widget [mon_id]
+  (eventbox :class "stat-item" :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+            :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            :onclick "eww open --toggle audio_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
+            :onmiddleclick "pavucontrol &"
+            :cursor "pointer"
+            (box :class "stat-item"
+                 :tooltip "Volume: ${audio.volume}% | Device: ${audio.active_sink} | Left: Mute | Right: Devices | Mid: Pavucontrol"
+                 (label :class "stat-icon ${audio.is_muted ? 'red' : 'cyan'}"
+                        :text "${audio.is_muted ? '󰝟 ' : audio.volume > 70 ? '󰕾 ' : audio.volume > 30 ? '󰖀 ' : '󰕿 '}")
+
+                 (label :class "stat-text" :text "${audio.is_muted ? 'Muted' : '${audio.volume}%'}"))))
+
+
+;; Sink Switcher Widget
+(defwidget sink_switcher_widget [mon_id]
+  (box :class "popup-card sink-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+    (label :class "popup-title" :text "Audio Output Devices" :halign "start")
+    (for sink in {audio.sinks}
+      (eventbox :class "sink-item ${sink.is_default ? 'active' : ''}"
+                :onclick "pactl set-default-sink '${sink.id}' && eww close audio_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box :class "sink-item-content" :space-evenly false :spacing 8
+          (label :class "sink-icon ${sink.is_default ? 'cyan' : ''}"
+                 :text "${sink.is_default ? '󰋋' : '󰓃'}")
+          (label :class "sink-name"
+                 :text "${sink.description}"
+                 :limit-width 26))))))
+
+;; Audio Popup Widget
+(defwidget audio_popup_widget [mon_id]
+  (box :class "popup-card audio-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+    (sink_switcher_widget :mon_id mon_id)))
+
+
+(defwindow audio_popup_0
+  :monitor 0
+  :geometry (geometry :x "320px"
+                      :y "0px"
+                      :width "240px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (audio_popup_widget :mon_id 0))
+
+(defwindow audio_popup_1
+  :monitor 1
+  :geometry (geometry :x "320px"
+                      :y "0px"
+                      :width "240px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :namespace "eww-popup"
+  (audio_popup_widget  :mon_id 1))

@@ -1,0 +1,54 @@
+ .power-btn-box {
+    padding: 2px 8px;
+    background-color: rgba($error, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba($error, 0.3);
+
+    &:hover {
+      background-color: rgba($error, 0.3);
+    }
+
+    .power-btn-icon {
+      font-size: 14px;
+      color: $error;
+    }
+  }
+
+  /* Power Menu Popup */
+  .power-menu-box {
+    padding: 12px;
+    min-width: 170px;
+  }
+
+  .power-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    .power-icon {
+      font-size: 15px;
+      color: $fg;
+    }
+
+    .power-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: $fg;
+    }
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.reboot:hover {
+      background-color: rgba($secondary, 0.25);
+      .power-icon, .power-text { color: $secondary; }
+    }
+
+    &.shutdown:hover {
+      background-color: rgba($error, 0.25);
+      .power-icon, .power-text { color: $error; }
+    }
+
+  }

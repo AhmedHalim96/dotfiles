@@ -1,0 +1,52 @@
+;; mango layout module
+(deflisten layout_list :initial '[]'
+  `modules/bar/mango/layouts/get-layouts.py`)
+
+;; ------------------------------------------------------------
+;; Bar Layout Indicator Widget
+;; ------------------------------------------------------------
+(defwidget layout_indicator [mon_name mon_id]
+  (eventbox :onclick "eww open-many --toggle layout_popup_${mon_id} popup_closer_${mon_id}"
+            :cursor "pointer"
+    (box :class "layout-indicator-box"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Active Layout: ${mango.active_layout[mon_name] ?: 'T'}"
+      (label :class "layout-symbol"
+             :text "󰕰 ${mango.active_layout[mon_name] ?: 'T'}"))))
+
+;; ------------------------------------------------------------
+;; Layout Chooser Popup Widget
+;; ------------------------------------------------------------
+(defwidget layout_chooser_widget [mon_name mon_id]
+  (box :class "popup-card layout-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 8
+    (label :class "popup-title" :text "Select Tag Layout" :halign "start")
+
+    (scroll :vscroll true :hscroll false :height 260
+      (box :orientation "v" :space-evenly false :spacing 4
+        (for layout in layout_list
+
+          (eventbox :onclick "mmsg dispatch setlayout,${layout.name} && eww close layout_popup_${mon_id} popup_closer_${mon_id}"
+                    :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+                    :cursor "pointer"
+            (box :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+                 :space-evenly false :spacing 12
+              (label :class "layout-item-icon" :text "${layout.icon}")
+              (label :class "layout-item-name" :text "${layout.name}" :hexpand true :halign "start")
+              (label :class "layout-item-sym" :text "${layout.symbol}"))))))))
+
+
+(defwindow layout_popup_0
+  :monitor 0
+  :geometry (geometry :x "100px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+  (layout_chooser_widget :mon_name "eDP-1" :mon_id 0))
+
+(defwindow layout_popup_1
+  :monitor 1
+  :geometry (geometry :x "100px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+  (layout_chooser_widget :mon_name "HDMI-A-1" :mon_id 1))

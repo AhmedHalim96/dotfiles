@@ -1,0 +1,119 @@
+
+;; Bar Modules
+(include "./modules/bar/mango/widgets.yuck")
+(include "./modules/bar/tray/tray.yuck")
+(include "./modules/bar/caps/caps.yuck")
+(include "./modules/bar/bluetooth/widget.yuck")
+(include "./modules/bar/wifi/widget.yuck")
+(include "./modules/bar/network/widget.yuck")
+(include "./modules/bar/powermenu/widget.yuck")
+(include "./modules/bar/swaync/widget.yuck")
+(include "./modules/bar/kblayout/widget.yuck")
+(include "./modules/bar/clock/widget.yuck")
+(include "./modules/bar/audio/widget.yuck")
+(include "./modules/bar/battery/widget.yuck")
+(include "./modules/bar/brightness/widget.yuck")
+(include "./modules/bar/popup_closer/widget.yuck")
+
+
+
+
+(defwidget sys_stats [mon_id mon_name]
+  (box :class "stats-box"
+       :space-evenly false
+       :spacing 12
+    (box :class "stat-item"  :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
+      (label :class "stat-icon cyan" :text "󰍛 ")
+      (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
+
+    (box :class "stat-item" :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
+      (label :class "stat-icon magenta" :text " ")
+      (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
+    ;; Multi-Action Volume & Sink Indicator
+    (audio_widget :mon_id mon_id)
+    (box :visible {mon_name == 'HDMI-A-1'})
+    (box :orientation "horizontal" :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
+         (brightness_widget)
+         (battery_widget :mon_id mon_id :mon_name mon_name)
+    )))
+
+
+(defwidget bar_layout [mon_name mon_id]
+  (centerbox :class "bar-container"
+             :orientation "h"
+    ;; Left Slot: Box expands to take full left space
+    (box :space-evenly false
+         :spacing 5
+         :hexpand true
+      (workspace_switcher :mon_name mon_name)
+      (active_clients :mon_name mon_name))
+
+    ;; Center Slot
+    (box :space-evenly false
+         :spacing 5
+         :hexpand true
+      (keymode_widget)
+      (capslock_widget)
+      )
+
+    ;; Right Slot
+    (box :class "right-box"
+           :space-evenly false
+           :halign "end"
+           :spacing 4
+        (box :visible {mon_name == "eDP-1"}
+         :space-evenly false
+         :spacing 4
+          )
+
+        (box :visible {mon_name == "HDMI-A-1"}
+         :space-evenly false
+         :spacing 4
+         (network_widget)
+         (wifi_widget :mon_id mon_id)
+         (bt_toggle :mon_id mon_id)
+         )
+
+        (sys_stats :mon_id mon_id :mon_name mon_name)
+        (clock :mon_id mon_id)
+        (layout_indicator :mon_name mon_name :mon_id mon_id)
+        (kbd_widget)
+        (tray_button :mon_id mon_id)
+        (notification_widget)
+        (power_menu_button :mon_id mon_id)
+        )
+    ))
+
+
+
+;; ============================================================
+;; Main Bar Window Declarations
+;; ============================================================
+
+;; Laptop Monitor (eDP-1)
+(defwindow bar_0
+    :monitor '["eDP-1",  0]'
+    :geometry (geometry :x "0%"
+                        :y "0%"
+                        :width "100%"
+                        :height "28px"
+                        :anchor "top center")
+    :stacking "fg"
+    :exclusive true
+    :focusable false
+    :namespace "eww"
+    (bar_layout :mon_name "eDP-1" :mon_id 0))
+
+;; HDMI Monitor (HDMI-A-1)
+(defwindow bar_1
+    :monitor '["HDMI-A-1",  1]'
+    :geometry (geometry :x "0%"
+                        :y "0%"
+                        :width "100%"
+                        :height "28px"
+                        :anchor "top center")
+    :stacking "fg"
+    :exclusive true
+    :focusable false
+    :namespace "eww"
+    (bar_layout :mon_name "HDMI-A-1" :mon_id 1))

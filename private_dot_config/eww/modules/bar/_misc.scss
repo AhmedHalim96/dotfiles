@@ -1,0 +1,64 @@
+// bar
+.bar-container {
+  background-color: rgba($background, 0.8);
+  border: 2px solid rgba($secondary, 0.1);
+  border-radius: 8px;
+  margin: 5px 5px 0 5px;
+  padding: 2px;
+}
+
+/* System Indicators Container */
+.stats-box {
+  background-color: rgba($surface-lowest, 0.5);
+  border-radius: 8px;
+  padding: 2px 5px;
+
+  .stat-item {
+    font-size: 12px;
+
+    .stat-icon {
+      font-weight: bold;
+      font-size: 14px ;
+
+      &.cyan {
+        color: $secondary;
+      }
+      &.magenta {
+        color: $primary;
+      }
+    }
+
+    .stat-text {
+      color: $primary-text;
+      font-weight: 500;
+    }
+  }
+}
+
+/* Clock Widget */
+
+
+/* ============================================================
+   Popup Cards Base Container
+   ============================================================ */
+.popup-card {
+  background-color: rgba($surface-lowest, 0.95);
+  border: 1px solid rgba($primary, 0.4);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+/* ============================================================
+   Calendar Widget
+   ============================================================ */
+.custom-calendar {
+  color: $primary-text;
+  font-size: 13px;
+
+  /* Active day selection */
+  &:selected {
+    background-color: $primary;
+    border-radius: 6px;
+    color: $primary-text;
+  }
+}

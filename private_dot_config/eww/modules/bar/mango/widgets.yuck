@@ -1,0 +1,7 @@
+(deflisten mango :initial '{"tags":{},"clients":{}}'
+  `modules/bar/mango/get-mango.py`)
+
+(include "./modules/bar/mango/tags/widget.yuck")
+(include "./modules/bar/mango/clients/widget.yuck")
+(include "./modules/bar/mango/layouts/widget.yuck")
+(include "./modules/bar/mango/keymode/widget.yuck")

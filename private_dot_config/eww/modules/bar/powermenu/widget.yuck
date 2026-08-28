@@ -1,0 +1,79 @@
+(defwidget power_menu_button [mon_id]
+  (eventbox :onclick "eww open-many --toggle power_menu_popup_${mon_id} popup_closer_${mon_id}"
+            :cursor "pointer"
+    (box :class "power-btn-box"
+         :space-evenly false
+      (label :class "power-btn-icon" :text "󰐥"))))
+
+;; Power Menu Popup Content
+(defwidget power_menu_popup_widget [mon_id]
+  (box :class "popup-card power-menu-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+    (label :class "popup-title" :text "Session Controls" :halign "start")
+
+    (box :orientation "v" :space-evenly false :spacing 6
+
+      ;; Lock Session
+      (eventbox :class "power-item"
+                :onclick "loginctl lock-session && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰌾")
+          (label :class "power-text" :text "Lock")))
+
+      ;; Log Out
+      (eventbox :class "power-item"
+                :onclick "mmsg dispatch quit && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰍃")
+          (label :class "power-text" :text "Log Out")))
+
+      ;; Suspend
+      (eventbox :class "power-item"
+                :onclick "systemctl suspend && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰤄")
+          (label :class "power-text" :text "Suspend")))
+
+      ;; Reboot
+      (eventbox :class "power-item reboot"
+                :onclick "systemctl reboot && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰑐")
+          (label :class "power-text" :text "Reboot")))
+
+      ;; Power Off
+      (eventbox :class "power-item shutdown"
+                :onclick "systemctl poweroff && eww close power_menu_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "power-item"
+          :space-evenly false :spacing 12
+          (label :class "power-icon" :text "󰐥")
+          (label :class "power-text" :text "Power Off"))))))
+
+(defwindow power_popup_0
+  :monitor 0
+  :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+
+  (power_popup_widget :mon_id 0))
+
+(defwindow power_popup_1
+  :monitor 1
+  :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+  (power_popup_widget :mon_id 1))

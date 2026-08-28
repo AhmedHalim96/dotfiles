@@ -1,0 +1,40 @@
+
+.tags-box {
+  border-radius: 12px;
+  padding: 0 2px;
+}
+
+.tag {
+  color: $primary-text;
+  border: none;
+  transition: all 200ms ease-in-out;
+  border: 4px double transparent;
+  border-radius: 8px;
+  padding: 0 7px;
+  &.occupied {
+    border-color: rgba($color:$text-dim, $alpha: .3);
+  }
+
+  &:hover {
+      border-color: $info;
+    }
+
+  &.active {
+    color: $fg;
+    border-color: $primary;
+
+     background-color: $primary-container
+
+  }
+
+  &.urgent {
+    color: $fg;
+    background-color: $error-container;
+    border-color: $error;
+  }
+}
+
+.tag-index {
+  font-weight: 600;
+  font-size: 12px;
+}

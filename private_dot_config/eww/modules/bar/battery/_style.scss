@@ -1,0 +1,161 @@
+/* ============================================================
+     Battery & Power Profile Module
+     ============================================================ */
+
+  /* Bar Pill Container */
+  .battery-box {
+    padding: 3px 10px;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-high, 0.6);
+      border-color: rgba($primary, 0.3);
+    }
+
+    .bat-icon {
+      font-size: 13px;
+      color: $primary;
+      min-width: 14px;
+    }
+
+    .bat-percentage {
+      font-size: 11px;
+      font-weight: 700;
+      color: $fg;
+    }
+
+    .bat-sep {
+      font-size: 8px;
+      color: rgba($fg, 0.3);
+    }
+
+    .profile-badge {
+      font-size: 12px;
+      min-width: 14px;
+
+      &.performance { color: $error; }
+      &.balanced    { color: $secondary; }
+      &.power-saver { color: $green; }
+
+    }
+
+    /* State Modifiers */
+    &.charging {
+      border-color: rgba($secondary, 0.4);
+      .bat-icon, .bat-percentage { color: $secondary; }
+    }
+
+    &.low {
+      border-color: rgba($warning, 0.4);
+      .bat-icon, .bat-percentage { color: $warning; }
+    }
+
+    &.critical {
+      background-color: rgba($error, 0.2);
+      border-color: $error;
+      animation: pulse-critical 1.5s infinite alternate;
+      .bat-icon, .bat-percentage { color: $error; }
+    }
+  }
+
+  /* Critical Battery Warning Pulse */
+  @keyframes pulse-critical {
+    0%   { box-shadow: 0 0 0 0 rgba($error, 0.4); }
+    100% { box-shadow: 0 0 8px 2px rgba($error, 0.6); }
+  }
+
+  /* ============================================================
+     Power Profile Card Popup
+     ============================================================ */
+
+  .power-popup-box {
+    padding: 14px;
+    min-width: 220px;
+    background-color: rgba($surface-lowest, 0.95);
+    border: 1px solid rgba($primary, 0.25);
+    border-radius: 14px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+
+    .popup-header {
+      margin-bottom: 4px;
+      .header-icon {
+        font-size: 15px;
+        color: $primary;
+      }
+      .popup-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: $fg;
+      }
+    }
+  }
+
+  .profile-item {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.15s ease-in-out;
+
+
+
+
+
+
+    background-color: $surface-high;
+    &:hover {
+     background-color: rgba($secondary, 0.1);
+    }
+
+    .profile-item-box {
+      padding: 8px 12px;
+      border-radius: 12px;
+      &.active {
+            .profile-icon,
+            .profile-name,
+            .profile-check {
+              font-weight: 700;
+            }
+            &.performance {
+              background-color: rgba($color: $error, $alpha: .18);
+              border-color: rgba($error, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $error;
+              }
+            }
+            &.balanced {
+              background-color: rgba($color: $secondary, $alpha: .1);
+              border-color: rgba($secondary, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $secondary;
+              }
+            }
+            &.power-saver {
+              background-color: rgba($color: $green, $alpha: .1);
+              border-color: rgba($green, $alpha: .5);
+              .profile-icon,
+              .profile-name,
+              .profile-check {
+                color: $green;
+              }
+            }
+          }
+    }
+    .profile-icon {
+      font-size: 15px;
+      color: rgba($fg, 0.7);
+    }
+
+    .profile-name {
+      font-size: 12px;
+      color: $fg;
+    }
+
+    .profile-check {
+      font-size: 12px;
+      color: $primary;
+    }
+  }

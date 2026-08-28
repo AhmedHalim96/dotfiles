@@ -1,0 +1,19 @@
+;; popup closer
+
+;; ============================================================
+;; Popup Window Definitions (Monitor Specific)
+;; ============================================================
+
+(defwindow popup_closer_0
+  :monitor 0
+  :geometry (geometry :width "100%" :height "100%")
+  :stacking "fg"
+  :namespace "eww-popup-closer"
+  (eventbox :onclick "eww close audio_popup_0 calendar_popup_0 popup_closer_0 tray_popup_0 power_popup_0 layout_popup_0 power_menu_popup_0 wifi_popup_0 bt_popup_0"))
+
+(defwindow popup_closer_1
+  :monitor 1
+  :geometry (geometry :width "100%" :height "100%")
+  :stacking "fg"
+  :namespace "eww-popup-closer"
+  (eventbox :onclick "eww close audio_popup_1 calendar_popup_1 popup_closer_1 tray_popup_1 power_popup_1 layout_popup_1 power_menu_popup_1 wifi_popup_1 bt_popup_1 "))

@@ -1,0 +1,17 @@
+;; Dynamic Brightness Listener
+(deflisten brightness :initial '{"pct": 100, "icon": "󰃠", "color": "#FFEA00"}'
+  `modules/bar/brightness/get-brightness.py`)
+
+;; Brightness Scroll Control Widget
+(defwidget brightness_widget []
+  (eventbox :onscroll "[ {} = 'up' ] && brightnessctl set 5%+ || brightnessctl set 5%-"
+            :cursor "pointer"
+    (box :class "stat-box brightness-box"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Brightness: ${brightness.pct}% (Scroll to adjust)"
+      (label :class "stat-icon"
+             :style "color: ${brightness.color};"
+             :text "${brightness.icon}")
+      (label :class "stat-text"
+             :text "${brightness.pct}%"))))

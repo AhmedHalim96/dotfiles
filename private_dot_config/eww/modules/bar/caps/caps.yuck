@@ -1,0 +1,13 @@
+;; Caps Lock Listener
+(deflisten caps_lock :initial '{"active": false, "icon": "󰘲", "text": "CAPS"}'
+  `modules/bar/caps/get-capslock.py`)
+
+;; Caps Lock Indicator Widget (Only visible when ACTIVE)
+(defwidget capslock_widget []
+  (box :class "capslock-box"
+       :space-evenly false
+       :spacing 4
+       :visible {caps_lock.active}
+       :tooltip "Caps Lock Enabled"
+    (label :class "capslock-icon" :text "${caps_lock.icon}")
+    (label :class "capslock-text" :text "${caps_lock.text}")))

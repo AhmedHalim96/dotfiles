@@ -1,0 +1,84 @@
+;; Bluetooth Listener
+(deflisten bt :initial '{"enabled":false,"connected":false,"icon":"󰂲","connected_name":"Disabled","connected_battery":"","devices":[]}'
+  `modules/bar/bluetooth/get-bluetooth.py`)
+
+(defwidget bt_toggle [mon_id]
+  (eventbox :onclick "eww open-many --toggle bt_popup_${mon_id} popup_closer_${mon_id}"
+            :onmiddleclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'}"
+            :cursor "pointer"
+            :tooltip "${bt.connected ? '${bt.connected_name}' : (bt.enabled ? 'On' : 'Off')}"
+
+    (box :class "bt-toggle ${bt.enabled ? (bt.connected ? 'connected' : 'active') : 'disabled'}"
+         :space-evenly false
+         :spacing 6
+      (label :class "bar-icon" :text "${bt.icon}" )
+      (label :class "bar-label" :limit-width 10 :text "${bt.connected ? bt.connected_name : (bt.enabled ? 'On' : 'Off')}"))))
+
+;; ------------------------------------------------------------
+;; Window Declarations
+;; ------------------------------------------------------------
+(defwindow bt_popup_0
+  :monitor "0"
+  :geometry (geometry :x "450px"
+                      :y "0px"
+                      :width "340px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (bt_popup_widget :mon_id "0"))
+
+(defwindow bt_popup_1
+  :monitor "1"
+  :geometry (geometry :x "450px"
+                      :y "0px"
+                      :width "340px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (bt_popup_widget :mon_id "1"))
+
+;; ------------------------------------------------------------
+;; Popup Widget Definition
+;; ------------------------------------------------------------
+(defwidget bt_popup_widget [mon_id]
+  (box :class "popup-card bt-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 12
+
+    ;; Header & Bluetooth Power Switch
+    (box :class "popup-header" :space-evenly false :spacing 8 :valign "center"
+      (label :class "header-icon ${bt.enabled ? 'active' : ''}" :text "${bt.icon}")
+      (box :class "popup-header" :orientation "v" :space-evenly false :hexpand true :halign "start"
+        (label :class "popup-title" :text "Bluetooth" :halign "start")
+        (label :class "popup-sub" :text "${bt.connected ? bt.connected_name : (bt.enabled ? 'Searching...' : 'Disabled')}" :halign "start"))
+      (eventbox :class "toggle-btn ${bt.enabled ? 'active' : ''}"
+                :onclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'}"
+                :cursor "pointer"
+        (label :class "toggle-btn-label ${bt.enabled ? 'active' : ''}" :text "${bt.enabled ? 'ON' : 'OFF'}")))
+
+    (box :class "popup-sep")
+
+    ;; Paired & Known Devices List
+    (box :orientation "v" :space-evenly false :spacing 6 :visible {bt.enabled}
+      (for dev in {bt.devices}
+        (eventbox :class "bt-item ${dev.connected ? 'connected' : ''}"
+                  :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
+                  :cursor "pointer"
+          (box :class "bt-item" :space-evenly false :spacing 10 :valign "center"
+            (label :class "dev-icon" :text "${dev.icon}")
+            (box :orientation "v" :space-evenly false :hexpand true :halign "start"
+              (label :class "dev-name" :text "${dev.name}" :halign "start")
+              (label :class "dev-mac" :text "${dev.mac}" :halign "start"))
+            (label :class "dev-battery" :text "${dev.battery}" :visible {dev.battery != ""})
+            (label :class "dev-status" :text "${dev.connected ? '󰄬' : '󰌷'}"))))
+
+      (box :class "empty-state" :visible {arraylength(bt.devices) == 0}
+        (label :text "No paired devices found")))
+
+    ;; Bluetooth Manager Command Link
+    (box :class "popup-footer" :halign "end"
+      (eventbox :class "action-btn"
+                :onclick "kitty --name float-term -e bluetoothctl &"
+                :cursor "pointer"
+        (label :text "Open Bluetoothctl")))))

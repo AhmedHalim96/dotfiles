@@ -1,0 +1,10 @@
+(deflisten keymode :initial '{"name": "default", "label": "", "icon": "", "visible": false}'
+  `modules/bar/mango/keymode/get-keymode.py`)
+(defwidget keymode_widget []
+  (box :class "keymode-box ${keymode.name}"
+       :space-evenly false
+       :spacing 6
+       :visible {keymode.visible}
+       :tooltip "Active Keymode: ${keymode.name}"
+    (label :class "keymode-icon" :text "${keymode.icon}")
+    (label :class "keymode-text" :text "${keymode.label}")))

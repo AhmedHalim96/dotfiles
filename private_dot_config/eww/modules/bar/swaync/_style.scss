@@ -1,0 +1,29 @@
+.notification-box {
+     padding: 2px 5px;
+
+
+    .notification-icon {
+      font-size: 16px;
+      color: $fg;
+
+      /* DND active modes */
+      &.dnd-none,
+      &.dnd-notification,
+      &.dnd-inhibited-none,
+      &.dnd-inhibited-notification {
+        color: $primary;
+      }
+
+      /* Unread notification highlight */
+      &.notification {
+        color: $secondary;
+      }
+    }
+
+    .notification-count {
+      font-size: 10px;
+      font-weight: 700;
+      color: $secondary;
+      padding-left: 2px;
+    }
+  }

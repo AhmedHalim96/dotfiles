@@ -1,0 +1,57 @@
+.layout-indicator-box {
+    background-color: rgba($surface-lowest, 0.5);
+    border-radius: 8px;
+    padding: 2px 8px;
+
+    .layout-symbol {
+      font-size: 11px;
+      font-weight: 800;
+      color: $primary;
+      min-width: 24px;
+    }
+  }
+
+  /* Layout Chooser Popup */
+  .layout-popup-box {
+    padding: 12px;
+    min-width: 210px;
+  }
+
+  .layout-item {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: rgba($surface-high, 0.3);
+    transition: all 0.12s ease-in-out;
+
+    &:hover {
+      background-color: rgba($surface-highest, 0.8);
+    }
+
+    &.active {
+      background-color: rgba($primary, 0.2);
+      border: 1px solid $primary;
+
+      .layout-item-icon,
+      .layout-item-name,
+      .layout-item-sym {
+        color: $primary;
+        font-weight: 700;
+      }
+    }
+
+    .layout-item-icon {
+      font-size: 14px;
+      color: $fg;
+    }
+
+    .layout-item-name {
+      font-size: 12px;
+      color: $fg;
+    }
+
+    .layout-item-sym {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba($fg, 0.5);
+    }
+  }

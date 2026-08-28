@@ -1,0 +1,80 @@
+;; Wi-Fi Stream Listener
+(deflisten wifi :initial '{"enabled": true, "connected": false, "ssid": "Scanning...", "signal": 0, "icon": "󰤯", "ip": "N/A", "networks": []}'
+  `modules/bar/wifi/get-wifi.py`)
+
+;; ------------------------------------------------------------
+;; Wi-Fi Bar Widget
+;; ------------------------------------------------------------
+(defwidget wifi_widget [mon_id]
+  (eventbox :onclick "eww open-many --toggle wifi_popup_${mon_id} popup_closer_${mon_id}"
+            :onmiddleclick "nmcli radio wifi ${wifi.enabled ? 'off' : 'on'}"
+            :cursor "pointer"
+    (box :class "wifi-box ${wifi.connected ? 'connected' : wifi.enabled ? 'disconnected' : 'disabled'}"
+         :space-evenly false
+         :spacing 6
+         :tooltip "Network: ${wifi.ssid} | IP: ${wifi.ip} | Signal: ${wifi.signal}%"
+      (label :class "wifi-icon" :text "${wifi.icon}")
+      (label :class "wifi-text" :text "${wifi.ssid}"))))
+
+;; ------------------------------------------------------------
+;; Wi-Fi Popup Switcher Widget
+;; ------------------------------------------------------------
+(defwidget wifi_popup_widget [mon_id]
+  (box :class "popup-card wifi-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 12
+    ;; Header with Radio Toggle Switch
+    (box :class "popup-header" :space-evenly false :spacing 8 :valign "center"
+      (label :class "header-icon" :text "${wifi.icon}")
+      (label :class "popup-title" :text "Wi-Fi Network" :hexpand true :halign "start")
+      (eventbox :class "toggle-btn ${wifi.enabled ? 'active' : ''}"
+                :onclick "nmcli radio wifi ${wifi.enabled ? 'off' : 'on'}"
+                :cursor "pointer"
+        (box :class "toggle-btn ${wifi.enabled ? 'active' : ''}"
+          (label :text "${wifi.enabled ? 'ON' : 'OFF'}"))))
+
+
+    ;; Connected Network Details
+    (box :class "wifi-details-card"
+         :orientation "v"
+         :space-evenly false
+         :spacing 4
+         :visible {wifi.connected}
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "SSID:")
+        (label :class "detail-value" :text "${wifi.ssid}"))
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "IP Address:")
+        (label :class "detail-value" :text "${wifi.ip}"))
+      (box :space-evenly false :spacing 8
+        (label :class "detail-label" :text "Signal:")
+        (label :class "detail-value" :text "${wifi.signal}%")))
+
+    ;; Nearby Networks List
+    (box :orientation "v" :space-evenly false :spacing 6 :visible {wifi.enabled}
+      (label :class "section-title" :text "Nearby Networks" :halign "start")
+      (for net in {wifi.networks}
+        (eventbox :class "net-item ${net.active ? 'active' : ''}"
+                  :onclick "nmcli dev wifi connect \"${net.ssid}\" &"
+                  :cursor "pointer"
+          (box :class "net-item" :space-evenly false :spacing 10 :valign "center"
+            (label :class "net-icon" :text "${net.icon}")
+            (label :class "net-name" :text "${net.ssid}" :hexpand true :halign "start")
+            (label :class "net-sec" :text "${net.security == 'Open' ? '󰿆' : '󰌾'}")
+            (label :class "net-sig" :text "${net.signal}%")))))))
+
+;; ------------------------------------------------------------
+;; Wi-Fi Popup Windows (Per Monitor)
+;; ------------------------------------------------------------
+(defwindow wifi_popup_0
+  :monitor 0
+  :geometry (geometry :x "500px" :y "0px" :width "240px" :anchor "top right")
+  :stacking "overlay"
+  (wifi_popup_widget :mon_id 0))
+
+(defwindow wifi_popup_1
+  :monitor 1
+  :geometry (geometry :x "500px" :y "0px" :width "240px" :anchor "top right")
+  :stacking "overlay"
+  (wifi_popup_widget :mon_id 1))

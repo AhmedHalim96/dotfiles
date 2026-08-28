@@ -1,0 +1,11 @@
+(deflisten kbd_layout :initial '{"full": "English (US)", "short": "US", "icon": "󰌌"}'
+  `modules/bar/kblayout/get-keyboard.py`)
+
+(defwidget kbd_widget []
+  (eventbox :onclick "mmsg dispatch switchxkblayout next" :cursor "pointer"
+    (box :class "kbd-box"
+         :space-evenly false
+         :spacing 4
+         :tooltip "Layout: ${kbd_layout.full} (Click to switch)"
+      (label :class "stat-icon kbd-icon" :text "${kbd_layout.icon}")
+      (label :class "kbd-text" :text "${kbd_layout.short}"))))

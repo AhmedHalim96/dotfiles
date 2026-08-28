@@ -1,0 +1,50 @@
+(deflisten power_profile :initial '{"active": "balanced", "icon": "󰾅", "profiles": []}'
+  `modules/bar/battery/get-power-profile.py`)
+
+(defwidget battery_widget [mon_id]
+  (eventbox :onclick "eww open-many --toggle power_popup_${mon_id} popup_closer_${mon_id}"
+            :cursor "pointer"
+    (box :class "battery-box ${EWW_BATTERY.BAT0.status == 'Charging' ? 'charging' : EWW_BATTERY.BAT0.capacity <= 15 ? 'critical' : EWW_BATTERY.BAT0.capacity <= 30 ? 'low' : ''}"
+         :space-evenly false
+         :spacing 4
+         :tooltip "Battery: ${EWW_BATTERY.BAT0.capacity}% (${EWW_BATTERY.BAT0.status}) | Profile: ${power_profile.active}"
+
+      ;; Dynamic Battery Icon
+      (label :class "bat-icon"
+             :text "${EWW_BATTERY.BAT0.status == 'Charging' ? '󰂄' :
+                    EWW_BATTERY.BAT0.capacity <= 15 ? '󰂎' :
+                    EWW_BATTERY.BAT0.capacity <= 30 ? '󰁺' :
+                    EWW_BATTERY.BAT0.capacity <= 50 ? '󰁼' :
+                    EWW_BATTERY.BAT0.capacity <= 80 ? '󰁾' : '󰁹'}")
+
+      ;; Capacity percentage text
+      (label :class "bat-percentage"
+             :text "${EWW_BATTERY.BAT0.capacity}%")
+
+      ;; Subtle separator dot
+
+      ;; Profile Badge Indicator
+      (label :class "profile-badge ${power_profile.active}"
+             :text "${power_profile.icon}"))))
+
+
+
+;; Power Popup Widget
+(defwidget power_popup_widget [mon_id]
+  (box :class "popup-card power-popup-box"
+       :orientation "v"
+       :space-evenly false
+       :spacing 10
+    (label :class "popup-title" :text "Power Profiles" :halign "start")
+
+    (for profile in {power_profile.profiles}
+      (eventbox :class "profile-item ${power_profile.active == profile.id ? 'active' : ''}"
+                :onclick "powerprofilesctl set ${profile.id} && eww close power_popup_${mon_id} popup_closer_${mon_id}"
+                :cursor "pointer"
+        (box
+          :class "profile-item-box ${power_profile.active == profile.id ? 'active' : ''}  ${power_profile.active}"
+          :space-evenly false :spacing 12
+          (label :class "profile-icon ${power_profile.active == profile.id ? 'active' : ''}"
+                 :text "${profile.icon}")
+          (label :class "profile-name"
+                 :text "${profile.name}"))))))

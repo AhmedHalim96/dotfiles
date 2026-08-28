@@ -1,0 +1,21 @@
+(defwidget active_clients [mon_name]
+  (scroll :hscroll true
+          :vscroll false
+          :hexpand true
+    (box :class "clients-box"
+         :space-evenly false
+         :spacing 0
+         (for client in {mango.clients[mon_name] ?: []}
+          (button :class "client-item ${client.is_focused ? 'focused' : ''}"
+                  :onclick "mmsg dispatch focusid,${client.id}"
+                  :onmiddleclick "kill ${client.pid}"
+                  :tooltip "${client.title}"
+            (box :space-evenly false
+                 :spacing 6
+              (image :class "client-icon"
+                     :path "${client.icon}"
+                     :image-width 16
+                     :image-height 16)
+              (label :class "client-title"
+                     :text "${client.title}"
+                     :limit-width 20)))))))
