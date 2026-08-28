@@ -1,0 +1,37 @@
+.weather-box {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    .weather-icon{
+      font-size: 18px;
+    }
+
+    .weather-temp {
+      font-size: 11px;
+    }
+
+        &.temp-cold {
+          .weather-icon, .weather-temp {
+            color: #89b4fa;
+          }
+        }
+
+        &.temp-warm {
+                  .weather-icon, .weather-temp {
+                    color: #a6e3a1;
+                  }
+                }
+
+                &.temp-hot {
+                          .weather-icon, .weather-temp {
+                            color: #f38ba8;
+
+                            font-weight: bold;
+                          }
+                        }
+
+                        &.temp-unknown {
+                          .weather-icon, .weather-temp {
+                            color: #6c7086;
+                          }
+                        }
+}
