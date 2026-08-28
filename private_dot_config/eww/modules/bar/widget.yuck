@@ -14,6 +14,8 @@
 (include "./modules/bar/battery/widget.yuck")
 (include "./modules/bar/brightness/widget.yuck")
 (include "./modules/bar/popup_closer/widget.yuck")
+(include "./modules/bar/weather/widget.yuck")
+
 
 
 
@@ -21,7 +23,7 @@
 (defwidget sys_stats [mon_id mon_name]
   (box :class "stats-box"
        :space-evenly false
-       :spacing 12
+       :spacing 8
     (box :class "stat-item"  :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
       (label :class "stat-icon cyan" :text "󰍛 ")
       (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
@@ -31,10 +33,11 @@
       (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
     ;; Multi-Action Volume & Sink Indicator
     (audio_widget :mon_id mon_id)
-    (box :visible {mon_name == 'HDMI-A-1'})
-    (box :orientation "horizontal" :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
-         (brightness_widget)
-         (battery_widget :mon_id mon_id :mon_name mon_name)
+    (box :visible {mon_name == 'HDMI-A-1'} :spacing 4)
+    (box  :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
+      (brightness_widget)
+      (battery_widget :mon_id mon_id :mon_name mon_name)
+      (weather_widget)
     )))
 
 
