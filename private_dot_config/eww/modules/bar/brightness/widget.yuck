@@ -8,7 +8,7 @@
             :cursor "pointer"
     (box :class "stat-box brightness-box"
          :space-evenly false
-         :spacing 6
+         :spacing 0
          :tooltip "Brightness: ${brightness.pct}% (Scroll to adjust)"
       (label :class "stat-icon"
              :style "color: ${brightness.color};"
