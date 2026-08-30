@@ -1,12 +1,4 @@
-// bar
-.bar-container {
-  background-color: rgba($background, 0.8);
-  border: 2px solid rgba($secondary, 0.1);
-  border-radius: 8px;
-  margin: 5px 5px 0 5px;
-  padding: 2px;
-  box-shadow: 10px 15px 5px rgba(22,25,37,0.76);
-}
+
 
 /* System Indicators Container */
 .stats-box {
@@ -52,14 +44,3 @@
 /* ============================================================
    Calendar Widget
    ============================================================ */
-.custom-calendar {
-  color: $fg;
-  font-size: 13px;
-
-  /* Active day selection */
-  &:selected {
-    background-color: $primary;
-    border-radius: 6px;
-    color: $fg;
-  }
-}
