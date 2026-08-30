@@ -1,0 +1,72 @@
+#compdef screenshot
+
+# Zsh completion for screenshot
+# Install: copy to a directory in $fpath, e.g.
+#   cp _screenshot ~/.local/share/zsh/site-functions/_screenshot
+# Then add to ~/.zshrc (if not already):
+#   fpath=(~/.local/share/zsh/site-functions $fpath)
+#   autoload -Uz compinit && compinit
+
+_screenshot_modes() {
+  local -a modes
+  modes=(
+    'fullscreen:Capture all monitors'
+    'region:Draw a region with slurp'
+    'window:Capture the focused window'
+    'freeze:Freeze screen then capture fullscreen'
+    'freeze-region:Freeze screen then draw a region'
+    'annotate:Capture fullscreen then open in satty'
+  )
+  _describe -t modes 'mode' modes
+}
+
+_screenshot_monitors() {
+  local -a monitors
+
+  # 1. Try mmsg (Mango compositor) - Shows all monitors with status labels
+  if (( $+commands[mmsg] )); then
+    monitors=( ${(f)"$(mmsg get all-monitors 2>/dev/null | python3 -c \
+      "import json,sys; [print(f\"{m['name']}:{ 'active' if m.get('active') else 'disabled' }\") for m in json.load(sys.stdin).get('monitors',[])]" \
+      2>/dev/null)"} )
+    if (( ${#monitors} )); then
+      _describe -t monitors 'monitor' monitors && return
+    fi
+  fi
+
+  # 2. Try grim -l
+  if (( $+commands[grim] )); then
+    monitors=( ${(f)"$(grim -l 2>/dev/null)"} )
+    if (( ${#monitors} )); then
+      _describe -t monitors 'monitor' monitors && return
+    fi
+  fi
+
+  # 3. Try swaymsg
+  if (( $+commands[swaymsg] )); then
+    monitors=( ${(f)"$(swaymsg -t get_outputs 2>/dev/null | python3 -c \
+      "import json,sys; [print(o['name']) for o in json.load(sys.stdin) if o.get('active')]" \
+      2>/dev/null)"} )
+    if (( ${#monitors} )); then
+      _describe -t monitors 'monitor' monitors && return
+    fi
+  fi
+
+  # Static fallback hint
+  _message 'monitor name (e.g. DP-1, HDMI-A-1, eDP-1)'
+}
+
+_screenshot() {
+  _arguments -s -S \
+    '(- :)'{-h,--help}'[Show help and exit]' \
+    '(- :)--init-config[Write default config to ~/.config/screenshot/config.toml and exit]' \
+    '(-m --monitor)'{-m+,--monitor=}'[Capture a specific output]:monitor:_screenshot_monitors' \
+    '(-d --delay)'{-d+,--delay=}'[Wait N seconds before capturing]:seconds:(0 1 2 3 5 10)' \
+    '--no-edit[Skip satty edit step]' \
+    '--no-notify[Suppress desktop notification]' \
+    '--no-clipboard[Skip clipboard copy]' \
+    '--no-save[Discard file after capture (clipboard only)]' \
+    '--menu[Force fuzzel interactive menu]' \
+    '::mode:_screenshot_modes'
+}
+
+_screenshot "$@"

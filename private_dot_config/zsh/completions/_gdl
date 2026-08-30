@@ -1,0 +1,26 @@
+#compdef gdl
+
+_gdl() {
+    local -a media_type_opts
+
+    media_type_opts=(
+        '--all[Download all media types]'
+        '--images[Download images only]'
+        '--vids[Download videos only]'
+    )
+
+    _arguments -s -S \
+        '1:gallery URL:_urls' \
+        '(-d --directory)'{-d,--directory}'[Target directory for flat download mode]:directory:_files -/' \
+        '--now[Instantly download all media using gallery-dl defaults (requires URL)]' \
+        '--list[Open $EDITOR and allow the user to enter multiple URLs]' \
+        '--filter[Pass raw custom Python filter expression to gallery-dl]:expression:' \
+        '--before[Download items before date (YYYY-MM-DD)]:date (YYYY-MM-DD):' \
+        '--after[Download items after date (YYYY-MM-DD)]:date (YYYY-MM-DD):' \
+        '--min-size[Download items larger than size (e.g. 500k, 5M)]:size (e.g. 5M):' \
+        '--max-size[Download items smaller than size (e.g. 10M, 2G)]:size (e.g. 10M):' \
+        $media_type_opts \
+        '(-h --help)'{-h,--help}'[Display help message]'
+}
+
+_gdl "$@"
