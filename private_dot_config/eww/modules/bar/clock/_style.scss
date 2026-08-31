@@ -13,3 +13,15 @@ background-color: rgba($surface-lowest, 0.5);
     font-size: 12px;
   }
 }
+
+.custom-calendar {
+  color: $fg;
+  font-size: 13px;
+
+  /* Active day selection */
+  &:selected {
+    background-color: $primary;
+    border-radius: 6px;
+    color: $fg;
+  }
+}

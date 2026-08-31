@@ -68,3 +68,21 @@
     padding: 12px;
     min-width: 250px;
   }
+
+  .lyrics-button {
+
+    &-content {
+      padding: 6px 10px;
+      margin:0  10px ;
+      border: 1px solid $fg;
+      border-radius: 8px;
+
+    }
+
+    &.active {
+      .lyrics-button-content {
+        border: 1px solid rgba($primary, 0.6);
+        background-color: rgba($primary, 0.25);
+      }
+    }
+  }

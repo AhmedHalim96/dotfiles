@@ -34,12 +34,22 @@
                  :text "${sink.description}"
                  :limit-width 26))))))
 
+;; show lyrics button
+(defvar lyrics_hud_open false)
+(defwidget show_lyrics_button []
+  (eventbox :class "lyrics-button ${lyrics_hud_open ? 'active' : ''}"
+    :cursor "pointer"
+    :onclick "eww open --toggle lyrics_hud && eww update lyrics_hud_open=${!lyrics_hud_open}"
+    (box :class "lyrics-button-content" :valign "center" :halign "center" :space-evenly false :spacing 8
+         (label :class "lyrics-button-text" :text "Lyrics"))))
+
 ;; Audio Popup Widget
 (defwidget audio_popup_widget [mon_id]
   (box :class "popup-card audio-popup-box"
        :orientation "v"
        :space-evenly false
        :spacing 10
+    (show_lyrics_button)
     (sink_switcher_widget :mon_id mon_id)))
 
 

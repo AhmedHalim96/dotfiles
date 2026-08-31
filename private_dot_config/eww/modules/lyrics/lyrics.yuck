@@ -1,9 +1,10 @@
 (deflisten lyrics :initial '{"text": "", "visible": false}'
-  `modulhes/lyrics/get-lyrics.py`)
+  `modules/lyrics/get-lyrics.py`)
 ;; LYRICS
 ;; Lyrics HUD Widget
 (defwidget lyrics_widget []
   (eventbox :onclick "playerctl play-pause"
+            :onmiddleclick "eww close lyrics_hud"
             :cursor "pointer"
     (box :class "lyrics-box"
        :space-evenly false
@@ -20,5 +21,4 @@
   :geometry (geometry :x "0%" :y "-40px" :width "50%" :height "46px" :anchor "top center")
   :stacking "overlay"
   :focusable false
-  :passthrough true  ;; <--- Completely click-through
   (lyrics_widget))
