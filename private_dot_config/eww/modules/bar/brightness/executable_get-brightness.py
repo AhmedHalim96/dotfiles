@@ -16,6 +16,8 @@ def get_brightness():
         icon = "󰃞" # Low sun
     elif pct <= 66:
         icon = "󰃟" # Medium sun
+    elif pct <= 90:
+        icon = "󰃝" # High sun
     else:
         icon = "󰃠" # High sun
 
