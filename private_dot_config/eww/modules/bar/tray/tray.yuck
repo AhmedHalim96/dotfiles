@@ -2,19 +2,20 @@
 (defvar tray_open false)
 (defwidget tray_button [mon_id]
   (eventbox :class "tray-btn-box"
-            :onclick "eww open-many --toggle tray_popup_${mon_id} popup_closer_${mon_id} && eww update tray_open=${!tray_open}"
+            :onclick "eww open-many --toggle tray_popup_${mon_id} popup_closer_${mon_id}"
+
             :cursor "pointer"
     (box  :class "tray-btn-box tray-btn-box-inner" :orientation "h" :space-evenly false :spacing 4
         (box :class "stat-box" :space-evenly false :spacing 4
           (label :class "stat-icon cyan" :text "${tray_open ? "󰄽" : ""}")))))
 
 ;; Tray Popup Widget
-(defwidget tray_widget []
-  (box :class "popup-card tray-popup-box"
+(defwidget tray_widget [popup]
+  (box :class "popup-card tray-popup-box ${!tray_open ? "hidden" : "visible"} ${!popup ? "widget" : ""}"
        :orientation "v"
        :space-evenly false
        :width "10px"
-       :spacing 8
+       :spacing 4
        (box :class "tray-popup-box-inner" :orientation "v" :space-evenly false :spacing 8
         (systray :class "tray-icons"
                  :orientation "h"
@@ -27,11 +28,11 @@
   :monitor 0
   :geometry (geometry :x "70px" :y "0px" :width "140px" :anchor "top right")
   :stacking  "overlay"
-  (tray_widget))
+  (tray_widget :popup true))
 
 (defwindow tray_popup_1
   :monitor 1
   :geometry (geometry :x "70px" :y "0px" :width "140px" :anchor "top right")
 
   :stacking "overlay"
-  (tray_widget))
+  (tray_widget :popup true))

@@ -47,6 +47,28 @@
     border-radius: 14px;
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
 
+    .copy-btn {
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: lighten($color: $primary, $amount: 10);
+      font-size: 11px;
+      transition: all 0.2s ease-in-out;
+
+
+    }
+
+    .ip-box{
+     background-color: rgba($primary, 0.15);
+     border-radius: 8px;
+
+    &.active{
+      background-color: transparent;
+    }
+
+
+
+    }
+
     .popup-header {
       .header-icon { font-size: 16px; color: $primary; }
       .popup-title { font-size: 13px; font-weight: 700; color: $fg; }
@@ -107,4 +129,5 @@
     .net-name { font-size: 11px; color: $fg; }
     .net-sec  { font-size: 11px; color: rgba($fg, 0.4); }
     .net-sig  { font-size: 10px; font-weight: 700; color: rgba($fg, 0.6); }
+
   }

@@ -64,10 +64,7 @@
            :space-evenly false
            :halign "end"
            :spacing 4
-        (box :visible {mon_name == "eDP-1"}
-         :space-evenly false
-         :spacing 4
-          )
+
 
         (box :visible {mon_name == "HDMI-A-1"}
          :space-evenly false
@@ -82,11 +79,11 @@
         (layout_indicator :mon_name mon_name :mon_id mon_id)
         (kbd_widget)
         (tray_button :mon_id mon_id)
+        ;;(tray_widget :popup false)
         (notification_widget)
         (power_menu_button :mon_id mon_id)
         )
     ))
-
 
 
 ;; ============================================================

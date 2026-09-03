@@ -19,6 +19,7 @@
 ;; ------------------------------------------------------------
 ;; Wi-Fi Popup Switcher Widget
 ;; ------------------------------------------------------------
+(defvar ip_shown false)
 (defwidget wifi_popup_widget [mon_id]
   (box :class "popup-card wifi-popup-box"
        :orientation "v"
@@ -46,7 +47,16 @@
         (label :class "detail-value" :text "${wifi.ssid}"))
       (box :space-evenly false :spacing 8
         (label :class "detail-label" :text "IP Address:")
-        (label :class "detail-value" :text "${wifi.ip}"))
+
+        (box :space-evenly false :spacing 2
+        (eventbox :onclick "eww update ip_shown=${!ip_shown}" :class "ip-box ${ip_shown ? 'active' : ''}"
+          :cursor "pointer"
+          (revealer :reveal ip_shown (label :class "detail-value" :text "${wifi.ip}")
+
+            ))
+        (eventbox :onclick "echo ${wifi.ip} | clip-copy" :cursor "pointer"
+                        (label :text "" :class "copy-btn"))
+        ))
       (box :space-evenly false :spacing 8
         (label :class "detail-label" :text "Signal:")
         (label :class "detail-value" :text "${wifi.signal}%")))

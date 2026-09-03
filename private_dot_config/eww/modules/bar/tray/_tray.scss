@@ -1,36 +1,18 @@
 /* System Tray Container */
-.tray-box  {
-  background-color: rgba($info, 0.25);
-  border-radius: 8px;
-  padding: 2px 8px;
-  .hidden {
-  }
-}
-
-.tray-items > * {
-  padding: 0 2px;
-}
-
-.tray-btn-box, .tray-btn-box-inner {
-    border-radius: 8px;
-
-
-    &:hover .stat-icon {
-      color: $primary;
+.tray-popup-box {
+    // padding: 10px 14px;
+    &.widget {
+      padding: 0 4px  ;
     }
-  }
+
 
   .tray-btn-box-inner {
     padding: 0 10px;
     border: 8px;
-
   }
 
   /* Tray Popup Card */
-  .tray-popup-box {
-    padding: 10px 14px;
-    min-width: 130px;
-  }
+
 
   .tray-icons {
     padding: 4px 0;
@@ -46,3 +28,4 @@
       }
     }
   }
+}

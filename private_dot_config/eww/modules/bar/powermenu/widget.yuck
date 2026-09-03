@@ -65,15 +65,14 @@
           (label :class "power-icon" :text "󰐥")
           (label :class "power-text" :text "Power Off"))))))
 
-(defwindow power_popup_0
+(defwindow power_menu_popup_0
   :monitor 0
-  :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
+  :geometry (geometry :x "10px" :y "0px" :width "180px" :anchor "top right")
   :stacking "overlay"
+  (power_menu_popup_widget :mon_id 0))
 
-  (power_popup_widget :mon_id 0))
-
-(defwindow power_popup_1
+(defwindow power_menu_popup_1
   :monitor 1
-  :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
+  :geometry (geometry :x "10px" :y "0px" :width "180px" :anchor "top right")
   :stacking "overlay"
-  (power_popup_widget :mon_id 1))
+  (power_menu_popup_widget :mon_id 1))
