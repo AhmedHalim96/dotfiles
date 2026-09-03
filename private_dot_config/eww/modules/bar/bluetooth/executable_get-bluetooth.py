@@ -3,10 +3,10 @@ import asyncio
 import json
 import re
 import sys
-import traceback
 from dbus_next.aio import MessageBus
 from dbus_next.constants import BusType
 from dbus_next.message import Message, MessageType
+
 BLUEZ_SERVICE = "org.bluez"
 ICON_MAP = [
     (r"audio-headset|audio-headphones|headphone|headset", "󰋋"),
@@ -23,6 +23,8 @@ class BluetoothMonitor:
         self.bus = None
         self.managed_objects = {}
         self.last_output = None
+        self._was_powered = False
+        self._attempting_connect = set()
 
     def _unwrap(self, val):
         if hasattr(val, "value"):
@@ -37,10 +39,7 @@ class BluetoothMonitor:
         log("Connecting to System DBus...")
         self.bus = await MessageBus(bus_type=BusType.SYSTEM).connect()
 
-        # Catch ALL signals from org.bluez across all objects and interfaces
-        match_rules = [
-            "type='signal',sender='org.bluez'"
-        ]
+        match_rules = ["type='signal',sender='org.bluez'"]
 
         for rule in match_rules:
             await self.bus.call(
@@ -56,8 +55,8 @@ class BluetoothMonitor:
 
         self.bus.add_message_handler(self._handle_message)
 
-        # Initial fetch
         await self._fetch_managed_objects()
+        self._check_auto_connect()
         self._emit_state()
 
         await asyncio.Future()
@@ -88,15 +87,14 @@ class BluetoothMonitor:
 
             if member == "InterfacesAdded" and len(body) >= 2:
                 obj_path, interfaces = body[0], body[1]
-                log(f"InterfacesAdded: {obj_path}")
                 if obj_path not in self.managed_objects:
                     self.managed_objects[obj_path] = {}
                 self.managed_objects[obj_path].update(interfaces)
+                self._check_auto_connect()
                 self._emit_state()
 
             elif member == "InterfacesRemoved" and len(body) >= 2:
                 obj_path, interfaces = body[0], body[1]
-                log(f"InterfacesRemoved: {obj_path}")
                 if obj_path in self.managed_objects:
                     for iface in interfaces:
                         self.managed_objects[obj_path].pop(iface, None)
@@ -106,20 +104,68 @@ class BluetoothMonitor:
 
             elif member == "PropertiesChanged" and len(body) >= 2:
                 interface_name, changed_props = body[0], body[1]
-                log(f"PropertiesChanged [{interface_name}] at {path}: {list(changed_props.keys())}")
 
                 if path in self.managed_objects:
                     if interface_name not in self.managed_objects[path]:
                         self.managed_objects[path][interface_name] = {}
                     self.managed_objects[path][interface_name].update(changed_props)
                 else:
-                    # If property changed for an unmapped object, create entry
                     self.managed_objects[path] = {interface_name: changed_props}
 
+                self._check_auto_connect()
                 self._emit_state()
 
         except Exception as e:
             log(f"Signal handling error: {e}")
+
+    def _is_adapter_powered(self):
+        for path, interfaces in self.managed_objects.items():
+            if "org.bluez.Adapter1" in interfaces:
+                if interfaces["org.bluez.Adapter1"].get("Powered", False):
+                    return True
+        return False
+
+    def _check_auto_connect(self):
+        is_powered = self._is_adapter_powered()
+
+        # Trigger auto-connect when adapter switches from off -> on, or on initial run
+        if is_powered and not self._was_powered:
+            log("Adapter powered on. Running auto-connect sequence...")
+            asyncio.create_task(self._auto_connect_paired_devices())
+
+        self._was_powered = is_powered
+
+    async def _auto_connect_device(self, path):
+        if path in self._attempting_connect:
+            return
+        self._attempting_connect.add(path)
+        try:
+            log(f"Attempting auto-connect to: {path}")
+            await self.bus.call(
+                Message(
+                    destination=BLUEZ_SERVICE,
+                    path=path,
+                    interface="org.bluez.Device1",
+                    member="Connect"
+                )
+            )
+            log(f"Successfully connected to: {path}")
+        except Exception as e:
+            log(f"Auto-connect failed for {path}: {e}")
+        finally:
+            # Keep in set briefly to prevent continuous connect loops
+            await asyncio.sleep(5)
+            self._attempting_connect.discard(path)
+
+    async def _auto_connect_paired_devices(self):
+        for path, interfaces in self.managed_objects.items():
+            if "org.bluez.Device1" in interfaces:
+                dev = interfaces["org.bluez.Device1"]
+                is_paired = dev.get("Paired", False) or dev.get("Trusted", False)
+                is_connected = dev.get("Connected", False)
+
+                if is_paired and not is_connected:
+                    asyncio.create_task(self._auto_connect_device(path))
 
     def _emit_state(self):
         state = self._build_state_json()
@@ -128,14 +174,7 @@ class BluetoothMonitor:
             self.last_output = state
 
     def _build_state_json(self):
-        adapter_powered = False
-
-        # Find Adapter status
-        for path, interfaces in self.managed_objects.items():
-            if "org.bluez.Adapter1" in interfaces:
-                if interfaces["org.bluez.Adapter1"].get("Powered", False):
-                    adapter_powered = True
-                    break
+        adapter_powered = self._is_adapter_powered()
 
         if not adapter_powered:
             return {
