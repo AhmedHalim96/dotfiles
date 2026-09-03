@@ -1,4 +1,4 @@
 ;; bar
 (include "./modules/bar/widget.yuck")
 ;; modules
-(include "./modules/lyrics/lyrics.yuck")
+(include "./modules/lyrics/widget.yuck")

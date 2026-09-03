@@ -253,6 +253,8 @@ alias timeshift="sudo timeshift"
 ## pacman and yay
 # Update everything (Repos + AUR)
 alias yolo='yay -Syu'
+# update everything (Repos + AUR) without confirmation
+alias yolon='yay -Syu --noconfirm'
 # The "Safe" Update: Refresh keys first (helps if you haven't updated in weeks)
 alias yup='pacman -Sy archlinux-keyring && yay -Syu'
 # Just download, don't install (Manual trigger for your prefetching)

@@ -30,7 +30,7 @@
 
 
 ;; Power Popup Widget
-(defwidget power_popup_widget [mon_id]
+(defwidget power_profiles_popup_widget [mon_id]
   (box :class "popup-card power-popup-box"
        :orientation "v"
        :space-evenly false
@@ -48,3 +48,11 @@
                  :text "${profile.icon}")
           (label :class "profile-name"
                  :text "${profile.name}"))))))
+
+
+(defwindow power_popup_0
+  :monitor 0
+  :geometry (geometry :x "220px" :y "0px" :width "220px" :anchor "top right")
+  :stacking "overlay"
+
+  (power_profiles_popup_widget :mon_id 0))

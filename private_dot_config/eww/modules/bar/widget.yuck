@@ -20,25 +20,33 @@
 
 
 
+(defwidget ram_usage []
+  (box :class "stat-item" :space-evenly false :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
+        (label :class "stat-icon cyan" :text "󰍛 ")
+        (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
+  )
+
+
+(defwidget cpu_usage []
+  (box :class "stat-item" :space-evenly false :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
+       (label :class "stat-icon magenta" :text " ")
+       (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
+  )
+
 (defwidget sys_stats [mon_id mon_name]
   (box :class "stats-box"
        :space-evenly false
+       :hexpand true
        :spacing 8
-    (box :class "stat-item" :space-evenly false :tooltip "RAM Usage: ${round(EWW_RAM.used_mem_perc, 0)}%"
-      (label :class "stat-icon cyan" :text "󰍛 ")
-      (label :class "stat-text" :text "${round(EWW_RAM.used_mem_perc, 0)}%"))
-
-    (box :class "stat-item" :space-evenly false :tooltip "CPU Load: ${round(EWW_CPU.avg, 0)}%"
-      (label :class "stat-icon magenta" :text " ")
-      (label :class "stat-text" :text "${round(EWW_CPU.avg, 0)}%"))
-    ;; Multi-Action Volume & Sink Indicator
-    (audio_widget :mon_id mon_id)
-    (box :visible {mon_name == 'HDMI-A-1'} :spacing 4)
-    (box  :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
-      (brightness_widget)
-      (battery_widget :mon_id mon_id :mon_name mon_name)
-      (weather_widget)
-    )))
+       (ram_usage)
+       (cpu_usage)
+       (audio_widget :mon_id mon_id)
+       (box :visible {mon_name == 'HDMI-A-1'} :spacing 4)
+       (box  :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
+         (brightness_widget)
+         (battery_widget :mon_id mon_id :mon_name mon_name)
+         (weather_widget)
+       )))
 
 
 (defwidget bar_layout [mon_name mon_id]
