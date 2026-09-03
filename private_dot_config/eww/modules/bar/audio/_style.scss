@@ -68,34 +68,3 @@
     padding: 12px;
     min-width: 250px;
   }
-
-  .lyrics-toggle-box {
-      .lyrics-toggle-label {
-        font-size: 12px;
-        color: $secondary;
-        margin-bottom: 2px;
-
-      }
-
-
-    }
-
-    .ios-toggle {
-      padding: 2px 18px 2px 2px;
-      background-color: $text-dim;
-      border-radius: 20px;
-
-      &-inner{
-      padding: 4px 6px;
-      border-radius:50%;
-      background-color: $fg;
-      }
-
-
-      &.active {
-        background-color: $primary;
-        padding: 2px 2px 2px 18px;
-
-
-      }
-    }

@@ -35,20 +35,11 @@
                  :limit-width 26))))))
 
 ;; show lyrics button
+
+
 (defvar lyrics_hud_open false)
 (defwidget show_lyrics_button []
-  (eventbox :class "lyrics-toggle-box"
-            :onclick "eww open --toggle lyrics_hud && eww update lyrics_hud_open=${!lyrics_hud_open}"
-            :cursor "pointer"
-    (box :class "lyrics-toggle-box" :valign "center" :space-evenly false :spacing 8
-      (label :text "Show Lyrics" :class "lyrics-toggle-label")
-
-      (box :class "ios-toggle ${lyrics_hud_open ? 'active' : ''}"
-        (box :class "ios-toggle-inner"
-        )
-        )
-    )
-  )
+  (ios_toggle :active lyrics_hud_open :name "Show Lyrics" :onclick "eww open --toggle lyrics_hud && eww update lyrics_hud_open=${!lyrics_hud_open}")
   )
 
 

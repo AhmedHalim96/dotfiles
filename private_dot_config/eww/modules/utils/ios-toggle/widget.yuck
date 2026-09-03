@@ -1,0 +1,17 @@
+(defwidget ios_toggle [active name onclick]
+
+  (eventbox :class "ios-toggle"
+              :onclick "${onclick}"
+              :cursor "pointer"
+      (box :class "ios-toggle-box" :valign "center" :space-evenly false :spacing 8
+        (label :text "${name}" :class "ios-toggle-label")
+
+        (box :hexpand true)
+
+        (box :class "toggle ${active ? 'active' : ''}"
+          (box :class "toggle-inner"
+          )
+          )
+      )
+    )
+)
