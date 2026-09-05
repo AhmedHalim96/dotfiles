@@ -60,7 +60,7 @@ DEFAULT_CONFIG = {
     "editors": ["nvim"],
     "paths": [],
     "excluded": [".git", "node_modules", "__pycache__"],
-    "dmenu_cmd": "rofi -dmenu -i -theme-str 'window { width: 30%; }'",
+    "dmenu_cmd": "fuzzel -p 'Config editor: ' --placeholder '' --dmenu",
 }
 
 
@@ -178,7 +178,7 @@ def main():
             if is_valid
             else {}
         )
-        prompt_label = args.prompt if args.prompt else "📝 Config Editor"
+        prompt_label = args.prompt if args.prompt else "📝 Config Editor: "
 
     # Always pin the config file itself
     config_entry = " Edit Config"
@@ -225,7 +225,7 @@ def main():
     if len(editor_options) > 1 and not (needs_sudo or args.editor):
         try:
             proc = subprocess.run(
-                shlex.split(f'{config["dmenu_cmd"]} -p "📝 Select Editor"'),
+                shlex.split(f'{config["dmenu_cmd"]} -p "📝 Select Editor: "'),
                 input="\n".join(editor_options_with_icon),
                 text=True,
                 capture_output=True,

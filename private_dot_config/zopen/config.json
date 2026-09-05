@@ -1,5 +1,5 @@
 {
     "cache_timeout": 259200,
-    "dmenu_cmd": "fuzzel --dmenu",
+    "dmenu_cmd": "fuzzel --placeholder '' --dmenu",
     "file_manager": "nemo"
 }

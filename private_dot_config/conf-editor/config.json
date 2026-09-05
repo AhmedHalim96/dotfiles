@@ -1,5 +1,5 @@
 {
-  "dmenu_cmd": "fuzzel --dmenu",
+  "dmenu_cmd": "fuzzel --placeholder '' --dmenu",
   "editors": ["zeditor", "nvim", "windsurf", "code"],
   "excluded": [".git", "node_modules", "__pycache__"],
   "paths": [
