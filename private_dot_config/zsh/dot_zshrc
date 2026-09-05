@@ -1,7 +1,5 @@
-# 0. Shell OPTs
 fastfetch
-#
-#
+# 0. Shell OPTs
 unsetopt completealiases
 unsetopt NOMATCH
 

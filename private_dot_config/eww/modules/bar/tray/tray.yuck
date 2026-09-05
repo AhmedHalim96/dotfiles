@@ -9,6 +9,7 @@
         (box :class "stat-box" :space-evenly false :spacing 4
           (label :class "stat-icon cyan" :text "${tray_open ? "󰄽" : ""}")))))
 
+
 ;; Tray Popup Widget
 (defwidget tray_widget [popup]
   (box :class "popup-card tray-popup-box ${!tray_open ? "hidden" : "visible"} ${!popup ? "widget" : ""}"
@@ -23,6 +24,7 @@
                  :icon-size 16
                  :spacing 5
                  ))))
+
 
 (defwindow tray_popup_0
   :monitor 0
