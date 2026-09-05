@@ -1,0 +1,51 @@
+{
+  "extractor": {
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+    "base-directory": "~/Downloads/gallery-dl",
+    "archive": "~/.cache/gallery-dl/archive.db",
+    "replacements": { " ": "_" },
+
+    "restrictions": {
+      "ascii": true,
+      "spaces": "_"
+    },
+
+    "simpcity": {
+      "cookies": "~/Documents/cookies/simpcity.txt"
+    },
+
+    "instagram": {
+      "filename": "{username}_{post_date:%Y%m%d}_{post_id}_{num}.{extension}",
+      "cookies": "~/Documents/cookies/insta.txt",
+      "previews": true,
+      "include": ["stories", "posts", "highlights"]
+    },
+
+    "twitter": {
+      "filename": "{user[name]}_{date:%Y%m%d}_{content[:40]}_{num}.{extension}",
+      "retweets": false,
+      "videos": true,
+      "cookies": "~/Documents/cookies/x.txt"
+    },
+
+    "tiktok": {
+      "audio": false,
+      "covers": false
+    }
+  },
+
+  "downloader": {
+    "part": true,
+    "mtime": true,
+    "retries": 5,
+    "timeout": 30.0
+  },
+
+  "output": {
+    "mode": "auto",
+    "progress": true,
+    "shorten": true
+  },
+
+  "browser": "chrome"
+}
