@@ -1,0 +1,79 @@
+#:schema https://yazi-rs.github.io/schemas/theme.json
+
+[flavor]
+dark = "sweet"
+#dark = 'nord'
+
+# : App {{{
+light = "sweet"
+[app]
+overall = { bg = "#161925", fg = "#C3C7D1" } # theme_bg / theme_fg
+# : }}}
+
+# : Manager {{{
+[mgr]
+cwd = { fg = "#28bca3" } # MINT_500 for the current path
+
+# Selection/Hovered background
+hovered         = { fg = "#fefefe", bg = "#c50ed2", bold = true } # Magenta highlight
+marker_selected = { fg = "#c50ed2", bg = "#c50ed2" }
+
+# Borders
+border_symbol = "│"
+border_style  = { fg = "#54546d" } # accent_bg_color for subtle borders
+
+# Search results
+find_keyword  = { fg = "#f9c440", bold = true, italic = true } # BANANA_500
+find_position = { fg = "#c50ed2", bg = "reset", bold = true }
+# : }}}
+
+# : Tabs {{{
+[tabs]
+active   = { fg = "#fefefe", bg = "#c50ed2", bold = true }
+inactive = { fg = "#C3C7D1", bg = "#181b28" }
+# : }}}
+
+# : Mode {{{
+[mode]
+# Matches your Zellij ribbon styles
+normal_main = { fg = "#161925", bg = "#3689e6", bold = true } # BLUEBERRY
+normal_alt  = { fg = "#3689e6", bg = "#181b28" }
+
+select_main = { fg = "#161925", bg = "#c50ed2", bold = true } # MAGENTA
+select_alt  = { fg = "#c50ed2", bg = "#181b28" }
+
+unset_main  = { fg = "#161925", bg = "#e6133e", bold = true } # ERROR_RED
+unset_alt   = { fg = "#e6133e", bg = "#181b28" }
+# : }}}
+
+# : Status bar {{{
+[status]
+overall   = { bg = "#181b28", fg = "#C3C7D1" }
+
+# Permissions
+perm_sep   = { fg = "#54546d" }
+perm_type  = { fg = "#3689e6" } # Blue
+perm_read  = { fg = "#f9c440" } # Yellow
+perm_write = { fg = "#e6133e" } # Red
+perm_exec  = { fg = "#28bca3" } # Mint
+# : }}}
+
+# : Input / Pickers {{{
+[input]
+border   = { fg = "#c50ed2" }
+selected = { reversed = true }
+
+[pick]
+border   = { fg = "#c50ed2" }
+active   = { fg = "#c50ed2", bold = true }
+# : }}}
+
+# : Filetype Rules {{{
+[filetype]
+rules = [
+    { mime = "image/*", fg = "#f9c440" }, # Yellow
+    { mime = "{audio,video}/*", fg = "#c50ed2" }, # Magenta
+    { mime = "application/zip", fg = "#e6133e" }, # Red
+    { url = "*/", fg = "#3689e6" } # Folders are Blueberry
+]
+# : }}}

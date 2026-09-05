@@ -1,0 +1,4 @@
+[opener]
+edit = [
+	{ run = "zeditor %s", desc = "Zed Editor", orphan = true},
+]

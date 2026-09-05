@@ -1,0 +1,17 @@
+[[plugin.deps]]
+use = "Ape/smart-enter"
+rev = "1c835cc"
+hash = "d6d6fa001c2cda9dda6eb5bc6beb96b7"
+
+[[plugin.deps]]
+use = "heretic-tripto/chezmoi"
+rev = "d377771"
+hash = "b132ce9030fc828e704f24cbe3fcee87"
+
+[[plugin.deps]]
+use = "boydaihungst/mediainfo"
+rev = "d2dd310"
+hash = "5ca9b76fe72f376768b7a8a39d8b81d6"
+
+[flavor]
+deps = []

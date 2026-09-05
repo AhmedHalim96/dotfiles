@@ -1,0 +1,76 @@
+[[mgr.prepend_keymap]]
+on   = "l"
+run  = "plugin smart-enter"
+desc = "Enter the child directory, or open the file"
+
+[[mgr.prepend_keymap]]
+on   = "<Enter>"
+run  = "plugin smart-enter"
+desc = "Enter the child directory, or open the file"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "a" ]
+run  = "plugin chezmoi add"
+desc = "Chezmoi add"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "A" ]
+run  = "plugin chezmoi add-encrypt"
+desc = "Chezmoi add (encrypted)"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "r" ]
+run  = "plugin chezmoi re-add"
+desc = "Chezmoi re-add"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "e" ]
+run  = "plugin chezmoi edit"
+desc = "Chezmoi edit source"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "d" ]
+run  = "plugin chezmoi diff"
+desc = "Chezmoi diff"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "p" ]
+run  = "plugin chezmoi apply"
+desc = "Chezmoi apply"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "s" ]
+run  = "plugin chezmoi status"
+desc = "Chezmoi status"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "m" ]
+run  = "plugin chezmoi managed"
+desc = "Chezmoi managed (fzf)"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "u" ]
+run  = "plugin chezmoi unmanaged"
+desc = "Chezmoi unmanaged (fzf)"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "f" ]
+run  = "plugin chezmoi forget"
+desc = "Chezmoi forget"
+
+[[mgr.prepend_keymap]]
+on   = [ "C", "g" ]
+run  = "plugin chezmoi goto"
+desc = "Chezmoi goto source/target"
+# drop into a shell
+[[mgr.prepend_keymap]]
+on   = [ "E" ]
+run  = 'shell "$SHELL" --block'
+desc = "Open shell in current directory"
+
+
+# Open
+[[mgr.prepend_keymap]]
+on   = [ "e" ]
+run  = 'open'
+desc = "Open files"
