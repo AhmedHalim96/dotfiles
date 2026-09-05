@@ -1,0 +1,41 @@
+# --- Output Management ---
+# Format: website_creator_title.ext
+# Note: %(extractor_key)s is the website (e.g., Youtube),
+# %(uploader)s is the creator, and %(title)s is the content.
+-o "%(extractor_key)s_%(uploader)s_%(title)s.%(ext)s"
+
+# Restrict filenames to ASCII and replace spaces with underscores
+# (Better for shell scripting and terminal navigation)
+#--restrict-filenames
+
+# --- Video Quality & Format ---
+# Merge into mkv or mp4 (mkv is generally more robust for Linux/FFmpeg)
+--merge-output-format mkv
+
+# Prefer high quality but prioritize free formats (VP9/AV1/WebM)
+--prefer-free-formats
+
+# --- Metadata & Subtitles ---
+# Write metadata to the file (helpful for local media players)
+--add-metadata
+--embed-subs
+--embed-thumbnail
+
+# Download English subtitles or auto-generated ones if available
+--write-subs
+--write-auto-subs
+--sub-langs "en.*"
+
+# --- Performance & Reliability ---
+# Use concurrent fragments for faster downloads (standard is 1)
+--concurrent-fragments 5
+
+# Continue partially downloaded files
+--continue
+
+# Ignore errors (useful for large playlists so one dead link doesn't stop the script)
+--ignore-errors
+# --- Cookies (Workaround for age-restricted/premium content) ---
+#--cookies-from-browser firefox
+--user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+##--impersonate Chrome
