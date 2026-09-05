@@ -1,0 +1,256 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import os
+import shlex
+import subprocess
+from pathlib import Path
+
+# Assets
+
+FILE_ICONS: dict[str, str] = {
+    "json": "",
+    "jsonc": "",
+    "py": "",
+    "md": "",
+    "html": "",
+    "css": "",
+    "scss": "",
+    "js": "",
+    "ts": "",
+    "go": "",
+    "rs": "",
+    "lua": "",
+    "sh": "",
+    "bash": "",
+    "zsh": "",
+    "fish": "",
+    "ps1": "",
+    "default": "",
+    "toml": "",
+    "yaml": "",
+    "yml": "",
+    "zshrc": "",
+    "conf": "",
+    "bin": "",
+}
+
+EDITOR_ICONS: dict[str, str] = {
+    "nvim": "",
+    "code": "",
+    "sublime": "",
+    "atom": "",
+    "codium": "",
+    "defaulggt": "",
+    "windsurf": "W",
+    "zeditor": "󰬡",
+}
+
+NON_TERM_EDITORS = ["code", "windsurf", "atom", "sublime", "codium", "zeditor"]
+
+# Setup Paths
+HOME = str(Path.home())
+CONF_DIR = Path.home() / ".config/conf-editor"
+CONF_FILE = CONF_DIR / "config.json"
+CACHE_DIR = Path.home() / ".cache/conf-editor"
+HISTORY_FILE = CACHE_DIR / "history.json"
+
+DEFAULT_CONFIG = {
+    "terminal_cmd": "kitty -e",
+    "editors": ["nvim"],
+    "paths": [],
+    "excluded": [".git", "node_modules", "__pycache__"],
+    "dmenu_cmd": "rofi -dmenu -i -theme-str 'window { width: 30%; }'",
+}
+
+
+def notify(message: str, urgency: str = "normal"):
+    _ = subprocess.run(
+        ["notify-send", "-a", "Conf-Editor", "-u", urgency, "📝 Config Editor", message]
+    )
+
+
+def setup():
+    CONF_DIR.mkdir(parents=True, exist_ok=True)
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    if not CONF_FILE.exists():
+        with open(CONF_FILE, "w") as f:
+            json.dump(DEFAULT_CONFIG, f, indent=4)
+    if not HISTORY_FILE.exists():
+        with open(HISTORY_FILE, "w") as f:
+            json.dump({}, f)
+
+
+def validate_config() -> tuple[dict[str, str | list[str]], bool]:
+    try:
+        if not CONF_FILE.exists():
+            return DEFAULT_CONFIG, True
+        with open(CONF_FILE, "r") as f:
+            config = json.load(f)
+        required_keys = ["terminal_cmd", "editors", "paths", "excluded", "dmenu_cmd"]
+        if not all(key in config for key in required_keys):
+            raise ValueError(f"Config missing required keys.")
+        return config, True
+    except (json.JSONDecodeError, ValueError) as e:
+        notify(f"Config error: {str(e)}.", "critical")
+        return DEFAULT_CONFIG, False
+
+
+def load_json(path):
+    try:
+        with open(path, "r") as f:
+            return json.load(f)
+    except:
+        return {}
+
+
+def save_history(history):
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history, f, indent=4)
+
+
+def format_path(full_path):
+    if full_path.startswith(HOME):
+        return full_path.replace(HOME, "~", 1)
+    return full_path
+
+
+def get_icon(file_path: str) -> str | None:
+    ext = Path(file_path).suffix.lower().strip(".")
+    if not ext and "bin" in file_path:
+        return FILE_ICONS.get("bin")
+    return FILE_ICONS.get(ext, FILE_ICONS.get("default"))
+
+def get_files(paths_to_scan: list[str], excluded_list: list[str]) -> dict[str, str]:
+    files_dict: dict[str, str] = {}
+    excluded = set(excluded_list)
+    for p in paths_to_scan:
+        path_obj = Path(p).expanduser()
+        if not path_obj.exists():
+            continue
+        if path_obj.is_file():
+            full_path = str(path_obj.absolute())
+            icon = get_icon(full_path)
+            files_dict[f"{icon} {path_obj.name} --> ({format_path(full_path)})"] = (
+                full_path
+            )
+            continue
+        for root, dirs, files in os.walk(path_obj):
+            dirs[:] = [d for d in dirs if d not in excluded]
+            for file in files:
+                if file in excluded:
+                    continue
+                full_path = os.path.join(root, file)
+                icon = get_icon(full_path)
+                files_dict[f"{icon} {file} --> ({format_path(full_path)})"] = full_path
+    return files_dict
+
+
+def main():
+    setup()
+
+    # 1. Setup Argparse
+    parser = argparse.ArgumentParser(
+        description="📝 A weighted configuration file editor using walker and neovim.",
+        epilog="Example: conf-editor ~/Documents -p 'Work Docs'",
+    )
+    _ = parser.add_argument(
+        "path", nargs="?", help="Optional path to override config paths."
+    )
+    _ = parser.add_argument(
+        "-p", "--prompt", help="Custom prompt for the walker interface."
+    )
+    _ = parser.add_argument("-e", "--editor", help="Editor to use (nvim by default)")
+    args = parser.parse_args()
+
+    config, is_valid = validate_config()
+    history = load_json(HISTORY_FILE)
+
+    # 2. Logic for paths and prompts
+    if args.path:
+        all_files = get_files([args.path], config.get("excluded", []))
+        prompt_label = (
+            args.prompt if args.prompt else f"📂 Local: {format_path(args.path)}"
+        )
+    else:
+        all_files = (
+            get_files(config.get("paths", []), config.get("excluded", []))
+            if is_valid
+            else {}
+        )
+        prompt_label = args.prompt if args.prompt else "📝 Config Editor"
+
+    # Always pin the config file itself
+    config_entry = " Edit Config"
+    if not args.path:
+        all_files[config_entry] = str(CONF_FILE)
+
+    # 3. Sort and Display
+    sorted_keys = sorted(
+        all_files.keys(),
+        key=lambda k: (k != config_entry, -history.get(all_files.get(k), 0), k.lower()),
+    )
+
+    try:
+        proc = subprocess.run(
+            shlex.split(f'{config["dmenu_cmd"]} -p "{prompt_label}"'),
+            input="\n".join(sorted_keys),
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        selected_display = proc.stdout.strip()
+    except subprocess.CalledProcessError:
+        return
+
+    selected_path = all_files.get(selected_display)
+    if not selected_path:
+        return
+
+    # Update history weight
+    history[selected_path] = history.get(selected_path, 0) + 1
+    save_history(history)
+
+    # -------------------------------------------------------------------------
+    # 4. Editor selection && execution
+    # -------------------------------------------------------------------------
+    needs_sudo = selected_path.startswith("/") and not os.access(selected_path, os.W_OK)
+
+    editor_options = config.get("editors", ["nvim"]) if is_valid else ["nvim"]
+    editor_options_with_icon = [
+        f"{EDITOR_ICONS.get(editor, '')} {editor}" for editor in editor_options
+    ]
+
+    # Prompt for editor only if multiple editors are available
+    if len(editor_options) > 1 and not (needs_sudo or args.editor):
+        try:
+            proc = subprocess.run(
+                shlex.split(f'{config["dmenu_cmd"]} -p "📝 Select Editor"'),
+                input="\n".join(editor_options_with_icon),
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            selected_editor = proc.stdout.strip()[2:]
+        except subprocess.CalledProcessError:
+            return
+    else:
+        selected_editor = args.editor or editor_options[0]
+
+    editor_cmd = args.editor if args.editor else selected_editor
+
+    if needs_sudo:
+        command = f"{config['terminal_cmd']} -- sh -c 'sudoedit {shlex.quote(selected_path)}'"
+        cmd = shlex.split(command)
+    elif editor_cmd in NON_TERM_EDITORS:
+        command = f"{editor_cmd} {shlex.quote(selected_path)}"
+        cmd = shlex.split(command)
+    else:
+        command = f"{config['terminal_cmd']} -- {shlex.quote(editor_cmd)} {shlex.quote(selected_path)}"
+        cmd = shlex.split(command)
+
+    subprocess.Popen(cmd)
+
+
+if __name__ == "__main__":
+    main()
