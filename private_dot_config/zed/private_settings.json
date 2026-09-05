@@ -1,0 +1,128 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "semantic_tokens": "combined",
+  "languages": {
+    "QML": {
+      "tab_size": 2,
+    }
+  },
+  "agent_servers": {
+    "vtcode": {
+      "type": "registry"
+    }
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "snippet_sort_order": "inline",
+  "cli_default_open_behavior": "existing_window",
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+  ],
+  "search": {
+    "include_ignored": false,
+  },
+  "collaboration_panel": {
+    "button": false,
+  },
+  "vim": {
+    "highlight_on_yank_duration": 250,
+    "gdefault": true,
+    "use_smartcase_find": true,
+    "toggle_relative_line_numbers": false,
+  },
+  "agent": {
+    "default_profile": "write",
+    "inline_assistant_model": {
+      "provider": "google",
+      "model": "gemini-2.5-flash",
+      "enable_thinking": false
+    },
+    "default_model": {
+      "provider": "google",
+      "model": "gemini-2.5-flash-lite",
+      "enable_thinking": true
+    },
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "project_panel": {
+    "dock": "left",
+  },
+  "icon_theme": {
+    "mode": "light",
+    "light": "Material Icon Theme",
+    "dark": "Material Icon Theme"
+  },
+  "session": {
+    "trust_all_worktrees": true,
+  },
+  "vim_mode": true,
+  "terminal": {
+    "font_size": 16.0,
+    "font_family": "JetBrainsMono Nerd Font",
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "base_keymap": "VSCode",
+  "minimap": {
+    "show": "never",
+  },
+  "autosave": "on_focus_change",
+  "buffer_font_fallbacks": [
+    "Droid Sans Mono",
+    "monospace",
+    "monospace",
+    "Droid Sans Fallback",
+  ],
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "file_types": {
+    "html": ["*.html"],
+    "javascriptreact": ["*.js"],
+  },
+  "colorize_brackets": true,
+  "linked_edits": true,
+  "use_on_type_format": true,
+  "soft_wrap": "editor_width",
+  "tab_size": 2,
+  "ui_font_size": 16,
+  "buffer_font_size": 13.0,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Sweet Dark"
+  },
+
+  "lsp": {
+    "qml": {
+          "binary": {
+            "arguments": ["-E", "additional-args"]
+          }
+        },
+    "nim": {
+      "binary": {
+        "path":  "~/.nimble/bin/nimlangserver"
+      }
+
+    }
+  },
+
+}
