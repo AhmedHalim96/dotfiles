@@ -34,7 +34,7 @@
     }
 
     &.disabled {
-      .wifi-icon, .wifi-text { color: $error; }
+      .wifi-icon, .wifi-text { color: $text-dim; }
     }
   }
 

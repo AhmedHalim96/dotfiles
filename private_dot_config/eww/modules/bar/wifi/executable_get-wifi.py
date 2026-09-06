@@ -114,7 +114,7 @@ class NetworkManagerMonitor:
             return {
                 "enabled": False,
                 "connected": False,
-                "ssid": "Disabled",
+                "ssid": "Off",
                 "signal": 0,
                 "icon": "󰤭",
                 "ip": "N/A",
