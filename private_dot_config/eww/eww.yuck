@@ -3,6 +3,6 @@
 
 ;; bar
 (include "./modules/bar/widget.yuck")
-;; modules
 
+;; modules
 (include "./modules/lyrics/widget.yuck")

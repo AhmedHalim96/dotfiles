@@ -7,6 +7,7 @@ import subprocess
 from pathlib import Path
 
 # Assets
+FOLDER_ICON = "󰉋"
 
 FILE_ICONS: dict[str, str] = {
     "json": "",
@@ -59,6 +60,7 @@ DEFAULT_CONFIG = {
     "terminal_cmd": "kitty -e",
     "editors": ["nvim"],
     "paths": [],
+    "dirs": [],
     "excluded": [".git", "node_modules", "__pycache__"],
     "dmenu_cmd": "fuzzel -p 'Config editor: ' --placeholder '' --dmenu",
 }
@@ -89,7 +91,9 @@ def validate_config() -> tuple[dict[str, str | list[str]], bool]:
             config = json.load(f)
         required_keys = ["terminal_cmd", "editors", "paths", "excluded", "dmenu_cmd"]
         if not all(key in config for key in required_keys):
-            raise ValueError(f"Config missing required keys.")
+            raise ValueError("Config missing required keys.")
+        if "dirs" not in config:
+            config["dirs"] = []
         return config, True
     except (json.JSONDecodeError, ValueError) as e:
         notify(f"Config error: {str(e)}.", "critical")
@@ -100,7 +104,7 @@ def load_json(path):
     try:
         with open(path, "r") as f:
             return json.load(f)
-    except:
+    except Exception:
         return {}
 
 
@@ -120,6 +124,19 @@ def get_icon(file_path: str) -> str | None:
     if not ext and "bin" in file_path:
         return FILE_ICONS.get("bin")
     return FILE_ICONS.get(ext, FILE_ICONS.get("default"))
+
+
+def get_dirs(dirs_to_scan: list[str]) -> dict[str, str]:
+    dirs_dict: dict[str, str] = {}
+    for d in dirs_to_scan:
+        path_obj = Path(d).expanduser()
+        if not path_obj.exists() or not path_obj.is_dir():
+            continue
+        full_path = str(path_obj.absolute())
+        label = f"{FOLDER_ICON} [DIR] {path_obj.name} --> ({format_path(full_path)})"
+        dirs_dict[label] = full_path
+    return dirs_dict
+
 
 def get_files(paths_to_scan: list[str], excluded_list: list[str]) -> dict[str, str]:
     files_dict: dict[str, str] = {}
@@ -161,6 +178,12 @@ def main():
         "-p", "--prompt", help="Custom prompt for the walker interface."
     )
     _ = parser.add_argument("-e", "--editor", help="Editor to use (nvim by default)")
+    _ = parser.add_argument(
+        "-d",
+        "--dirs",
+        action="store_true",
+        help="Display configured directory paths instead of files.",
+    )
     args = parser.parse_args()
 
     config, is_valid = validate_config()
@@ -168,27 +191,39 @@ def main():
 
     # 2. Logic for paths and prompts
     if args.path:
-        all_files = get_files([args.path], config.get("excluded", []))
+        target_path = Path(args.path).expanduser()
+        if target_path.is_dir() and args.dirs:
+            all_entries = get_dirs([str(target_path)])
+        else:
+            all_entries = get_files([args.path], config.get("excluded", []))
         prompt_label = (
             args.prompt if args.prompt else f"📂 Local: {format_path(args.path)}"
         )
+    elif args.dirs:
+        all_entries = (
+            get_dirs(config.get("dirs", [])) if is_valid else {}
+        )
+        prompt_label = args.prompt if args.prompt else "📁 Select Directory: "
     else:
-        all_files = (
+        # Default behavior: Combines file scans and direct directory entries
+        all_entries = (
             get_files(config.get("paths", []), config.get("excluded", []))
             if is_valid
             else {}
         )
+        if is_valid and config.get("dirs"):
+            all_entries.update(get_dirs(config.get("dirs", [])))
         prompt_label = args.prompt if args.prompt else "📝 Config Editor: "
 
     # Always pin the config file itself
     config_entry = " Edit Config"
     if not args.path:
-        all_files[config_entry] = str(CONF_FILE)
+        all_entries[config_entry] = str(CONF_FILE)
 
     # 3. Sort and Display
     sorted_keys = sorted(
-        all_files.keys(),
-        key=lambda k: (k != config_entry, -history.get(all_files.get(k), 0), k.lower()),
+        all_entries.keys(),
+        key=lambda k: (k != config_entry, -history.get(all_entries.get(k), 0), k.lower()),
     )
 
     try:
@@ -203,7 +238,7 @@ def main():
     except subprocess.CalledProcessError:
         return
 
-    selected_path = all_files.get(selected_display)
+    selected_path = all_entries.get(selected_display)
     if not selected_path:
         return
 
@@ -211,9 +246,7 @@ def main():
     history[selected_path] = history.get(selected_path, 0) + 1
     save_history(history)
 
-    # -------------------------------------------------------------------------
     # 4. Editor selection && execution
-    # -------------------------------------------------------------------------
     needs_sudo = selected_path.startswith("/") and not os.access(selected_path, os.W_OK)
 
     editor_options = config.get("editors", ["nvim"]) if is_valid else ["nvim"]

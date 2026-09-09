@@ -30,7 +30,7 @@
     }
 
     &.disconnected {
-      .wifi-icon, .wifi-text { color: rgba($fg, 0.5); }
+      .wifi-icon, .wifi-text { color: $primary; }
     }
 
     &.disabled {

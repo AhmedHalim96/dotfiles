@@ -1,5 +1,4 @@
 (defwidget ios_toggle [active name onclick]
-
   (eventbox :class "ios-toggle"
               :onclick "${onclick}"
               :cursor "pointer"
@@ -9,9 +8,8 @@
         (box :hexpand true)
 
         (box :class "toggle ${active ? 'active' : ''}"
-          (box :class "toggle-inner"
-          )
-          )
+          (box :class "toggle-inner")
+        )
       )
-    )
+  )
 )

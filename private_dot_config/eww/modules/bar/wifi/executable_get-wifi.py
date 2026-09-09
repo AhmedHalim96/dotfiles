@@ -150,7 +150,7 @@ class NetworkManagerMonitor:
         ap_paths = ap_paths_res[0] if ap_paths_res else []
 
         connected = False
-        active_ssid = "Disconnected"
+        active_ssid = "On"
         active_signal = 0
         networks = []
         seen_ssids = set()
