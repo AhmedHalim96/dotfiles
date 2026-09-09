@@ -65,6 +65,7 @@
          :hexpand true
       (keymode_widget)
       (capslock_widget)
+      ;; center on HDMI-A-1
       )
 
     ;; Right Slot
