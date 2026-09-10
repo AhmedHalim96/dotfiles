@@ -39,6 +39,7 @@
     "~/.config/rofi/powermenu.rasi",
     "~/.config/rofi/scripts/powermenu.sh",
     "~/.config/rofi-ops/config.yaml",
+    "~/.config/variety/scripts/set_wallpaper",
     "~/.config/zsh/.zshrc",
     "~/.config/zsh/.zprofile",
     "~/.config/zsh/alias.zsh",
