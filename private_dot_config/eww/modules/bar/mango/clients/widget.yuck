@@ -8,7 +8,8 @@
          (for client in {mango.clients[mon_name] ?: []}
           (button :class "client-item ${client.is_focused ? 'focused' : ''}"
                   :onclick "mmsg dispatch focusid \"client,${client.id}\""
-                  :onmiddleclick "kill ${client.pid}"
+                  :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
+                  :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
                   :tooltip "${client.title}"
             (box :space-evenly false
                  :spacing 6
