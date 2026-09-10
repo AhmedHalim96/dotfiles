@@ -1,13 +1,8 @@
 (deflisten network :initial '{"iface": "Disconnected", "icon": "󰤭 ", "down": "0 B/s", "up": "0 B/s"}'
   `modules/bar/network/get-network.py`)
 (defwidget network_widget []
-  (box :class "net-box"
-       :space-evenly false
-       :spacing 4
-       :tooltip "Interface: ${network.iface} | Down: ${network.down} | Up: ${network.up}"
-
-    ;; Show speed numbers only on the larger monitor
-    (box :orientation "h"
+  (eventbox :cursor "pointer"
+    (box :class "net-box"
          :space-evenly false
          :valign "center"
          :spacing 4
