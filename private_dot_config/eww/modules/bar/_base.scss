@@ -10,3 +10,85 @@
     transition: all 0.2s ease-in-out;
   }
 }
+
+// ── Shared base ─────────────────────────────────────────────────────────────
+
+.pomotroid-box {
+  padding: 0 6px;
+
+
+// All pomo labels share this base
+.label{
+  font-family: "JetBrains Mono", "Iosevka", monospace;
+  font-size:   12px;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 2px 8px;
+  transition: color 200ms ease, background 200ms ease;
+  letter-spacing: 0.02em;
+}
+
+// ── Work / Focus ─────────────────────────────────────────────────────────────
+// Primary magenta — high energy, demands attention
+
+.pomo-work {
+  color:      $primary;
+  background: $primary-container;
+  border:     1px solid rgba($primary, .35);
+
+  // Running glow — subtle, not flashy
+  &:not(.paused) {
+    box-shadow: 0 0 6px rgba($primary, .25);
+  }
+}
+
+// ── Short break ──────────────────────────────────────────────────────────────
+// Secondary teal — calm, breathable
+
+.pomo-short {
+  color:      $secondary;
+  background: $secondary-container;
+  border:     1px solid rgba($secondary, .3);
+}
+
+// ── Long break ───────────────────────────────────────────────────────────────
+// Info blue-teal — quieter than secondary, more restful
+
+.pomo-long {
+  color:      #0096b1;   // $info
+  background: rgba(#0096b1, .12);
+  border:     1px solid rgba(#0096b1, .25);
+}
+
+// ── Paused (appended to any round class) ─────────────────────────────────────
+
+.paused {
+  opacity:    0.5;
+  box-shadow: none;
+  // Italicise the emoji-free portion via GTK CSS where supported
+  font-style: italic;
+}
+
+// ── Pomotroid not running — hide entirely ────────────────────────────────────
+
+.pomo-hidden {
+  min-width:  0;
+  min-height: 0;
+  padding:    0;
+  margin:     0;
+  border:     none;
+  background: transparent;
+  opacity:    0;
+}
+
+// ── Protocol error ───────────────────────────────────────────────────────────
+
+.error {
+  color:      $error;
+  background: $error-container;
+  border:     1px solid rgba($error, .35);
+  font-family: "JetBrains Mono", monospace;
+  font-size:   12px;
+  border-radius: 5px;
+  padding: 2px 8px;
+}}

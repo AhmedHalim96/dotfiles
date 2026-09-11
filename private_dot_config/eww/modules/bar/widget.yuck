@@ -17,25 +17,17 @@
 (include "./modules/bar/weather/widget.yuck")
 
 
-;; Poll script continuously via websocket stream
-(deflisten pomotroid :initial '{"status":"disconnected","icon":"󰔛","time_str":"00:00","progress":0,"round_type":"None","round_info":"0/0"}'
-  "scripts/pomotroid_eww.py")
+;; Listen to Pomotroid's WebSocket via the Python script
+(deflisten pomotroid :initial "{\"label\":\"🍅 --:--\",\"tooltip\":\"Pomotroid not running\",\"class\":\"pomo-hidden\"}"
+  "scripts/pomotroid")
 
-;; Indicator Widget
-(defwidget pomotroid_indicator []
-  (box :class "pomo-container"
-       :space-evenly false
-       :spacing 8
-    (label :class "pomo-icon pomo-${pomotroid.status}"
-           :text "${pomotroid.icon}")
-    (label :class "pomo-time"
-           :text "${pomotroid.time_str}")
-    (label :class "pomo-round"
-           :text "(${pomotroid.round_info})")
-    (circular-progress :value {pomotroid.progress}
-                       :thickness 3
-                       :class "pomo-progress"
-      (label :text ""))))
+;; Widget definition
+(defwidget pomotroid []
+  (box :class "pomotroid-box"
+    (label
+      :class "label ${pomotroid.class}"
+      :text  {pomotroid.label}
+      :tooltip {pomotroid.tooltip})))
 
 
 (defwidget ram_usage []
@@ -83,6 +75,7 @@
          :hexpand true
       (keymode_widget)
       (capslock_widget)
+      (pomotroid)
       ;; center on HDMI-A-1
       )
 
