@@ -6,4 +6,4 @@
 
 ;; modules
 (include "./modules/lyrics/widget.yuck")
-(include "./modules/pomodoro/widget.yuck")
+;;(include "./modules/pomodoro/widget.yuck")
