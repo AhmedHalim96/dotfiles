@@ -12,6 +12,7 @@
                   :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
                   :tooltip "${client.title}"
             (box :space-evenly false
+                :hexpand true
                  :spacing 6
               (image :class "client-icon"
                      :path "${client.icon}"
@@ -19,4 +20,4 @@
                      :image-height 16)
               (label :class "client-title"
                      :text "${client.title}"
-                     :limit-width 20)))))))
+                     :limit-width 30)))))))
