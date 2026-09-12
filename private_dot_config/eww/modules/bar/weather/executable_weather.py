@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import json
-import urllib.request
 import re
 import sys
+import urllib.request
 
 def get_weather(location="Cairo"):
     url = f"https://wttr.in/{location}?format=%C+%t+%f"
