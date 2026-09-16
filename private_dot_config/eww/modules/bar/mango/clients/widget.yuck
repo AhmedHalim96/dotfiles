@@ -6,18 +6,20 @@
          :space-evenly false
          :spacing 0
          (for client in {mango.clients[mon_name] ?: []}
-          (button :class "client-item ${client.is_focused ? 'focused' : ''}"
-                  :onclick "mmsg dispatch focusid \"client,${client.id}\""
-                  :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
-                  :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
-                  :tooltip "${client.title}"
-            (box :space-evenly false
-                :hexpand true
-                 :spacing 6
-              (image :class "client-icon"
-                     :path "${client.icon}"
-                     :image-width 16
-                     :image-height 16)
-              (label :class "client-title"
-                     :text "${client.title}"
-                     :limit-width 30)))))))
+           (eventbox
+            :onclick "mmsg dispatch focusid \"client,${client.id}\""
+            :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
+            :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
+            :tooltip "${client.title}"
+            :cursor "pointer"
+            (box :hexpand true :class "client-item ${client.is_focused ? 'focused' : ''}"
+                 (box :space-evenly false
+                      :hexpand true
+                      :spacing 6
+                      (image :class "client-icon"
+                          :path "${client.icon}"
+                          :image-width 16
+                          :image-height 16)
+                      (label :class "client-title"
+                          :text "${client.title}"
+                          :limit-width 50))))))))
