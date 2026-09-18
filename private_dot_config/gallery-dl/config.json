@@ -30,7 +30,8 @@
 
     "tiktok": {
       "audio": false,
-      "covers": false
+      "covers": false,
+      "proxy": "socks5://127.0.0.1:9050"
     }
   },
 
