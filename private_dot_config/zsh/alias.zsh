@@ -160,6 +160,7 @@ alias zja="zellij a"
 
 # Misc
 ##
+alias gocryptfs="gocryptfs --extpass=\"zenity --password --title='Unlock Vault'\""
 alias c='clear' # clear terminal
 alias xx="exit" # exit Shell
 alias rr="exec zsh" # restart Shell
