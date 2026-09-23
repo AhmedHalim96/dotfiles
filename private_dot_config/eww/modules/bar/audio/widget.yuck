@@ -4,7 +4,7 @@
 (defwidget audio_widget [mon_id]
   (eventbox :class "stat-item" :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
             :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-            :onclick "eww open --toggle audio_popup_${mon_id} && eww open --toggle popup_closer_${mon_id}"
+            :onclick "eww open-many --toggle audio_popup_${mon_id} popup_closer_${mon_id}"
             :onmiddleclick "pavucontrol &"
             :cursor "pointer"
             (box :class "stat-item vol-box"
