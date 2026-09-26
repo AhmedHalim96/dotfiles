@@ -6,5 +6,11 @@
     (box :class "kbd-box"
          :space-evenly false
          :tooltip "Layout: ${kbd_layout.full} (Click to switch)"
-      (label :class "stat-icon kbd-icon" :text "${kbd_layout.icon}")
-      (label :class "kbd-text" :text "${kbd_layout.short}"))))
+     (eventbox
+       :onclick "${EWW_CONFIG_DIR}/modules/bar/kblayout/toggle-kb.sh || notify-send 'error happened'"
+       :cursor "pointer"
+       (label :class "stat-icon kbd-icon" :text "󰌌"))
+     (eventbox
+       :onclick "mmsg dispatch switchxkblayout next"
+       :cursor "pointer"
+       (label :class "kbd-text" :text "${kbd_layout.short}")))))

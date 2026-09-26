@@ -42,7 +42,6 @@ def main():
             payload = {
                 "full": full_layout,
                 "short": short_layout,
-                "icon": "󰌌"
             }
             print(json.dumps(payload), flush=True)
         except Exception:
