@@ -92,22 +92,66 @@ alias mpv-720="mpv --ytdl-format='bestvideo[height<=?720]+bestaudio/best[height<
 alias mpv-a="mpv-360 --no-video"
 
 # git aliases
-alias status="git status"
-alias add="git add"
-alias add.="git add ."
-alias commit="git commit -m"
-alias log="git log"
-alias pull="git pull"
-alias push="git push"
-alias clone="git clone"
-alias ginit="git init"
-alias checkout="git checkout"
-alias checkout-b="checkout -b"
-alias branch="git branch"
-alias branch-d="branch -d"
-alias stash="git stash"
-alias merge="git merge"
-alias countCommits="git log | grep "commit" | wc -l"
+
+# alias status="git status"
+# alias add="git add"
+# alias add.="git add ."
+# alias commit="git commit -m"
+# alias log="git log"
+# alias pull="git pull"
+# alias push="git push"
+# alias clone="git clone"
+# alias ginit="git init"
+# alias checkout="git checkout"
+# alias checkout-b="checkout -b"
+# alias branch="git branch"
+# alias branch-d="branch -d"
+# alias stash="git stash"
+# alias merge="git merge"
+# alias countCommits="git log | grep "commit" | wc -l"
+#
+# ==============================================================================
+# Git Aliases
+# ==============================================================================
+# Core & Status
+alias g='git'
+alias gs='git status -sb'
+alias gss='git status'
+# Navigation & Branching (using modern `git switch`)
+alias gb='git branch'
+alias gba='git branch -a'
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias gsw='git switch'
+alias gswc='git switch -c'
+# Staging & Adding
+alias ga='git add'
+alias gaa='git add --all'
+alias gap='git add -p'
+# Committing
+alias gc='git commit -m'
+alias gca='git commit -a -m'
+alias gcam='git commit --amend'
+alias gcan='git commit --amend --no-edit'
+# Diff & Log
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias glo='git log --oneline -n 10'
+# Sync & Remote
+alias gf='git fetch --prune'
+alias gpl='git pull --rebase'
+alias gps='git push'
+alias gpsf='git push --force-with-lease'
+alias gcl='git clone'
+
+# Stash & Rescue
+alias gst='git stash'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gundo='git reset --soft HEAD~1'
+
+
 
 # Dotfiles
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
@@ -352,4 +396,5 @@ touchs () {
   $EDITOR $@
   chmod +x $@
   echo "File $@ created && executable"
+
 }
