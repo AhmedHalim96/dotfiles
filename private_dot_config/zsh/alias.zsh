@@ -203,8 +203,7 @@ alias zjattach="zellij attach"
 alias zja="zellij a"
 
 # Misc
-##
-alias gocryptfs="gocryptfs --extpass=\"fuzzel-pass\""
+#alias gocryptfs="gocryptfs --extpass=\"fuzzel-pass\""
 alias c='clear' # clear terminal
 alias xx="exit" # exit Shell
 alias rr="exec zsh" # restart Shell
