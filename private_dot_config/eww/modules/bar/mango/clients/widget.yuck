@@ -9,6 +9,7 @@
            (eventbox
             :onclick "mmsg dispatch focusid \"client,${client.id}\""
             :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
+            ;;:onrightclick "setsid ~/.config/eww/modules/bar/mango/clients/context-menu.sh ${client.pid} ${client.id} \"${client.title}\" >/tmp/context-menu.log 2>&1 &"
             :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
             :tooltip "${client.title}"
             :cursor "pointer"
