@@ -9,7 +9,7 @@ def main():
 
     try:
         proc = subprocess.Popen(
-            ["lyricsmpris", "--pipe"],
+            ["mpris-lyrics", "--pipe"],
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             text=True,
@@ -21,7 +21,7 @@ def main():
 
     for line in iter(proc.stdout.readline, ''):
         clean_line = line.strip()
-        
+
         # Hide when empty, instrumental, or explicitly no lyrics available
         if not clean_line or "no lyrics" in clean_line.lower() or clean_line.lower() == "instrumental":
             payload = {"text": "", "visible": False}
