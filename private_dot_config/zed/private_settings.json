@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "edit_predictions": {
+    "provider": "copilot"
+  },
   "semantic_tokens": "combined",
   "languages": {
     "QML": {
@@ -47,6 +50,7 @@
     "toggle_relative_line_numbers": false,
   },
   "agent": {
+    "button": false,
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "google",
