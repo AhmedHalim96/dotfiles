@@ -39,10 +39,13 @@ def main():
             full_layout = data.get("layout", "US")
             short_layout = get_short_name(full_layout)
 
+            # send system wide notifications
+
             payload = {
                 "full": full_layout,
                 "short": short_layout,
             }
+
             print(json.dumps(payload), flush=True)
         except Exception:
             pass
