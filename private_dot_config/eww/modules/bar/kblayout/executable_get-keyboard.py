@@ -40,7 +40,7 @@ def main():
             short_layout = get_short_name(full_layout)
 
             # send system wide notifications
-
+            subprocess.run(["notify-send", "--app-name", "Keyboard Layout", "--icon", "keyboard", "--urgency", "low", f"Keyboard Layout: {short_layout}"], check=False)
             payload = {
                 "full": full_layout,
                 "short": short_layout,

@@ -4,9 +4,10 @@
           :hexpand true
     (box :class "clients-box"
          :space-evenly false
-         :spacing 0
+         :spacing 2
          (for client in {mango.clients[mon_name] ?: []}
            (eventbox
+            :class "client-eventbox"
             :onclick "mmsg dispatch focusid \"client,${client.id}\""
             :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
             ;;:onrightclick "setsid ~/.config/eww/modules/bar/mango/clients/context-menu.sh ${client.pid} ${client.id} \"${client.title}\" >/tmp/context-menu.log 2>&1 &"

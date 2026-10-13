@@ -4,7 +4,13 @@
   padding: 0;
   margin: 0;
 }
+.client-eventbox{
+  border-radius: 8px;
+  &:hover {
+    background-color: rgba($primary, 0.18);
+  }
 
+}
 .client-item {
   background-color: transparent;
   border-radius: 8px;
@@ -21,6 +27,8 @@
   &:hover {
     background-color: rgba($primary, 0.18);
   }
+
+
 
   /* Style for the active/focused window */
   &.focused {
