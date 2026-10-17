@@ -359,7 +359,7 @@ def emit():
 
 
 def watch_tags():
-    proc = subprocess.Popen(["mmsg", "watch", "all-tags"], stdout=subprocess.PIPE, text=True)
+    proc = subprocess.Popen(["mmsg", "watch", "all-tags"], stdout=subprocess.PIPE, text=True, bufsize=1)
     for line in iter(proc.stdout.readline, ''):
         if not line.strip():
             continue
@@ -386,7 +386,7 @@ def watch_tags():
 
 
 def watch_clients():
-    proc = subprocess.Popen(["mmsg", "watch", "all-clients"], stdout=subprocess.PIPE, text=True)
+    proc = subprocess.Popen(["mmsg", "watch", "all-clients"], stdout=subprocess.PIPE, text=True, bufsize=1)
     for line in iter(proc.stdout.readline, ''):
         if not line.strip():
             continue
