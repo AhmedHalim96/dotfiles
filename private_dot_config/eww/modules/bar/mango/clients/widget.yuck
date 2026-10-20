@@ -1,16 +1,18 @@
+
+(deflisten mango_clients :initial "{\"clients\": {}}" "python3 modules/bar/mango/clients/get-mango-clients.py")
+
 (defwidget active_clients [mon_name]
   (scroll :hscroll true
-          :vscroll false
-          :hexpand true
+        :vscroll false
+        :hexpand true
     (box :class "clients-box"
          :space-evenly false
          :spacing 2
-         (for client in {mango.clients[mon_name] ?: []}
+         (for client in {mango_clients.clients[mon_name] ?: []}
            (eventbox
             :class "client-eventbox"
             :onclick "mmsg dispatch focusid \"client,${client.id}\""
             :onmiddleclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch killclient"
-            ;;:onrightclick "setsid ~/.config/eww/modules/bar/mango/clients/context-menu.sh ${client.pid} ${client.id} \"${client.title}\" >/tmp/context-menu.log 2>&1 &"
             :onrightclick "mmsg dispatch focusid \"client,${client.id}\" && mmsg dispatch togglemaximizescreen"
             :tooltip "${client.title}"
             :cursor "pointer"

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import select
 import shutil
 import subprocess
 import sys
@@ -44,23 +45,45 @@ def main():
             bufsize=1,
         )
 
-        for line in iter(proc.stdout.readline, ""):
-            clean_line = line.strip()
+        empty_emitted = False
 
-            # Hide when line is empty, instrumental, or indicates no lyrics
-            if (
-                not clean_line
-                or "no lyrics" in clean_line.lower()
-                or clean_line.lower() == "instrumental"
-            ):
-                payload = {"text": "", "visible": False}
+        while True:
+            # Wait up to 10 seconds for the next line. If an empty line was already
+            # emitted for the current gap, wait indefinitely until the next line arrives.
+            timeout = None if empty_emitted else 10.0
+            rlist, _, _ = select.select([proc.stdout], [], [], timeout)
+
+            if proc.poll() is not None:
+                break
+
+            if rlist:
+                line = proc.stdout.readline()
+                if not line:
+                    break
+
+                clean_line = line.strip()
+
+                # Hide when line is empty, instrumental, or indicates no lyrics
+                if (
+                    not clean_line
+                    or "no lyrics" in clean_line.lower()
+                    or clean_line.lower() == "instrumental"
+                ):
+                    payload = {"text": "", "visible": False}
+                else:
+                    payload = {
+                        "text": truncate(clean_line),
+                        "visible": True,
+                    }
+
+                print(json.dumps(payload), flush=True)
+                empty_emitted = False
             else:
-                payload = {
-                    "text": truncate(clean_line),
-                    "visible": True,
-                }
-
-            print(json.dumps(payload), flush=True)
+                # 10+ seconds elapsed without a new line; insert an empty line once per gap
+                if not empty_emitted:
+                    payload = {"text": "", "visible": False}
+                    print(json.dumps(payload), flush=True)
+                    empty_emitted = True
 
     except (KeyboardInterrupt, SystemExit):
         pass

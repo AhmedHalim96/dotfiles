@@ -68,7 +68,8 @@
          :spacing 5
          :hexpand true
       (workspace_switcher :mon_name mon_name)
-      (active_clients :mon_name mon_name))
+      (active_clients :mon_name mon_name)
+      )
 
     ;; Center Slot
     (box :space-evenly false

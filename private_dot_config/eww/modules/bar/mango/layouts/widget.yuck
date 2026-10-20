@@ -11,9 +11,9 @@
     (box :class "layout-indicator-box"
          :space-evenly false
          :spacing 6
-         :tooltip "Active Layout: ${mango.active_layout[mon_name] ?: 'T'}"
+         :tooltip "Active Layout: ${mango_tags.active_layout[mon_name] ?: 'T'}"
       (label :class "layout-symbol"
-             :text "󰕰 ${mango.active_layout[mon_name] ?: 'T'}"))))
+             :text "󰕰 ${mango_tags.active_layout[mon_name] ?: 'T'}"))))
 
 ;; ------------------------------------------------------------
 ;; Layout Chooser Popup Widget
@@ -30,9 +30,9 @@
         (for layout in layout_list
 
           (eventbox :onclick "mmsg dispatch setlayout,${layout.name} && eww close layout_popup_${mon_id} popup_closer_${mon_id}"
-                    :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+                    :class "layout-item ${mango_tags.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
                     :cursor "pointer"
-            (box :class "layout-item ${mango.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
+            (box :class "layout-item ${mango_tags.active_layout[mon_name] == layout.symbol ? 'active' : ''}"
                  :space-evenly false :spacing 12
               (label :class "layout-item-icon" :text "${layout.icon}")
               (label :class "layout-item-name" :text "${layout.name}" :hexpand true :halign "start")
