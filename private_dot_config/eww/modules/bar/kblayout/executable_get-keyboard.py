@@ -39,15 +39,7 @@ def main():
             full_layout = data.get("layout", "US")
             short_layout = get_short_name(full_layout)
 
-            # send system wide notifications
-            #  peel notify -a "Keyboard Layout" -i "keyboard" -u "low" "Keyboard Layout: US"
-
-            subprocess.run(
-                ["peel", "notify", "-a", "Keyboard Layout", "-i", "keyboard", "-u", "low", f"Keyboard Layout: {short_layout}"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=True
-            )
+            
             payload = {
                 "full": full_layout,
                 "short": short_layout,
