@@ -1,5 +1,5 @@
 (deflisten power_profile :initial '{"active": "balanced", "icon": "󰾅", "profiles": []}'
-  `modules/bar/battery/get-power-profile.py`)
+  `python3 modules/bar/battery/get-power-profile.py`)
 
 (defwidget battery_widget [mon_id]
   (eventbox :onclick "eww open-many --toggle power_popup_${mon_id} popup_closer_${mon_id}"

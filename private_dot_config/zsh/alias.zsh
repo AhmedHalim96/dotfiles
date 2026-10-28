@@ -204,6 +204,7 @@ alias zja="zellij a"
 
 # Misc
 #alias gocryptfs="gocryptfs --extpass=\"fuzzel-pass\""
+alias zd='zeditor'
 alias c='clear' # clear terminal
 alias xx="exit" # exit Shell
 alias rr="exec zsh" # restart Shell

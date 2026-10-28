@@ -78,6 +78,3 @@ autoload -Uz compinit && compinit
 
 # broot
 source /home/ahmed/.config/broot/launcher/bash/br
-
-# pyenv
-source ~/.pyenv/bin/activate
