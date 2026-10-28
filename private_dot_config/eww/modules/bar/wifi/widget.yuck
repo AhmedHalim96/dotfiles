@@ -1,6 +1,6 @@
 ;; Wi-Fi Stream Listener
 (deflisten wifi :initial '{"enabled": true, "connected": false, "ssid": "Scanning...", "signal": 0, "icon": "󰤯", "ip": "N/A", "networks": []}'
-  `modules/bar/wifi/get-wifi.py`)
+  `python3 modules/bar/wifi/get-wifi.py`)
 
 ;; ------------------------------------------------------------
 ;; Wi-Fi Bar Widget

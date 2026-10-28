@@ -1,6 +1,6 @@
 ;; Bluetooth Listener
 (deflisten bt :initial '{"enabled":false,"connected":false,"icon":"󰂲","connected_name":"Disabled","connected_battery":"","devices":[]}'
-  `modules/bar/bluetooth/get-bluetooth.py`)
+  `python3 modules/bar/bluetooth/get-bluetooth.py`)
 
 (defwidget bt_toggle [mon_id]
   (eventbox :onclick "eww open-many --toggle bt_popup_${mon_id} popup_closer_${mon_id}"

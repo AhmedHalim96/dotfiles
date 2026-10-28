@@ -70,9 +70,6 @@ HISTFILE="$ZDOTDIR/.zsh_history"
 # zoxide
 eval "$(zoxide init zsh --cmd j)"
 
-# python env
-source ~/venv/bin/activate
-
 # --- ALIASES ---
 source ~/.config/zsh/alias.zsh
 
@@ -83,6 +80,4 @@ autoload -Uz compinit && compinit
 source /home/ahmed/.config/broot/launcher/bash/br
 
 # pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
+source ~/.pyenv/bin/activate

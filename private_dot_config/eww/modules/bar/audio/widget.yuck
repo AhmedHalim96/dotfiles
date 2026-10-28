@@ -1,5 +1,5 @@
 (deflisten audio :initial '{"volume": 0, "is_muted": false, "active_sink": "Unknown", "sinks": []}'
-  `modules/bar/audio/get_audio.py`)
+  `python3 modules/bar/audio/get_audio.py`)
 
 (defwidget audio_widget [mon_id]
   (eventbox :class "stat-item" :onscroll "[ {} = 'up' ] && wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"

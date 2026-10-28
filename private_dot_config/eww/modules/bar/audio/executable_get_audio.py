@@ -1,4 +1,3 @@
-#!/home/ahmed/venv/bin/python3
 import asyncio
 import json
 import sys

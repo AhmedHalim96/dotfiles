@@ -1,4 +1,12 @@
-#!/home/ahmed/venv/bin/python3
+import sys
+import typing
+
+# Compatibility polyfill for Python 3.15+ (fixes dbus-next missing no_type_check_decorator)
+if not hasattr(typing, "no_type_check_decorator"):
+    def no_type_check_decorator(decorator):
+        return decorator
+    typing.no_type_check_decorator = no_type_check_decorator
+
 import asyncio
 import json
 import socket
