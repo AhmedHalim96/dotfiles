@@ -1,6 +1,6 @@
 ;; Poll weather script every 15 minutes
 (defpoll weather :interval "15m"
-  `modules/bar/weather/weather.py`)
+  `python3 modules/bar/weather/weather.py`)
 
 ;; Weather Bar Widget using dynamically passed dynamic class
 (defwidget weather_widget []
