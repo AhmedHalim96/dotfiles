@@ -1,5 +1,5 @@
 ;; Bluetooth Listener
-(deflisten bt :initial '{"enabled":false,"connected":false,"icon":"󰂲","connected_name":"Disabled","connected_battery":"","devices":[]}'
+(deflisten bt :initial '{"enabled":false,"connected":false,"discovering":false,"icon":"󰂲","connected_name":"Disabled","connected_battery":"","devices":[]}'
   `python3 modules/bar/bluetooth/get-bluetooth.py`)
 
 (defwidget bt_toggle [mon_id]
@@ -46,32 +46,60 @@
        :space-evenly false
        :spacing 12
 
-    ;; Header & Bluetooth Power Switch
+    ;; Header & Bluetooth Controls
     (box :class "popup-header" :space-evenly false :spacing 8 :valign "center"
       (label :class "header-icon ${bt.enabled ? 'active' : ''}" :text "${bt.icon}")
       (box :class "popup-header" :orientation "v" :space-evenly false :hexpand true :halign "start"
         (label :class "popup-title" :text "Bluetooth" :halign "start")
-        (label :class "popup-sub" :text "${bt.connected ? bt.connected_name : (bt.enabled ? 'Searching...' : 'Disabled')}" :halign "start"))
+        (label :class "popup-sub" :text "${bt.connected ? bt.connected_name : (bt.enabled ? (bt.discovering ? 'Scanning...' : 'On') : 'Disabled')}" :halign "start"))
+
+      ;; Scan Toggle Button
+      (eventbox :class "toggle-btn scan-btn ${bt.discovering ? 'active' : ''}"
+                :onclick "bluetoothctl ${bt.discovering ? 'scan off' : '-t 60 -- scan on'} &"
+                :cursor "pointer"
+                :tooltip "${bt.discovering ? 'Stop Scanning' : 'Start Scanning'}"
+        (label :class "toggle-btn-label ${bt.discovering ? 'active' : ''}" :text "${bt.discovering ? 'SCAN' : 'SCAN'}"))
+
+      ;; Power Toggle Button
       (eventbox :class "toggle-btn ${bt.enabled ? 'active' : ''}"
-                :onclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'}"
+                :onclick "bluetoothctl power ${bt.enabled ? 'off' : 'on'} &"
                 :cursor "pointer"
         (label :class "toggle-btn-label ${bt.enabled ? 'active' : ''}" :text "${bt.enabled ? 'ON' : 'OFF'}")))
+
 
     (box :class "popup-sep")
 
     ;; Paired & Known Devices List
     (box :orientation "v" :space-evenly false :spacing 6 :visible {bt.enabled}
       (for dev in {bt.devices}
-        (eventbox :class "bt-item ${dev.connected ? 'connected' : ''}"
-                  :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
-                  :cursor "pointer"
-          (box :class "bt-item" :space-evenly false :spacing 10 :valign "center"
-            (label :class "dev-icon" :text "${dev.icon}")
-            (box :orientation "v" :space-evenly false :hexpand true :halign "start"
-              (label :class "dev-name" :text "${dev.name}" :halign "start")
-              (label :class "dev-mac" :text "${dev.mac}" :halign "start"))
-            (label :class "dev-battery" :text "${dev.battery}" :visible {dev.battery != ""})
-            (label :class "dev-status" :text "${dev.connected ? '󰄬' : '󰌷'}"))))
+        (box :class "bt-item ${dev.connected ? 'connected' : ''}" :space-evenly false :spacing 8 :valign "center"
+          ;; Main Clickable Area (Connect / Disconnect)
+          (eventbox :class "bt-item-main" :hexpand true
+                    :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
+                    :cursor "pointer"
+            (box :class "bt-item-inner" :space-evenly false :spacing 10 :valign "center"
+              (label :class "dev-icon" :text "${dev.icon}")
+              (box :orientation "v" :space-evenly false :hexpand true :halign "start"
+                (label :class "dev-name" :text "${dev.name}" :halign "start")
+                (label :class "dev-mac" :text "${dev.mac}" :halign "start"))))
+
+          (label :class "dev-battery" :text "${dev.battery}" :visible {dev.battery != ""})
+
+          ;; Trust / Untrust Button
+          (eventbox :class "dev-action-btn ${dev.trusted ? 'trusted' : ''}"
+                    :onclick "bluetoothctl ${dev.trusted ? 'untrust' : 'trust'} \"${dev.mac}\" &"
+                    :cursor "pointer"
+                    :tooltip "${dev.trusted ? 'Trusted (Click to untrust)' : 'Untrusted (Click to trust)'}"
+            (label :class "dev-action-icon" :text "${dev.trusted ? '󰌾' : '󰂺'}"))
+
+          ;; Remove / Delete Button
+          (eventbox :class "dev-action-btn remove-btn"
+                    :onclick "bluetoothctl remove \"${dev.mac}\" &"
+                    :cursor "pointer"
+                    :tooltip "Remove device"
+            (label :class "dev-action-icon" :text "󰆴"))
+
+          (label :class "dev-status" :text "${dev.connected ? '󰄬' : '󰌷'}")))
 
       (box :class "empty-state" :visible {arraylength(bt.devices) == 0}
         (label :text "No paired devices found")))

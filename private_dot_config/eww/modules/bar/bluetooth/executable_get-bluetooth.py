@@ -126,22 +126,21 @@ class BluetoothMonitor:
         except Exception as e:
             log(f"Signal handling error: {e}")
 
-    def _is_adapter_powered(self):
+    def _get_adapter_info(self):
         for path, interfaces in self.managed_objects.items():
             if "org.bluez.Adapter1" in interfaces:
-                if interfaces["org.bluez.Adapter1"].get("Powered", False):
-                    return True
-        return False
+                props = interfaces["org.bluez.Adapter1"]
+                return props.get("Powered", False), props.get("Discovering", False)
+        return False, False
 
     def _check_auto_connect(self):
-        is_powered = self._is_adapter_powered()
+        adapter_powered, _ = self._get_adapter_info()
 
-        # Trigger auto-connect when adapter switches from off -> on, or on initial run
-        if is_powered and not self._was_powered:
+        if adapter_powered and not self._was_powered:
             log("Adapter powered on. Running auto-connect sequence...")
             asyncio.create_task(self._auto_connect_paired_devices())
 
-        self._was_powered = is_powered
+        self._was_powered = adapter_powered
 
     async def _auto_connect_device(self, path):
         if path in self._attempting_connect:
@@ -161,7 +160,6 @@ class BluetoothMonitor:
         except Exception as e:
             log(f"Auto-connect failed for {path}: {e}")
         finally:
-            # Keep in set briefly to prevent continuous connect loops
             await asyncio.sleep(5)
             self._attempting_connect.discard(path)
 
@@ -182,12 +180,13 @@ class BluetoothMonitor:
             self.last_output = state
 
     def _build_state_json(self):
-        adapter_powered = self._is_adapter_powered()
+        adapter_powered, adapter_discovering = self._get_adapter_info()
 
         if not adapter_powered:
             return {
                 "enabled": False,
                 "connected": False,
+                "discovering": False,
                 "icon": "󰂲",
                 "connected_name": "Disabled",
                 "connected_battery": "",
@@ -205,6 +204,7 @@ class BluetoothMonitor:
                 name = dev.get("Alias") or dev.get("Name") or "Unknown"
                 mac = dev.get("Address", "")
                 is_connected = bool(dev.get("Connected", False))
+                trusted = bool(dev.get("Trusted", False))
                 icon_str = dev.get("Icon", "")
 
                 battery = ""
@@ -230,6 +230,7 @@ class BluetoothMonitor:
                     "name": name,
                     "mac": mac,
                     "connected": is_connected,
+                    "trusted": trusted,
                     "icon": icon,
                     "battery": battery
                 })
@@ -243,6 +244,7 @@ class BluetoothMonitor:
         return {
             "enabled": True,
             "connected": any_connected,
+            "discovering": adapter_discovering,
             "icon": "󰂱" if any_connected else "󰂯",
             "connected_name": display_name,
             "connected_battery": primary_battery,
@@ -253,4 +255,5 @@ if __name__ == "__main__":
     try:
         asyncio.run(BluetoothMonitor().start())
     except KeyboardInterrupt:
+        print("Interrupted")
         pass

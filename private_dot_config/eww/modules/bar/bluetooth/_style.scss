@@ -5,7 +5,6 @@
     border: 1px solid rgba($surface-highest, 0.4);
     transition: all 0.15s ease-in-out;
 
-
     .bar-icon {
       font-size: 14px;
     }
@@ -13,7 +12,6 @@
     .bar-label {
       font-size: 12px;
       font-weight: 600;
-
     }
 
     &.active {
@@ -42,53 +40,55 @@
   /* Bluetooth Popup Window Container */
   .bt-popup-box {
     padding: 14px;
-      min-width: 240px;
-      background-color: rgba($surface-lowest, 0.95);
-      border: 1px solid rgba($bt-blue, 0.25);
-      border-radius: 14px;
-      box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
+    min-width: 280px;
+    background-color: rgba($surface-lowest, 0.95);
+    border: 1px solid rgba($bt-blue, 0.25);
+    border-radius: 14px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.4);
 
-      .header-icon {
-        font-size: 40px;
-        color: $fg;
-        margin-right: 20px;
-      }
+    .header-icon {
+      font-size: 40px;
+      color: $fg;
+      margin-right: 14px;
+    }
 
-      .popup-title {
-        font-size: 13px;
-        font-weight: 700;
-        color: $fg;
-        margin-top: 10px;
-      }
+    .popup-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: $fg;
+      margin-top: 10px;
+    }
 
-      .popup-sub {
-        font-size: 10px;
-        color: rgba($fg, 0.5);
-        font-weight: 500;
-      }
-      .toggle-btn {
-
-      }
+    .popup-sub {
+      font-size: 10px;
+      color: rgba($fg, 0.5);
+      font-weight: 500;
+    }
 
     .toggle-btn-label {
-
       margin: 10px 0;
-      padding: 1px 10px;
-
+      padding: 1px 8px;
       border-radius: 12px;
       font-size: 10px;
       font-weight: 800;
       color: rgba($fg, 0.6);
+
       &.active {
         background-color: rgba($bt-blue, 0.25);
         border: 1px solid $bt-blue;
         color: $bt-blue;
       }
-
-    }
     }
 
-
+    .scan-btn {
+      margin-right: 2px;
+      .toggle-btn-label.active {
+        background-color: rgba(#f9e2af, 0.25);
+        border: 1px solid #f9e2af;
+        color: #f9e2af;
+      }
+    }
+  }
 
   .popup-sub {
     font-size: 10px;
@@ -98,7 +98,7 @@
 
   /* Device List Styling */
   .bt-item {
-    padding: 8px 10px;
+    padding: 6px 8px;
     border-radius: 8px;
     background-color: rgba($surface-high, 0.2);
     transition: background-color 0.12s ease;
@@ -109,7 +109,7 @@
 
     &.connected {
       background-color: rgba($bt-blue, 0.12);
-      border: 1px solid rgba($bt-blue , 0.35);
+      border: 1px solid rgba($bt-blue, 0.35);
 
       .dev-name {
         color: $bt-blue;
@@ -144,6 +144,33 @@
       background-color: rgba(#a6e3a1, 0.1);
       padding: 2px 6px;
       border-radius: 4px;
+      margin-right: 4px;
+    }
+
+    .dev-action-btn {
+      padding: 4px 6px;
+      border-radius: 6px;
+      background-color: rgba($surface-high, 0.3);
+      margin-right: 4px;
+      transition: all 0.12s ease;
+
+      &:hover {
+        background-color: rgba($surface-high, 0.8);
+      }
+
+      &.trusted {
+        color: #a6e3a1;
+      }
+
+      &.remove-btn:hover {
+        background-color: rgba(#f38ba8, 0.2);
+        color: #f38ba8;
+      }
+
+      .dev-action-icon {
+        font-size: 13px;
+        color: rgba($fg, 0.6);
+      }
     }
 
     .dev-status {
