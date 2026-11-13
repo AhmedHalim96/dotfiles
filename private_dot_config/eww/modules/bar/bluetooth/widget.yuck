@@ -74,9 +74,7 @@
       (for dev in {bt.devices}
         (box :class "bt-item ${dev.connected ? 'connected' : ''}" :space-evenly false :spacing 8 :valign "center"
           ;; Main Clickable Area (Connect / Disconnect)
-          (eventbox :class "bt-item-main" :hexpand true
-                    :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
-                    :cursor "pointer"
+          (box :class "bt-item-main" :hexpand true
             (box :class "bt-item-inner" :space-evenly false :spacing 10 :valign "center"
               (label :class "dev-icon" :text "${dev.icon}")
               (box :orientation "v" :space-evenly false :hexpand true :halign "start"
@@ -86,7 +84,7 @@
           (label :class "dev-battery" :text "${dev.battery}" :visible {dev.battery != ""})
 
           ;; Trust / Untrust Button
-          (eventbox :class "dev-action-btn ${dev.trusted ? 'trusted' : ''}"
+          (eventbox :class "dev-action-btn ${dev.trusted ? 'trusted' : ''} ${dev.connected ? 'connected' : ''}"
                     :onclick "bluetoothctl ${dev.trusted ? 'untrust' : 'trust'} \"${dev.mac}\" &"
                     :cursor "pointer"
                     :tooltip "${dev.trusted ? 'Trusted (Click to untrust)' : 'Untrusted (Click to trust)'}"
@@ -99,7 +97,11 @@
                     :tooltip "Remove device"
             (label :class "dev-action-icon" :text "󰆴"))
 
-          (label :class "dev-status" :text "${dev.connected ? '󰄬' : '󰌷'}")))
+          (eventbox :class "dev-action-btn connect-btn ${dev.connected ? 'connected' : ''}"
+                    :onclick "bluetoothctl ${dev.connected ? 'disconnect' : 'connect'} \"${dev.mac}\" &"
+                    :cursor "pointer"
+                    :tooltip "${dev.connected ? 'Disconnect' : 'Connect'}"
+          (label :class "dev-action-icon" :text "${dev.connected ? '󰄬' : '󰌷'}"))))
 
       (box :class "empty-state" :visible {arraylength(bt.devices) == 0}
         (label :text "No paired devices found")))

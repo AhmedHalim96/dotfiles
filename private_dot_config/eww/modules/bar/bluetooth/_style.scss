@@ -140,8 +140,8 @@
     .dev-battery {
       font-size: 10px;
       font-weight: 700;
-      color: #a6e3a1; /* Success Green */
-      background-color: rgba(#a6e3a1, 0.1);
+      color: $green; /* Success Green */
+      background-color: rgba($green, 0.1);
       padding: 2px 6px;
       border-radius: 4px;
       margin-right: 4px;
@@ -152,19 +152,37 @@
       border-radius: 6px;
       background-color: rgba($surface-high, 0.3);
       margin-right: 4px;
-      transition: all 0.12s ease;
+      * {
 
-      &:hover {
-        background-color: rgba($surface-high, 0.8);
+        transition: all 5s ease;
+
       }
 
-      &.trusted {
-        color: #a6e3a1;
+      &:hover {
+      }
+
+      &.connect-btn:hover {
+        .dev-action-icon {
+          color: $bt-blue;
+        }
+      }
+
+      &.connected.connect-btn{
+        .dev-action-icon {
+          color: $bt-blue;
+        }
+      }
+
+      &.connected.trusted, &.trusted:hover {
+        .dev-action-icon {
+          color: $green;
+        }
       }
 
       &.remove-btn:hover {
-        background-color: rgba(#f38ba8, 0.2);
-        color: #f38ba8;
+        .dev-action-icon {
+          color: $error;
+        }
       }
 
       .dev-action-icon {
