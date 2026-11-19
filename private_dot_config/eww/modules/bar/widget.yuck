@@ -4,7 +4,7 @@
 (include "./modules/bar/tray/tray.yuck")
 (include "./modules/bar/caps/caps.yuck")
 (include "./modules/bar/bluetooth/widget.yuck")
-(include "./modules/bar/wifi/widget.yuck")
+;;(include "./modules/bar/wifi/widget.yuck")
 (include "./modules/bar/network/widget.yuck")
 (include "./modules/bar/powermenu/widget.yuck")
 (include "./modules/bar/swaync/widget.yuck")
@@ -51,7 +51,6 @@
     (box :space-evenly false
          :spacing 5
          :hexpand true
-      (control_center_button :mon_id mon_id)
       (workspace_switcher :mon_name mon_name)
       (active_clients :mon_name mon_name)
       )
@@ -83,6 +82,7 @@
 
 
         (sys_stats :mon_id mon_id :mon_name mon_name)
+        (control_center_button :mon_id mon_id)
         (clock :mon_id mon_id)
         (layout_indicator :mon_name mon_name :mon_id mon_id)
         (kbd_widget)
