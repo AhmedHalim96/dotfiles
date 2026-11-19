@@ -16,6 +16,7 @@
 (include "./modules/bar/popup_closer/widget.yuck")
 (include "./modules/bar/weather/widget.yuck")
 (include "./modules/bar/timer/widget.yuck")
+(include "./modules/bar/control-center/widget.yuck")
 
 
 (defwidget ram_usage []
@@ -38,11 +39,7 @@
        :spacing 8
        (ram_usage)
        (cpu_usage)
-       (audio_widget :mon_id mon_id)
-       (box :visible {mon_name == 'HDMI-A-1'} :spacing 4)
        (box  :spacing 0 :space-evenly false :visible {mon_name == 'eDP-1'}
-         (brightness_widget)
-         (battery_widget :mon_id mon_id :mon_name mon_name)
          (weather_widget)
        )))
 
@@ -54,6 +51,7 @@
     (box :space-evenly false
          :spacing 5
          :hexpand true
+      (control_center_button :mon_id mon_id)
       (workspace_switcher :mon_name mon_name)
       (active_clients :mon_name mon_name)
       )
@@ -84,22 +82,12 @@
            :spacing 4
 
 
-        (box :visible {mon_name == "HDMI-A-1"}
-         :space-evenly false
-         :spacing 4
-         (network_widget)
-         (wifi_widget :mon_id mon_id)
-         (bt_toggle :mon_id mon_id)
-         )
-
         (sys_stats :mon_id mon_id :mon_name mon_name)
         (clock :mon_id mon_id)
         (layout_indicator :mon_name mon_name :mon_id mon_id)
         (kbd_widget)
         (tray_button :mon_id mon_id)
         ;;(tray_widget :popup false)
-        (notification_widget)
-        (power_menu_button :mon_id mon_id)
         )
     ))
 
