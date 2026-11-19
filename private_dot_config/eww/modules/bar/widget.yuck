@@ -4,7 +4,7 @@
 (include "./modules/bar/tray/tray.yuck")
 (include "./modules/bar/caps/caps.yuck")
 (include "./modules/bar/bluetooth/widget.yuck")
-;;(include "./modules/bar/wifi/widget.yuck")
+(include "./modules/bar/wifi/widget.yuck")
 (include "./modules/bar/network/widget.yuck")
 (include "./modules/bar/powermenu/widget.yuck")
 (include "./modules/bar/swaync/widget.yuck")
@@ -80,6 +80,17 @@
            :halign "end"
            :spacing 4
 
+        ;; Right Slot Widgets only on eDP-1
+        (box :visible {mon_name == "eDP-1"}
+             :space-evenly false
+             :spacing 4
+             )
+        ;; Right Slot Widgets only on HDMI-A-1
+        (box :visible {mon_name == "HDMI-A-1"}
+             :space-evenly false
+             :spacing 4
+             (network_widget)
+             )
 
         (sys_stats :mon_id mon_id :mon_name mon_name)
         (control_center_button :mon_id mon_id)
